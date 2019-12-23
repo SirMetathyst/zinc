@@ -1,7 +1,5 @@
 package atom
 
-import "fmt"
-
 var entityManager = NewEntityManager()
 
 // Default ...
@@ -183,10 +181,8 @@ func (e *EntityManager) Component(key uint) Component {
 func (e *EntityManager) Group(m *Matcher) *G {
 	h := m.Hash()
 	if idx, ok := e.groupsMap[h]; ok {
-		fmt.Println("existing group!")
 		return e.groups[idx]
 	}
-	fmt.Println("New group!")
 	g := NewGroup(e, m)
 	e.addGroup(g)
 	return g
