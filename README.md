@@ -69,6 +69,12 @@ func main() {
     // does the group have an entity?
     group1.HasEntity(id)
 
+    // does the component exist for entity
+    ok := atom.HasPosition(id)
+
+    // delete the position component 
+    atom.DeletePosition(id)
+
     // will return a entity group that has position but not velocity component
     group2 := atom.Group(atom.AllOf(components.PositionKey).NoneOf(components.VelocityKey))  
 }
