@@ -62,7 +62,10 @@ func (e *EntityManager) addGroup(g *G) {
 
 func (e *EntityManager) deleteEntity(id EntityID) {
 	idx := e.indexOf(id)
-	e.entities = append(e.entities[:idx], e.entities[idx+1:]...)
+	lastv := e.entities[len(e.entities)-1]
+	e.entities[idx] = lastv
+	e.entitiesMap[lastv] = idx
+	e.entities = e.entities[:len(e.entities)-1]
 	delete(e.entitiesMap, id)
 	e.pool.Put(id)
 }
@@ -172,9 +175,9 @@ func (e *EntityManager) RegisterComponent(key uint, c Component) Context {
 }
 
 // Component ...
-func (e *EntityManager) Component(key uint) Component {
-	v, _ := e.componentMap[key]
-	return v
+func (e *EntityManager) Component(key uint) (Component, bool) {
+	v, ok := e.componentMap[key]
+	return v, ok
 }
 
 // Group ...

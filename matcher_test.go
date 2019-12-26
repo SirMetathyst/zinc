@@ -1,7 +1,10 @@
-package atom
+package atom_test
 
 import (
 	"testing"
+
+	"github.com/SirMetathyst/atom"
+	"github.com/SirMetathyst/atomcommon"
 )
 
 // MatcherData ...
@@ -16,87 +19,120 @@ var matcherData = []MatcherData{
 }
 
 func TestAllOf(t *testing.T) {
-	for it, d := range matcherData {
-		m := AllOf(d.allOf...)
-		for i, _ := range m.allOf {
-			if m.allOf[i] != d.allOf[i] {
-				t.Errorf("assert(%d-%d): want %v, got %v", it, i, d.allOf[i], m.allOf[i])
+	for it, ds := range matcherData {
+		m := atom.AllOf(ds.allOf...)
+		for i, v := range ds.allOf {
+			if !m.HasAllOf(v) {
+				t.Errorf("assert(%d-%d): want %v", it, i, v)
 			}
 		}
 	}
 }
 
 func TestNoneOf(t *testing.T) {
-	for it, d := range matcherData {
-		m := NoneOf(d.noneOf...)
-		for i, _ := range m.noneOf {
-			if m.noneOf[i] != d.noneOf[i] {
-				t.Errorf("assert(%d-%d): want %v, got %v", it, i, d.noneOf[i], m.noneOf[i])
+	for it, ds := range matcherData {
+		m := atom.NoneOf(ds.noneOf...)
+		for i, v := range ds.noneOf {
+			if !m.HasNoneOf(v) {
+				t.Errorf("assert(%d-%d): want %v", it, i, v)
 			}
 		}
 	}
 }
 
-// Mock component for Matcher.Match
+func TestHash(t *testing.T) {
 
-const cKey uint = 31162
-
-type cData struct{}
-
-type c struct {
-	context Context
-	d       map[EntityID]cData
-}
-
-func newC() *c {
-	return &c{
-		d: make(map[EntityID]cData),
-	}
-}
-
-// EntityDeleted ...
-func (x *c) EntityDeleted(id EntityID) {
-	delete(x.d, id)
-}
-
-// HasEntity ...
-func (x *c) HasEntity(id EntityID) bool {
-	_, ok := x.d[id]
-	return ok
-}
-
-// Set ...
-func (x *c) Set(id EntityID, example cData) {
-	if x.context.HasEntity(id) {
-		if x.HasEntity(id) {
-			x.d[id] = example
-			x.context.ComponentUpdated(cKey, id)
-		} else {
-			x.d[id] = example
-			x.context.ComponentAdded(cKey, id)
+	t.Run("All of hash", func(t *testing.T) {
+		m1 := atom.AllOf(atomcommon.Position2Key, atomcommon.Velocity2Key)
+		m2 := atom.AllOf(atomcommon.Velocity2Key, atomcommon.Position2Key)
+		if m1.Hash() != m2.Hash() {
+			t.Errorf("assert: want %s = %s, got %s = %s", m1.Hash(), m1.Hash(), m1.Hash(), m2.Hash())
 		}
-	}
+	})
+
+	t.Run("None of hash", func(t *testing.T) {
+		m1 := atom.NoneOf(atomcommon.Position2Key, atomcommon.Velocity2Key)
+		m2 := atom.NoneOf(atomcommon.Velocity2Key, atomcommon.Position2Key)
+		if m1.Hash() != m2.Hash() {
+			t.Errorf("assert: want %s = %s, got %s = %s", m1.Hash(), m1.Hash(), m1.Hash(), m2.Hash())
+		}
+	})
+
+	t.Run("All/None of hash", func(t *testing.T) {
+		m1 := atom.AllOf(atomcommon.Position2Key, atomcommon.Velocity2Key).NoneOf(atomcommon.Rotation2Key, atomcommon.Scale2Key)
+		m2 := atom.AllOf(atomcommon.Velocity2Key, atomcommon.Position2Key).NoneOf(atomcommon.Scale2Key, atomcommon.Rotation2Key)
+		if m1.Hash() != m2.Hash() {
+			t.Errorf("assert: want %s = %s, got %s = %s", m1.Hash(), m1.Hash(), m1.Hash(), m2.Hash())
+		}
+	})
 }
 
 func TestMatch(t *testing.T) {
 
-	// Setup
-	cmp := newC()
-	context := Default().RegisterComponent(cKey, cmp)
-	cmp.context = context
+	t.Run("Match with non-existing", func(t *testing.T) {
 
-	// Arrange
-	id := CreateEntity()
-	v := Default().Component(cKey)
-	c := v.(*c)
-	c.Set(id, cData{})
+		// Reset
+		atom.Reset()
 
-	// Act
-	m := AllOf(cKey)
+		// Arrange
+		id := atom.CreateEntity()
+		atomcommon.SetPosition2(id, atomcommon.Position2Data{X: 10, Y: 10})
 
-	// Assert
-	mv := m.Match(id)
-	if mv != true {
-		t.Errorf("assert: want %v, got %v", true, mv)
-	}
+		// Act
+		m := atom.AllOf(0)
+
+		// Assert
+		mv := m.Match(id)
+		if mv != false {
+			t.Errorf("assert: want %v, got %v", false, mv)
+		}
+	})
+
+	t.Run("Match with all of", func(t *testing.T) {
+
+		// Reset
+		atom.Reset()
+
+		// Arrange
+		id := atom.CreateEntity()
+		atomcommon.SetPosition2(id, atomcommon.Position2Data{X: 10, Y: 10})
+
+		// Act
+		m := atom.AllOf(atomcommon.Position2Key)
+
+		// Assert
+		mv := m.Match(id)
+		if mv != true {
+			t.Errorf("assert: want %v, got %v", true, mv)
+		}
+	})
+
+	t.Run("Match with all of/none of", func(t *testing.T) {
+
+		// Setup
+		atom.Reset()
+
+		// Arrange
+		id := atom.CreateEntity()
+		atomcommon.SetPosition2(id, atomcommon.Position2Data{X: 10, Y: 10})
+		atomcommon.SetVelocity2(id, atomcommon.Velocity2Data{X: 10, Y: 10})
+
+		// Act
+		m1 := atom.NoneOf(atomcommon.Velocity2Key)
+
+		// Assert
+		mv1 := m1.Match(id)
+		if mv1 == true {
+			t.Errorf("assert: want %v, got %v", false, mv1)
+		}
+
+		// Act
+		m2 := atom.AllOf(atomcommon.Position2Key).NoneOf(atomcommon.Velocity2Key)
+
+		// Assert
+		mv2 := m2.Match(id)
+		if mv2 == true {
+			t.Errorf("assert: want %v, got %v", false, mv2)
+		}
+	})
 }

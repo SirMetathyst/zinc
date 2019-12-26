@@ -1,16 +1,20 @@
-package atom
+package atom_test
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/SirMetathyst/atom"
+)
 
 func TestPoolGet(t *testing.T) {
 
-	p := NewPool(NewEntityIDFactory())
+	p := atom.NewPool(atom.NewEntityIDFactory())
 
 	// 1st Get
 	// Should call factory
 	// Should return 1
 	r1 := p.Get()
-	if r1 != EntityID(1) {
+	if r1 != atom.EntityID(1) {
 		t.Errorf("p.Get: want %d, got %v", 1, r1)
 	}
 
@@ -18,14 +22,14 @@ func TestPoolGet(t *testing.T) {
 	// Should call factory
 	// should return 2
 	r2 := p.Get()
-	if r2 != EntityID(2) {
+	if r2 != atom.EntityID(2) {
 		t.Errorf("p.Get: want %d, got %v", 2, r2)
 	}
 }
 
 func TestPoolPut(t *testing.T) {
 
-	p := NewPool(func() interface{} {
+	p := atom.NewPool(func() interface{} {
 		return -1
 	})
 
