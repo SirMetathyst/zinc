@@ -1,5 +1,8 @@
 package atom
 
+// ComponentEventFunc ...
+type ComponentEventFunc func(key uint, id EntityID)
+
 // Context ...
 type Context interface {
 	ComponentAdded(key uint, id EntityID)
@@ -9,30 +12,45 @@ type Context interface {
 }
 
 type ctx struct {
-	entityManager *EntityManager
+	componentAddedFunc   ComponentEventFunc
+	componentDeletedFunc ComponentEventFunc
+	componentUpdatedFunc ComponentEventFunc
+	hasEntityFunc        func(id EntityID) bool
 }
 
 // NewContext ...
-func NewContext(e *EntityManager) Context {
-	return ctx{entityManager: e}
+func NewContext(
+	// Component Event(s)
+	componentAddedFunc ComponentEventFunc,
+	componentDeletedFunc ComponentEventFunc,
+	componentUpdatedFunc ComponentEventFunc,
+	// HasEntity
+	hasEntityFunc func(id EntityID) bool) Context {
+
+	return ctx{
+		componentAddedFunc:   componentAddedFunc,
+		componentDeletedFunc: componentDeletedFunc,
+		componentUpdatedFunc: componentUpdatedFunc,
+		hasEntityFunc:        hasEntityFunc,
+	}
 }
 
 // ComponentAdded ...
 func (c ctx) ComponentAdded(key uint, id EntityID) {
-	c.entityManager.componentAdded(key, id)
+	c.componentAddedFunc(key, id)
 }
 
 // ComponentDeleted ...
 func (c ctx) ComponentDeleted(key uint, id EntityID) {
-	c.entityManager.componentDeleted(key, id)
+	c.componentDeletedFunc(key, id)
 }
 
 // ComponentUpdated ...
 func (c ctx) ComponentUpdated(key uint, id EntityID) {
-	c.entityManager.componentUpdated(key, id)
+	c.componentUpdatedFunc(key, id)
 }
 
 // HasEntity ...
 func (c ctx) HasEntity(id EntityID) bool {
-	return c.entityManager.HasEntity(id)
+	return c.hasEntityFunc(id)
 }

@@ -24,7 +24,7 @@ type EntityManager struct {
 	entitiesMap  map[EntityID]int
 	entities     []EntityID
 	groupsMap    map[string]int
-	groups       []*G
+	groups       []*BasicGroup
 	pool         *Pool
 	context      Context
 	componentMap map[uint]Component
@@ -38,7 +38,13 @@ func NewEntityManager() *EntityManager {
 		pool:         NewPool(NewEntityIDFactory()),
 		componentMap: make(map[uint]Component),
 	}
-	e.context = NewContext(e)
+
+	e.context = NewContext(
+		e.componentAdded,
+		e.componentDeleted,
+		e.componentUpdated,
+		e.HasEntity)
+
 	return e
 }
 
@@ -55,7 +61,7 @@ func (e *EntityManager) addEntity(id EntityID) {
 	e.entitiesMap[id] = len(e.entities) - 1
 }
 
-func (e *EntityManager) addGroup(g *G) {
+func (e *EntityManager) addGroup(g *BasicGroup) {
 	e.groups = append(e.groups, g)
 	e.groupsMap[g.matcher.Hash()] = len(e.groups) - 1
 }
@@ -133,8 +139,7 @@ func CreateEntity() EntityID {
 
 // HasEntity ...
 func (e *EntityManager) HasEntity(id EntityID) bool {
-	idx := e.indexOf(id)
-	if idx == -1 {
+	if idx := e.indexOf(id); idx == -1 {
 		return false
 	}
 	return true
@@ -175,26 +180,24 @@ func (e *EntityManager) RegisterComponent(key uint, c Component) Context {
 }
 
 // Component ...
-func (e *EntityManager) Component(key uint) (Component, bool) {
-	v, ok := e.componentMap[key]
-	return v, ok
+func (e *EntityManager) Component(key uint) (c Component, ok bool) {
+	c, ok = e.componentMap[key]
+	return
 }
 
 // Group ...
-func (e *EntityManager) Group(m *Matcher) *G {
-	h := m.Hash()
-	if idx, ok := e.groupsMap[h]; ok {
+func (e *EntityManager) Group(m *Matcher) Grouper {
+	if idx, ok := e.groupsMap[m.Hash()]; ok {
 		return e.groups[idx]
 	}
-	g := NewGroup(e, m)
+	g := NewBasicGroup(e, m)
 	e.addGroup(g)
 	return g
 }
 
 // Group ...
-func Group(m *Matcher) *G {
-	g := Default().Group(m)
-	return g
+func Group(m *Matcher) Grouper {
+	return Default().Group(m)
 }
 
 // Component ...

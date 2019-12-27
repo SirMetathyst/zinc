@@ -1,8 +1,12 @@
 bench:
-	go test -bench . -benchtime 15s -cpu 1,4 -count 2
+	go test -bench . -benchmem -benchtime 15s -cpu 1,4 -count 2
 	
 build: 
 	go build -o ./atom ./cmd/atom/main.go
+
+clean:
+	rm -f ./coverage.html
+	rm -f ./coverage.txt
 
 test:
 	go test -race -coverprofile=coverage.txt -covermode=atomic
