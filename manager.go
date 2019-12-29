@@ -93,6 +93,30 @@ func (e *EntityManager) componentDeleted(key uint, id EntityID) {
 	e.groupHandleEntity(key, id)
 }
 
+// ResetAll ...
+func (e *EntityManager) ResetAll() {
+	e.Reset()
+	e.groupsMap = make(map[uint]int, 0)
+	e.groups = nil
+	e.componentMap = make(map[uint]Component)
+}
+
+// ResetAll ...
+func ResetAll() {
+	Default().ResetAll()
+}
+
+// Reset ...
+func (e *EntityManager) Reset() {
+	e.DeleteEntities()
+	e.pool = NewPool(NewEntityIDFactory())
+}
+
+// Reset ...
+func Reset() {
+	Default().Reset()
+}
+
 // DeleteEntities ...
 func (e *EntityManager) DeleteEntities() {
 	for _, id := range e.Entities() {
