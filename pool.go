@@ -11,6 +11,9 @@ type Pool struct {
 
 // NewPool ...
 func NewPool(f FactoryFunc) *Pool {
+	if f == nil {
+		return nil
+	}
 	return &Pool{f: f}
 }
 

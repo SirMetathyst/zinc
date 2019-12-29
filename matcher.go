@@ -1,22 +1,10 @@
 package atom
 
-import (
-	"sort"
-	"strconv"
-)
-
-// UintSlice ...
-type UintSlice []uint
-
-func (p UintSlice) Len() int           { return len(p) }
-func (p UintSlice) Less(i, j int) bool { return p[i] < p[j] }
-func (p UintSlice) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
-
 // Matcher ...
 type Matcher struct {
 	allOf         []uint
 	noneOf        []uint
-	hash          string
+	hash          uint
 	entityManager *EntityManager
 }
 
@@ -27,36 +15,38 @@ func NewMatcher(e *EntityManager) *Matcher {
 
 // HasAllOf ...
 func (m *Matcher) HasAllOf(keys ...uint) bool {
+	c := 0
 	for _, v := range m.allOf {
 		for _, k := range keys {
 			if v == k {
-				return true
+				c++
 			}
 		}
 	}
-	return false
+	return c >= len(keys)
 }
 
 // HasNoneOf ...
 func (m *Matcher) HasNoneOf(keys ...uint) bool {
+	c := 0
 	for _, v := range m.noneOf {
 		for _, k := range keys {
 			if v == k {
-				return true
+				c++
 			}
 		}
 	}
-	return false
+	return c >= len(keys)
 }
 
 // AllOf ...
 func (m *Matcher) AllOf(keys ...uint) *Matcher {
 	for _, key := range keys {
 		if has := m.HasAllOf(key); !has {
-			m.hash = ""
 			m.allOf = append(m.allOf, key)
 		}
 	}
+	m.updateHash()
 	return m
 }
 
@@ -64,11 +54,17 @@ func (m *Matcher) AllOf(keys ...uint) *Matcher {
 func (m *Matcher) NoneOf(keys ...uint) *Matcher {
 	for _, key := range keys {
 		if has := m.HasNoneOf(key); !has {
-			m.hash = ""
 			m.noneOf = append(m.noneOf, key)
 		}
 	}
+	m.updateHash()
 	return m
+}
+
+func (m *Matcher) updateHash() {
+	m.hash = hash(647,
+		hash(653, m.allOf...),
+		hash(661, m.noneOf...))
 }
 
 func (m *Matcher) match(key uint, id EntityID) bool {
@@ -97,24 +93,7 @@ func (m *Matcher) Match(id EntityID) bool {
 }
 
 // Hash ...
-func (m *Matcher) Hash() string {
-	if m.hash != "" {
-		return m.hash
-	}
-	sort.Sort(UintSlice(m.allOf))
-	sort.Sort(UintSlice(m.noneOf))
-
-	allOfStr := ""
-	for _, v := range m.allOf {
-		str := strconv.Itoa(int(v))
-		allOfStr += str
-	}
-	noneOfStr := ""
-	for _, v := range m.noneOf {
-		str := strconv.Itoa(int(v))
-		noneOfStr += str
-	}
-	m.hash = allOfStr + "-" + noneOfStr
+func (m *Matcher) Hash() uint {
 	return m.hash
 }
 
@@ -136,4 +115,13 @@ func NoneOfX(e *EntityManager, keys ...uint) *Matcher {
 // NoneOf ...
 func NoneOf(keys ...uint) *Matcher {
 	return NoneOfX(Default(), keys...)
+}
+
+func hash(factor uint, x ...uint) uint {
+	var hash uint
+	for _, v := range x {
+		hash ^= uint(v)
+	}
+	hash ^= uint(len(x)) * factor
+	return hash
 }

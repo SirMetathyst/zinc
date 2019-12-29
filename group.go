@@ -1,72 +1,106 @@
 package atom
 
-// Grouper ...
-type Grouper interface {
+// G ...
+type G interface {
+	HandleEntitySilently(id EntityID)
+	HandleEntity(key uint, id EntityID)
+	UpdateEntity(key uint, id EntityID)
+	DeleteEntity(id EntityID)
 	HasEntity(id EntityID) bool
 	Entities() []EntityID
+	HandleEntityAdded(f EntityEventFunc)
+	HandleEntityDeleted(f EntityEventFunc)
+	HandleEntityUpdated(f EntityEventFunc)
 }
 
-// BasicGroup ...
-type BasicGroup struct {
+// g ...
+type g struct {
 	matcher       *Matcher
 	entityManager *EntityManager
-	entitiesMap   map[EntityID]int
-	entities      []EntityID
+	entityList    *EntityList
+	addedFunc     []EntityEventFunc
+	updatedFunc   []EntityEventFunc
+	deletedFunc   []EntityEventFunc
 }
 
-// NewBasicGroup ...
-func NewBasicGroup(e *EntityManager, m *Matcher) *BasicGroup {
-	return &BasicGroup{
+// newGroup ...
+func newGroup(e *EntityManager, m *Matcher) *g {
+	return &g{
 		entityManager: e,
 		matcher:       m,
-		entitiesMap:   make(map[EntityID]int, 0),
+		entityList:    NewEntityList(),
 	}
 }
 
-func (g *BasicGroup) indexOf(id EntityID) int {
-	idx, ok := g.entitiesMap[id]
-	if !ok {
-		return -1
+func (g *g) addEntity(key uint, id EntityID) {
+	if g.entityList.AddEntity(id) && len(g.addedFunc) > 0 {
+		for _, h := range g.addedFunc {
+			h(key, id)
+		}
 	}
-	return idx
 }
 
-func (g *BasicGroup) deleteEntity(id EntityID) {
-	idx := g.indexOf(id)
-	lastv := g.entities[len(g.entities)-1]
-	g.entities[idx] = lastv
-	g.entitiesMap[lastv] = idx
-	g.entities = g.entities[:len(g.entities)-1]
-	delete(g.entitiesMap, id)
-}
-
-func (g *BasicGroup) addEntity(id EntityID) {
-	g.entities = append(g.entities, id)
-	g.entitiesMap[id] = len(g.entities) - 1
-}
-
-func (g *BasicGroup) entityDeleted(id EntityID) {
-	g.deleteEntity(id)
-}
-
-func (g *BasicGroup) handleEntity(key uint, id EntityID) {
-	ok := g.matcher.Match(id)
-	if ok && !g.HasEntity(id) {
-		g.addEntity(id)
-	} else if !ok && g.HasEntity(id) {
-		g.deleteEntity(id)
+func (g *g) deleteEntity(key uint, id EntityID) {
+	if g.entityList.DeleteEntity(id) && len(g.deletedFunc) > 0 {
+		for _, h := range g.deletedFunc {
+			h(key, id)
+		}
 	}
+}
+
+// HandleEntitySilently ...
+func (g *g) HandleEntitySilently(id EntityID) {
+	if ok := g.matcher.Match(id); ok {
+		g.entityList.AddEntity(id)
+	} else {
+		g.entityList.DeleteEntity(id)
+	}
+}
+
+// HandleEntity ...
+func (g *g) HandleEntity(key uint, id EntityID) {
+	if ok := g.matcher.Match(id); ok {
+		g.addEntity(key, id)
+	} else {
+		g.deleteEntity(key, id)
+	}
+}
+
+// UpdateEntity ...
+func (g *g) UpdateEntity(key uint, id EntityID) {
+	if g.entityList.HasEntity(id) && len(g.updatedFunc) > 0 {
+		for _, h := range g.updatedFunc {
+			h(key, id)
+		}
+	}
+}
+
+// DeleteEntity ...
+func (g *g) DeleteEntity(id EntityID) {
+	g.entityList.DeleteEntity(id)
 }
 
 // HasEntity ...
-func (g *BasicGroup) HasEntity(id EntityID) bool {
-	if idx := g.indexOf(id); idx == -1 {
-		return false
-	}
-	return true
+func (g *g) HasEntity(id EntityID) bool {
+	return g.entityList.HasEntity(id)
 }
 
 // Entities ...
-func (g *BasicGroup) Entities() []EntityID {
-	return g.entities
+func (g *g) Entities() []EntityID {
+	return g.entityList.Entities()
+}
+
+// HandleEntityAdded ...
+func (g *g) HandleEntityAdded(f EntityEventFunc) {
+	g.addedFunc = append(g.addedFunc, f)
+}
+
+// HandleEntityUpdated ...
+func (g *g) HandleEntityUpdated(f EntityEventFunc) {
+	g.updatedFunc = append(g.updatedFunc, f)
+}
+
+// HandleEntityDeleted ...
+func (g *g) HandleEntityDeleted(f EntityEventFunc) {
+	g.deletedFunc = append(g.deletedFunc, f)
 }

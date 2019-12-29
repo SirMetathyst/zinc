@@ -126,6 +126,6 @@ func (s PositionSystem) Update(dt float32) {
 ```
 
 # Projects/Examples that I use `Atom` in
-- [Atom Common](https://github.com/SirMetathyst/atomcommon) - Collection of Systems and Components for `Atom` projects
-- [Atombird](https://github.com/SirMetathyst/atomcommon) - Flappy birds clone written with `Atom`
+- [Atom Common](https://github.com/SirMetathyst/atomkit) - Collection of Systems and Components for `Atom` projects
+- [Atombird](https://github.com/SirMetathyst/atomkit) - Flappy birds clone written with `Atom`
 

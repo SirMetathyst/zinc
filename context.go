@@ -1,7 +1,7 @@
 package atom
 
-// ComponentEventFunc ...
-type ComponentEventFunc func(key uint, id EntityID)
+// EntityEventFunc ...
+type EntityEventFunc func(key uint, id EntityID)
 
 // Context ...
 type Context interface {
@@ -12,18 +12,18 @@ type Context interface {
 }
 
 type ctx struct {
-	componentAddedFunc   ComponentEventFunc
-	componentDeletedFunc ComponentEventFunc
-	componentUpdatedFunc ComponentEventFunc
+	componentAddedFunc   EntityEventFunc
+	componentDeletedFunc EntityEventFunc
+	componentUpdatedFunc EntityEventFunc
 	hasEntityFunc        func(id EntityID) bool
 }
 
 // NewContext ...
 func NewContext(
 	// Component Event(s)
-	componentAddedFunc ComponentEventFunc,
-	componentDeletedFunc ComponentEventFunc,
-	componentUpdatedFunc ComponentEventFunc,
+	componentAddedFunc EntityEventFunc,
+	componentDeletedFunc EntityEventFunc,
+	componentUpdatedFunc EntityEventFunc,
 	// HasEntity
 	hasEntityFunc func(id EntityID) bool) Context {
 

@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/SirMetathyst/atom"
-	"github.com/SirMetathyst/atomcommon"
+	"github.com/SirMetathyst/atomkit"
 )
 
 // MatcherData ...
@@ -43,26 +43,26 @@ func TestNoneOf(t *testing.T) {
 func TestHash(t *testing.T) {
 
 	t.Run("All of hash", func(t *testing.T) {
-		m1 := atom.AllOf(atomcommon.LocalPosition2Key, atomcommon.Velocity2Key)
-		m2 := atom.AllOf(atomcommon.Velocity2Key, atomcommon.LocalPosition2Key)
+		m1 := atom.AllOf(atomkit.LocalPosition2Key, atomkit.Velocity2Key)
+		m2 := atom.AllOf(atomkit.Velocity2Key, atomkit.LocalPosition2Key)
 		if m1.Hash() != m2.Hash() {
-			t.Errorf("assert: want %s = %s, got %s = %s", m1.Hash(), m1.Hash(), m1.Hash(), m2.Hash())
+			t.Errorf("assert: want %d = %d, got %d = %d", m1.Hash(), m1.Hash(), m1.Hash(), m2.Hash())
 		}
 	})
 
 	t.Run("None of hash", func(t *testing.T) {
-		m1 := atom.NoneOf(atomcommon.LocalPosition2Key, atomcommon.Velocity2Key)
-		m2 := atom.NoneOf(atomcommon.Velocity2Key, atomcommon.LocalPosition2Key)
+		m1 := atom.NoneOf(atomkit.LocalPosition2Key, atomkit.Velocity2Key)
+		m2 := atom.NoneOf(atomkit.Velocity2Key, atomkit.LocalPosition2Key)
 		if m1.Hash() != m2.Hash() {
-			t.Errorf("assert: want %s = %s, got %s = %s", m1.Hash(), m1.Hash(), m1.Hash(), m2.Hash())
+			t.Errorf("assert: want %d = %d, got %d = %d", m1.Hash(), m1.Hash(), m1.Hash(), m2.Hash())
 		}
 	})
 
 	t.Run("All/None of hash", func(t *testing.T) {
-		m1 := atom.AllOf(atomcommon.LocalPosition2Key, atomcommon.Velocity2Key).NoneOf(atomcommon.LocalRotation2Key, atomcommon.LocalScale2Key)
-		m2 := atom.AllOf(atomcommon.Velocity2Key, atomcommon.LocalPosition2Key).NoneOf(atomcommon.LocalScale2Key, atomcommon.LocalRotation2Key)
+		m1 := atom.AllOf(atomkit.LocalPosition2Key, atomkit.Velocity2Key).NoneOf(atomkit.LocalRotation2Key, atomkit.LocalScale2Key)
+		m2 := atom.AllOf(atomkit.Velocity2Key, atomkit.LocalPosition2Key).NoneOf(atomkit.LocalScale2Key, atomkit.LocalRotation2Key)
 		if m1.Hash() != m2.Hash() {
-			t.Errorf("assert: want %s = %s, got %s = %s", m1.Hash(), m1.Hash(), m1.Hash(), m2.Hash())
+			t.Errorf("assert: want %d = %d, got %d = %d", m1.Hash(), m1.Hash(), m1.Hash(), m2.Hash())
 		}
 	})
 }
@@ -76,7 +76,7 @@ func TestMatch(t *testing.T) {
 
 		// Arrange
 		id := atom.CreateEntity()
-		atomcommon.SetLocalPosition2(id, atomcommon.LocalPosition2Data{X: 10, Y: 10})
+		atomkit.SetLocalPosition2(id, atomkit.LocalPosition2Data{X: 10, Y: 10})
 
 		// Act
 		m := atom.AllOf(0)
@@ -95,10 +95,10 @@ func TestMatch(t *testing.T) {
 
 		// Arrange
 		id := atom.CreateEntity()
-		atomcommon.SetLocalPosition2(id, atomcommon.LocalPosition2Data{X: 10, Y: 10})
+		atomkit.SetLocalPosition2(id, atomkit.LocalPosition2Data{X: 10, Y: 10})
 
 		// Act
-		m := atom.AllOf(atomcommon.LocalPosition2Key)
+		m := atom.AllOf(atomkit.LocalPosition2Key)
 
 		// Assert
 		mv := m.Match(id)
@@ -114,11 +114,11 @@ func TestMatch(t *testing.T) {
 
 		// Arrange
 		id := atom.CreateEntity()
-		atomcommon.SetLocalPosition2(id, atomcommon.LocalPosition2Data{X: 10, Y: 10})
-		atomcommon.SetVelocity2(id, atomcommon.Velocity2Data{X: 10, Y: 10})
+		atomkit.SetLocalPosition2(id, atomkit.LocalPosition2Data{X: 10, Y: 10})
+		atomkit.SetVelocity2(id, atomkit.Velocity2Data{X: 10, Y: 10})
 
 		// Act
-		m1 := atom.NoneOf(atomcommon.Velocity2Key)
+		m1 := atom.NoneOf(atomkit.Velocity2Key)
 
 		// Assert
 		mv1 := m1.Match(id)
@@ -127,7 +127,7 @@ func TestMatch(t *testing.T) {
 		}
 
 		// Act
-		m2 := atom.AllOf(atomcommon.LocalPosition2Key).NoneOf(atomcommon.Velocity2Key)
+		m2 := atom.AllOf(atomkit.LocalPosition2Key).NoneOf(atomkit.Velocity2Key)
 
 		// Assert
 		mv2 := m2.Match(id)
