@@ -119,20 +119,42 @@ func TestEntityManagerReset(t *testing.T) {
 
 func TestEntityManagerRegisterComponent(t *testing.T) {
 
-	// Arrange
-	e := atom.NewEntityManager()
-	cmp := atomkit.NewLocalPosition2Component()
-	ctx := e.RegisterComponent(atomkit.LocalPosition2Key, cmp)
-	cmp.SetContext(ctx)
-	id := e.CreateEntity()
+	t.Run("register component type once", func(t *testing.T){
 
-	// Act
-	do := func(){ 
-		atomkit.SetLocalPosition2X(e, id, atomkit.LocalPosition2Data{X: 10, Y: 20}) 
-	}
-	
-	// Assert
-	assert.NotPanics(t, do, "should not panic because component type has been registered")
+		// Arrange
+		e := atom.NewEntityManager()
+		cmp := atomkit.NewLocalPosition2Component()
+		ctx := e.RegisterComponent(atomkit.LocalPosition2Key, cmp)
+		cmp.SetContext(ctx)
+		id := e.CreateEntity()
+
+		// Act
+		do := func(){ 
+			atomkit.SetLocalPosition2X(e, id, atomkit.LocalPosition2Data{X: 10, Y: 20}) 
+		}
+		
+		// Assert
+		assert.NotPanics(t, do, "should not panic because component type has been registered")
+	})
+
+	t.Run("register component type twice", func(t *testing.T){
+
+		// Arrange
+		e := atom.NewEntityManager()
+
+		do := func(){
+			// Act
+			cmp := atomkit.NewLocalPosition2Component()
+			ctx := e.RegisterComponent(atomkit.LocalPosition2Key, cmp)
+			cmp.SetContext(ctx)
+		}
+		
+		do()
+
+		// Assert
+		assert.Panics(t, do, "must panic if you try to register a component with the same key again")
+	})
+
 }
 
 func TestEntityManagerResetAll(t *testing.T) {

@@ -186,6 +186,8 @@ func Entities() []EntityID {
 func (e *EntityManager) RegisterComponent(key uint, c CMP) CTX {
 	if _, exist := e.componentMap[key]; !exist {
 		e.componentMap[key] = c
+	} else {
+		panic("component key already registered")
 	}
 	return e.context
 }
