@@ -33,7 +33,7 @@ import (
     // with the default entity manager
     // see generated files for how to do it manually
     // if required.
-    "xxx/xxx/to/your/components"
+    "xxx/xxx/to/your/yourkit"
 )
 
 func main() {
@@ -44,16 +44,16 @@ func main() {
 
     // we can already use our component types 
     // setting a component will add or update it
-    components.SetPosition(id, components.PositionData{10, 10})
+    yourkit.SetPosition(id, yourkit.PositionData{10, 10})
 
 
     // get position with id
-    pos := components.Position(id)
+    pos := yourkit.Position(id)
 
 
     // there is also an API for passing in a different entity manager
     // these end in X
-    pos := components.PositionX(entityManager, id)
+    pos := yourkit.PositionX(entityManager, id)
 
     // getting all entity ids in the entity manager
     entities := atom.Entities()
@@ -61,7 +61,7 @@ func main() {
 
     // getting groups of entities with specific components
     // will return a entity group that has position and velocity component
-    group1 := atom.Group(atom.AllOf(components.PositionKey, components.VelocityKey))
+    group1 := atom.Group(atom.AllOf(yourkit.PositionKey, yourkit.VelocityKey))
 
     // ids of entities in group
     group1.Entities()
@@ -76,56 +76,70 @@ func main() {
     atom.DeletePosition(id)
 
     // will return a entity group that has position but not velocity component
-    group2 := atom.Group(atom.AllOf(components.PositionKey).NoneOf(components.VelocityKey))  
+    group2 := atom.Group(atom.AllOf(yourkit.PositionKey).NoneOf(yourkit.VelocityKey))  
 }
 ```
 
 ## Systems
-Systems aren't built-in to `Atom` but they can be implemented like so: First define an interface for your systems
+Atom has a built in way  to init/update/cleanup your systems
+
 ```golang
-// System ...
-type System interface {
-	Update(dt float32)
-}
+sys := atom.NewSystems()
+sys.Add(yourkit.NewPositionSystem())
+
+// init systems, must have `Initialize()` method
+sys.Initialize()
+
+// update systems, must have `Update(dt float64)` method
+sys.Update(deltaTime)
+
+// cleanup systems, must have `Cleanup()` method
+sys.Cleanup()
 
 ```
 then you can implement a system for moving your position components around. add the system to a slice and loop through those and that's your game loop. You can even have systems for drawing things in a different slice and execute them at different times.
 ```golang
+
+import (
+    "github.com/SirMetathyst/atom"
+    "github.com/xxx/yourkit"
+)
+
 // PositionSystem ...
 type PositionSystem struct {
-	group         *atom.G
-	entityManager *atom.EntityManager
+	g         atom.G
+	em *atom.EntityManager
 }
 
 // NewPositionSystem ...
 func NewPositionSystem() *PositionSystem {
 	return &PositionSystem{
-		entityManager: atom.Default(),
-		group:         atom.Default().Group(atom.AllOf(components.PositionKey, components.VelocityKey)),
+		em: atom.Default(),
+		g:  atom.Default().Group(atom.AllOf(yourkit.PositionKey, yourkit.VelocityKey)),
 	}
 }
 
 // NewPositionSystemWith ...
-func NewPositionSystemWith(e *atom.EntityManager) *PositionSystem {
+func NewPositionSystemWith(em *atom.EntityManager) *PositionSystem {
 	return &PositionSystem{
-		entityManager: e,
-		group:         e.Group(atom.AllOf(components.PositionKey, components.VelocityKey)),
+		em: em,
+		g:  em.Group(atom.AllOf(yourkit.PositionKey, yourkit.VelocityKey)),
 	}
 }
 
 // Update ...
-func (s PositionSystem) Update(dt float32) {
-	for _, id := range s.group.Entities() {
-		velocity := components.VelocityX(s.entityManager, id)
-		position := components.PositionX(s.entityManager, id)
+func (s PositionSystem) Update(dt float64) {
+	for _, id := range s.g.Entities() {
+		velocity := yourkit.VelocityX(s.em, id)
+		position := yourkit.PositionX(s.em, id)
 		position.X += velocity.X * dt
 		position.Y += velocity.Y * dt
-		components.SetPositionX(s.entityManager, id, position)
+		yourkit.SetPositionX(s.em, id, position)
 	}
 }
 ```
 
 # Projects/Examples that I use `Atom` in
-- [Atom Common](https://github.com/SirMetathyst/atomkit) - Collection of Systems and Components for `Atom` projects
-- [Atombird](https://github.com/SirMetathyst/atomkit) - Flappy birds clone written with `Atom`
+- [Atomkit](https://github.com/SirMetathyst/atomkit) - Collection of Systems and Components for `Atom` projects
+- [Atombird](https://github.com/SirMetathyst/atombird) - Flappy birds clone written with `Atom`
 
