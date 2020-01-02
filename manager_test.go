@@ -4,64 +4,171 @@ import (
 	"testing"
 
 	"github.com/SirMetathyst/atom"
+	"github.com/SirMetathyst/atomkit"
+	"github.com/stretchr/testify/assert"
 )
 
-func addEntities(n []int, t *testing.T) {
-	for _, x := range n {
+func group(t *testing.T) {
+	// Arrange, Act
+	g := atom.Group(atom.AllOf(atomkit.LocalPosition2Key))
+
+	// Assert
+	assert.NotNil(t, g, "entity manager must not return nil group")
+	assert.Equal(t, atom.GroupCount(), 1, "group count must be equal to 1")
+}
+
+func groupCount(t *testing.T, groupCount int) {
+	// Assert
+	assert.Equalf(t, atom.GroupCount(), groupCount, "group count does not match %d", groupCount)
+}
+
+func createEntities(t *testing.T, n []atom.EntityID) {
+	for _, nid := range n {
+		// Act
 		id := atom.CreateEntity()
-		if id != atom.EntityID(x) {
-			t.Errorf("addEntities: want %d, got %v", x, id)
-		}
+		
+		// Assert
+		assert.Equal(t, id, nid, "created entity id does match expected id")
 	}
 }
 
-func deleteEntities(n []int, t *testing.T) {
-	for _, x := range n {
-		atom.DeleteEntity(atom.EntityID(x))
+func deleteEntity(t *testing.T, n []atom.EntityID) {
+	for _, id := range n {
+		// Act
+		atom.DeleteEntity(id)
+
+		// Assert
+		assert.NotContains(t, atom.Entities(), id, "entity manager must not contain id")
 	}
 }
 
-func hasEntities(n []int, t *testing.T) {
-	for _, x := range n {
-		v := atom.HasEntity(atom.EntityID(x))
-		if !v {
-			t.Errorf("hasEntities: EntityID(%d) does not exist", x)
-		}
+func entities(t *testing.T, n []atom.EntityID) {
+	// Assert
+	assert.ElementsMatch(t, atom.Entities(), n, "entity manager must contain ids")
+}
+
+func hasEntities(t *testing.T, n []atom.EntityID) {
+	for _, id := range n {
+		// Act
+		has := atom.HasEntity(id)
+
+		// Assert
+		assert.True(t, has, "entity manager must have id")
 	}
 }
 
-func doesNotHaveEntities(n []int, t *testing.T) {
-	for _, x := range n {
-		v := atom.HasEntity(atom.EntityID(x))
-		if v {
-			t.Errorf("doesNotHaveEntities: EntityID(%d) should not exist", x)
-		}
+func doesNotHaveEntities(t *testing.T, n []atom.EntityID) {
+	for _, id := range n {
+		// Act
+		has := atom.HasEntity(id)
+
+		// Assert
+		assert.False(t, has, "entity manager must not have id")
 	}
 }
 
-func TestEntityManager(t *testing.T) {
-	if atom.NewEntityManager() == nil {
-		t.Errorf("NewEntityManager(): should not return nil")
-	}
+
+func TestNewEntityManager(t *testing.T) {
+
+	// Arrange, Act
+	e := atom.NewEntityManager() 
+
+	// Assert
+	assert.NotNil(t, e, "must not return nil")
+}
+
+func TestEntityManagerCreateEntity(t *testing.T) {
 	atom.Reset()
-	addEntities([]int{1, 2, 3, 4, 5}, t)
-	hasEntities([]int{1, 2, 3, 4, 5}, t)
-	doesNotHaveEntities([]int{0, 6, 7, 8}, t)
-	deleteEntities([]int{1, 2, 3}, t)
-	hasEntities([]int{4, 5}, t)
-	doesNotHaveEntities([]int{1, 2, 3}, t)
-	addEntities([]int{3, 2, 1, 6}, t)
+	createEntities(t, []atom.EntityID{1, 2, 3, 4, 5})
 }
 
-func BenchmarkNewEntityManager(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		atom.NewEntityManager()
-	}
+func TestEntityManagerHasEntity(t *testing.T) {
+	atom.Reset()
+	createEntities(t, []atom.EntityID{1, 2, 3, 4, 5})
+	hasEntities(t, []atom.EntityID{1, 2, 3, 4, 5})
 }
 
-func BenchmarkCreateEntity(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		atom.Reset()
-		atom.CreateEntity()
+func TestEntityManagerDeleteEntity(t *testing.T) {
+	atom.Reset()
+	createEntities(t, []atom.EntityID{1, 2, 3, 4, 5})
+	deleteEntity(t, []atom.EntityID{1, 2, 3})
+	doesNotHaveEntities(t, []atom.EntityID{1, 2, 3})
+	hasEntities(t, []atom.EntityID{4, 5})
+}
+
+func TestEntityManagerDeleteEntities(t *testing.T) {
+	atom.Reset()
+	createEntities(t, []atom.EntityID{1, 2, 3, 4, 5})
+	atom.DeleteEntities()
+	doesNotHaveEntities(t, []atom.EntityID{1, 2, 3, 4, 5})
+}
+
+func TestEntityManagerEntities(t *testing.T) {
+	atom.Reset()
+	createEntities(t, []atom.EntityID{1, 2, 3, 4, 5})
+	entities(t, []atom.EntityID{1, 2, 3, 4, 5})
+}
+
+func TestEntityManagerReset(t *testing.T) {
+	atom.Reset()
+	createEntities(t, []atom.EntityID{1, 2, 3, 4, 5})
+	hasEntities(t, []atom.EntityID{1, 2, 3, 4, 5})
+	atom.Reset()
+	doesNotHaveEntities(t, []atom.EntityID{1, 2, 3, 4, 5})
+}
+
+func TestEntityManagerRegisterComponent(t *testing.T) {
+
+	// Arrange
+	e := atom.NewEntityManager()
+	cmp := atomkit.NewLocalPosition2Component()
+	ctx := e.RegisterComponent(atomkit.LocalPosition2Key, cmp)
+	cmp.SetContext(ctx)
+	id := e.CreateEntity()
+
+	// Act
+	do := func(){ 
+		atomkit.SetLocalPosition2X(e, id, atomkit.LocalPosition2Data{X: 10, Y: 20}) 
 	}
+	
+	// Assert
+	assert.NotPanics(t, do, "should not panic because component type has been registered")
+}
+
+func TestEntityManagerResetAll(t *testing.T) {
+
+	// Arrange
+	e := atom.NewEntityManager()
+	cmp := atomkit.NewLocalPosition2Component()
+	ctx := e.RegisterComponent(atomkit.LocalPosition2Key, cmp)
+	cmp.SetContext(ctx)
+	id := e.CreateEntity()
+
+	// Act
+	e.ResetAll()
+	do := func(){ 
+		atomkit.SetLocalPosition2X(e, id, atomkit.LocalPosition2Data{X: 10, Y: 20}) 
+	}
+
+	// Assert
+	assert.Panics(t, do, "should panic because component type has been deleted due to reset all")
+}
+
+
+func TestEntityManagerGroup(t *testing.T) {
+	atom.Reset()
+	group(t)
+	groupCount(t, 1)
+	group(t)
+	groupCount(t, 1)
+}
+
+func TestEntityManagerCollector(t *testing.T) {
+	atom.Reset()
+
+	// Arrange, Act
+	c := atom.CreateCollector(atom.Added(atomkit.LocalPosition2Key))
+
+	// Assert
+	assert.NotNil(t, c, "entity manager must not return nil collector")
 }

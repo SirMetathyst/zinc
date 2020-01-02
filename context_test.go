@@ -1,94 +1,110 @@
-package atom_test
+package atom
 
 import (
 	"testing"
 
-	"github.com/SirMetathyst/atom"
+	"github.com/stretchr/testify/assert"
 )
 
-func TestContext(t *testing.T) {
 
-	t.Run("component added", func(t *testing.T) {
-		key := uint(10)
-		rkey := uint(0)
-		id := atom.EntityID(2)
-		rid := atom.EntityID(0)
-		called := false
-		ctx := atom.NewContext(func(key uint, id atom.EntityID) {
-			rid = id
-			rkey = key
-			called = true
-		}, nil, nil, nil)
-		ctx.ComponentAdded(key, id)
-		if !called {
-			t.Errorf("assert: context component added should have been called")
-		}
-		if rid != id {
-			t.Errorf("assert: want %v, got %v", id, rid)
-		}
-		if rkey != key {
-			t.Errorf("assert: want %v, got %v", key, rkey)
-		}
-	})
 
-	t.Run("component deleted", func(t *testing.T) {
-		key := uint(10)
-		rkey := uint(0)
-		id := atom.EntityID(2)
-		rid := atom.EntityID(0)
-		called := false
-		ctx := atom.NewContext(nil, func(key uint, id atom.EntityID) {
-			rid = id
-			rkey = key
-			called = true
-		}, nil, nil)
-		ctx.ComponentDeleted(key, id)
-		if !called {
-			t.Errorf("assert: context component deleted should have been called")
-		}
-		if rid != id {
-			t.Errorf("assert: want %v, got %v", id, rid)
-		}
-		if rkey != key {
-			t.Errorf("assert: want %v, got %v", key, rkey)
-		}
-	})
+func componentFunc(rkey *uint, rid *EntityID) func(key uint, id EntityID) {
+	return func(key uint, id EntityID) {
+		*rid = id
+		*rkey = key
+	}
+}
 
-	t.Run("component updated", func(t *testing.T) {
-		key := uint(10)
-		rkey := uint(0)
-		id := atom.EntityID(2)
-		rid := atom.EntityID(0)
-		called := false
-		ctx := atom.NewContext(nil, nil, func(key uint, id atom.EntityID) {
-			rid = id
-			rkey = key
-			called = true
-		}, nil)
-		ctx.ComponentUpdated(key, id)
-		if !called {
-			t.Errorf("assert: context component updated should have been called")
-		}
-		if rid != id {
-			t.Errorf("assert: want %v, got %v", id, rid)
-		}
-		if rkey != key {
-			t.Errorf("assert: want %v, got %v", key, rkey)
-		}
-	})
+func hasEntityFunc(rid *EntityID) func(id EntityID) bool {
+	return func(id EntityID) bool {
+		*rid = id
+		return true
+	}
+}
 
-	t.Run("has entity", func(t *testing.T) {
-		id := atom.EntityID(2)
-		rid := atom.EntityID(0)
-		ctx := atom.NewContext(nil, nil, nil, func(id atom.EntityID) bool {
-			rid = id
-			return true
-		})
-		if !ctx.HasEntity(id) {
-			t.Errorf("assert: context has entity should have been called")
-		}
-		if rid != id {
-			t.Errorf("assert: want %v, got %v", id, rid)
-		}
-	})
+
+func TestNewContext(t *testing.T) {
+	
+	// Arrange, Assert
+	ctx := newContext(nil, nil, nil, nil)
+
+	// Assert
+	assert.NotNil(t, ctx, "must not return nil")
+}
+
+func TestContextComponentAdded(t *testing.T) {
+	
+	// Arrange
+	returnKey := uint(0)
+	returnID := EntityID(0)
+
+	expectedKey := uint(20)
+	expectedID := EntityID(10)
+
+	ctx := newContext(componentFunc(&returnKey, &returnID), nil, nil, nil)
+
+	// Act
+	ctx.ComponentAdded(expectedKey, expectedID)
+
+	// Assert
+	assert.Equal(t, expectedKey, returnKey, "returned key does match expected key")
+	assert.Equal(t, expectedID, returnID, "returned id does match expected id")
+}
+
+func TestContextComponentUpdated(t *testing.T) {
+	
+	// Arrange
+	returnKey := uint(0)
+	returnID := EntityID(0)
+
+	expectedKey := uint(20)
+	expectedID := EntityID(10)
+
+	ctx := newContext(nil, nil, componentFunc(&returnKey, &returnID), nil)
+
+	// Act
+	ctx.ComponentUpdated(expectedKey, expectedID)
+
+	// Assert
+	assert.Equal(t, expectedKey, returnKey, "returned key does match expected key")
+	assert.Equal(t, expectedID, returnID, "returned id does match expected id")
+}
+
+
+func TestContextComponentDeleted(t *testing.T) {
+	
+	// Arrange
+	returnKey := uint(0)
+	returnID := EntityID(0)
+
+	expectedKey := uint(20)
+	expectedID := EntityID(10)
+
+	ctx := newContext(nil, componentFunc(&returnKey, &returnID), nil, nil)
+
+	// Act
+	ctx.ComponentDeleted(expectedKey, expectedID)
+
+	// Assert
+	assert.Equal(t, expectedKey, returnKey, "returned key does match expected key")
+	assert.Equal(t, expectedID, returnID, "returned id does match expected id")
+}
+
+func TestContextHasEntity(t *testing.T) {
+	
+	// Arrange
+	returnID := EntityID(0)
+	returnState := false
+
+	expectedID := EntityID(10)
+	expectedState := true
+
+	ctx := newContext(nil, nil, nil, hasEntityFunc(&returnID))
+
+	// Act
+	returnState = ctx.HasEntity(expectedID)
+
+	// Assert
+	assert.Equal(t, expectedState, returnState, "return state does match expected return state")
+	assert.Equal(t, expectedID, returnID, "returned id does match expected id")
 }

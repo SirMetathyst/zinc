@@ -9,14 +9,16 @@ type C interface {
 type c struct {
 	group      []G
 	groupEvent []GroupEvent
-	entityList *EntityList
+	entityList *el
 }
 
-func newCollector(group []G, groupEvent []GroupEvent) *c {
+// NewCollector ...
+// TODO: Write TEST
+func NewCollector(group []G, groupEvent []GroupEvent) C {
 	collector := &c{
 		group:      group,
 		groupEvent: groupEvent,
-		entityList: NewEntityList(),
+		entityList: newEntityList(),
 	}
 	collector.activate()
 	return collector
@@ -45,6 +47,7 @@ func (c *c) activate() {
 }
 
 // ClearCollectedEntities ...
+// TODO: Write TEST
 func (c *c) ClearCollectedEntities() {
 	for _, id := range c.entityList.Entities() {
 		c.entityList.DeleteEntity(id)
@@ -52,6 +55,7 @@ func (c *c) ClearCollectedEntities() {
 }
 
 // Entities ...
+// TODO: Write TEST
 func (c *c) Entities() []EntityID {
 	return c.entityList.Entities()
 }

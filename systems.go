@@ -1,76 +1,84 @@
 package atom
 
-// System ...
-type System interface{}
+// S ...
+type S interface{}
 
-// Updater ...
-type Updater interface {
+// U ...
+type U interface {
 	Update(dt float64)
 }
 
-// Cleanuper ...
-type Cleanuper interface {
+// CU ...
+type CU interface {
 	Cleanup()
 }
 
-// Initializer ...
-type Initializer interface {
+// I ...
+type I interface {
 	Initialize()
 }
 
-// Systems ...
-type Systems interface {
-	Initializer
-	Updater
-	Cleanuper
-	Add(sys ...System)
+// SS ...
+type SS interface {
+	// Initialize ...
+	I
+	// Update ...
+	U
+	// Cleanup ...
+	CU
+	Add(sys ...S)
 }
 
 type sys struct {
-	initializer []Initializer
-	updater     []Updater
-	cleanuper   []Cleanuper
+	initialize []I
+	update    []U
+	cleanup   []CU
 }
 
 // NewSystems ...
-func NewSystems() Systems {
+// TODO: Write TEST
+func NewSystems() SS {
 	return &sys{}
 }
 
 // Add ...
-func (s *sys) Add(sys ...System) {
+// TODO: Write TEST
+func (s *sys) Add(sys ...S) {
 	for _, sysv := range sys {
 		switch v := sysv.(type) {
-		case Initializer:
-			s.initializer = append(s.initializer, v)
+		case I:
+			s.initialize = append(s.initialize, v)
 			break
-		case Updater:
-			s.updater = append(s.updater, v)
+		case U:
+			s.update = append(s.update, v)
 			break
-		case Cleanuper:
-			s.cleanuper = append(s.cleanuper, v)
+		case CU:
+			s.cleanup = append(s.cleanup, v)
 			break
 		}
 	}
 }
 
 // Initialize ...
+// TODO: Write TEST
 func (s *sys) Initialize() {
-	for _, sys := range s.initializer {
+	for _, sys := range s.initialize {
 		sys.Initialize()
 	}
 }
 
 // Update ...
+// TODO: Write TEST
 func (s *sys) Update(dt float64) {
-	for _, sys := range s.updater {
+	for _, sys := range s.update {
 		sys.Update(dt)
 	}
 }
 
 // Cleanup ...
+// TODO: Write TEST
 func (s *sys) Cleanup() {
-	for _, sys := range s.cleanuper {
+	for _, sys := range s.cleanup {
 		sys.Cleanup()
 	}
 }

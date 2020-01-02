@@ -4,72 +4,104 @@ import (
 	"testing"
 
 	"github.com/SirMetathyst/atom"
+	"github.com/stretchr/testify/assert"
 	"github.com/SirMetathyst/atomkit"
 )
 
-// MatcherData ...
-type MatcherData struct {
-	allOf  []uint
-	noneOf []uint
-}
+var (
+	matcherData = []struct {
+		allOf  []uint
+		noneOf []uint
+	}{
+		{allOf: []uint{1, 2, 3}, noneOf: []uint{0, 10, 20}},
+		{allOf: []uint{0, 10, 2}, noneOf: []uint{99, 82, 10}},
+	}
+)
 
-var matcherData = []MatcherData{
-	{allOf: []uint{1, 2, 3}, noneOf: []uint{0, 10, 20}},
-	{allOf: []uint{0, 10, 2}, noneOf: []uint{99, 82, 10}},
-}
+func TestMatcherHasAllOf(t *testing.T) {
+	for _, ds := range matcherData {
 
-func TestAllOf(t *testing.T) {
-	for it, ds := range matcherData {
+		// Act
 		m := atom.AllOf(ds.allOf...)
-		for i, v := range ds.allOf {
-			if !m.HasAllOf(v) {
-				t.Errorf("assert(%d-%d): want %v", it, i, v)
-			}
-		}
+		has := m.HasAllOf(ds.allOf...)
+
+		// Assert
+		assert.True(t, has, "has all of must return true")
 	}
 }
 
-func TestNoneOf(t *testing.T) {
-	for it, ds := range matcherData {
+func TestMatcherAllOf(t *testing.T) {
+	for _, ds := range matcherData {
+
+		// Act
+		m := atom.AllOf(ds.allOf...)
+
+		// Assert
+		assert.ElementsMatch(t, m.AllOfSlice(), ds.allOf, "returned all of slice does not match input data")
+	}
+}
+
+func TestMatcherHasNoneOf(t *testing.T) {
+	for _, ds := range matcherData {
+
+		// Act
 		m := atom.NoneOf(ds.noneOf...)
-		for i, v := range ds.noneOf {
-			if !m.HasNoneOf(v) {
-				t.Errorf("assert(%d-%d): want %v", it, i, v)
-			}
-		}
+		has := m.HasNoneOf(ds.noneOf...)
+
+		// Assert
+		assert.True(t, has, "has none of must return true")
 	}
 }
 
-func TestHash(t *testing.T) {
+func TestMatcherNoneOf(t *testing.T) {
+	for _, ds := range matcherData {
 
-	t.Run("All of hash", func(t *testing.T) {
-		m1 := atom.AllOf(atomkit.LocalPosition2Key, atomkit.Velocity2Key)
-		m2 := atom.AllOf(atomkit.Velocity2Key, atomkit.LocalPosition2Key)
-		if m1.Hash() != m2.Hash() {
-			t.Errorf("assert: want %d = %d, got %d = %d", m1.Hash(), m1.Hash(), m1.Hash(), m2.Hash())
-		}
-	})
+		// Act
+		m := atom.NoneOf(ds.noneOf...)
 
-	t.Run("None of hash", func(t *testing.T) {
-		m1 := atom.NoneOf(atomkit.LocalPosition2Key, atomkit.Velocity2Key)
-		m2 := atom.NoneOf(atomkit.Velocity2Key, atomkit.LocalPosition2Key)
-		if m1.Hash() != m2.Hash() {
-			t.Errorf("assert: want %d = %d, got %d = %d", m1.Hash(), m1.Hash(), m1.Hash(), m2.Hash())
-		}
-	})
-
-	t.Run("All/None of hash", func(t *testing.T) {
-		m1 := atom.AllOf(atomkit.LocalPosition2Key, atomkit.Velocity2Key).NoneOf(atomkit.LocalRotation2Key, atomkit.LocalScale2Key)
-		m2 := atom.AllOf(atomkit.Velocity2Key, atomkit.LocalPosition2Key).NoneOf(atomkit.LocalScale2Key, atomkit.LocalRotation2Key)
-		if m1.Hash() != m2.Hash() {
-			t.Errorf("assert: want %d = %d, got %d = %d", m1.Hash(), m1.Hash(), m1.Hash(), m2.Hash())
-		}
-	})
+		// Assert
+		assert.ElementsMatch(t, m.NoneOfSlice(), ds.noneOf, "returned none of slice does not match input data")
+	}
 }
 
-func TestMatch(t *testing.T) {
 
-	t.Run("Match with non-existing", func(t *testing.T) {
+func TestMatcherAllOfHash(t *testing.T) {
+
+	// Arrange, Act
+	m1 := atom.AllOf(atomkit.LocalPosition2Key, atomkit.Velocity2Key)
+	m2 := atom.AllOf(atomkit.Velocity2Key, atomkit.LocalPosition2Key)
+
+	// Assert
+	assert.Equal(t, m1.Hash(), m2.Hash(), "must share identical hash")
+}
+
+func TestMatcherNoneOfHash(t *testing.T) {
+
+	// Arrange, Act
+	m1 := atom.NoneOf(atomkit.LocalPosition2Key, atomkit.Velocity2Key)
+	m2 := atom.NoneOf(atomkit.Velocity2Key, atomkit.LocalPosition2Key)
+
+	// Assert
+	assert.Equal(t, m1.Hash(), m2.Hash(), "must share identical hash")
+}
+
+func TestMatcherHash(t *testing.T) {
+
+	// Arrange, Act
+	m1 := atom.AllOf(atomkit.LocalPosition2Key, atomkit.Velocity2Key).
+		NoneOf(atomkit.LocalRotation2Key, atomkit.LocalScale2Key)
+
+	m2 := atom.AllOf(atomkit.Velocity2Key, atomkit.LocalPosition2Key).
+		NoneOf(atomkit.LocalScale2Key, atomkit.LocalRotation2Key)
+	
+	// Assert
+	assert.Equal(t, m1.Hash(), m2.Hash(), "must share identical hash")
+}
+
+
+func TestMatcherMatch(t *testing.T) {
+
+	t.Run("non-existing key", func(t *testing.T) {
 
 		// Reset
 		atom.Reset()
@@ -77,18 +109,35 @@ func TestMatch(t *testing.T) {
 		// Arrange
 		id := atom.CreateEntity()
 		atomkit.SetLocalPosition2(id, atomkit.LocalPosition2Data{X: 10, Y: 10})
+		atomkit.SetLocalRotation2(id, atomkit.LocalRotation2Data{X: 10, Y: 10})
 
 		// Act
 		m := atom.AllOf(0)
+		mv := m.Match(atom.Default(), id)
 
 		// Assert
-		mv := m.Match(id)
-		if mv != false {
-			t.Errorf("assert: want %v, got %v", false, mv)
-		}
+		assert.False(t, mv, "must return false if matcher contains non-existing key")
 	})
 
-	t.Run("Match with all of", func(t *testing.T) {
+	t.Run("all of", func(t *testing.T) {
+
+		// Reset
+		atom.Reset()
+
+		// Arrange
+		id := atom.CreateEntity()
+		atomkit.SetLocalPosition2(id, atomkit.LocalPosition2Data{X: 10, Y: 10})
+		atomkit.SetLocalRotation2(id, atomkit.LocalRotation2Data{X: 10, Y: 10})
+
+		// Act
+		m := atom.AllOf(atomkit.LocalPosition2Key, atomkit.LocalRotation2Key)
+		mv := m.Match(atom.Default(), id)
+
+		// Assert
+		assert.True(t, mv, "must return true if matcher contains all of given keys")
+	})
+
+	t.Run("none of", func(t *testing.T) {
 
 		// Reset
 		atom.Reset()
@@ -98,16 +147,32 @@ func TestMatch(t *testing.T) {
 		atomkit.SetLocalPosition2(id, atomkit.LocalPosition2Data{X: 10, Y: 10})
 
 		// Act
-		m := atom.AllOf(atomkit.LocalPosition2Key)
+		m := atom.NoneOf(atomkit.LocalRotation2Key)
+		mv := m.Match(atom.Default(), id)
 
 		// Assert
-		mv := m.Match(id)
-		if mv != true {
-			t.Errorf("assert: want %v, got %v", true, mv)
-		}
+		assert.True(t, mv, "must return true because matcher should not contain any of given keys")
 	})
 
-	t.Run("Match with all of/none of", func(t *testing.T) {
+	t.Run("none of", func(t *testing.T) {
+
+		// Reset
+		atom.Reset()
+
+		// Arrange
+		id := atom.CreateEntity()
+		atomkit.SetLocalPosition2(id, atomkit.LocalPosition2Data{X: 10, Y: 10})
+		atomkit.SetLocalRotation2(id, atomkit.LocalRotation2Data{X: 10, Y: 10})
+
+		// Act
+		m := atom.NoneOf(atomkit.LocalRotation2Key)
+		mv := m.Match(atom.Default(), id)
+
+		// Assert
+		assert.False(t, mv, "must return false because matcher contains some of given keys")
+	})
+
+	t.Run("all of/none of", func(t *testing.T) {
 
 		// Setup
 		atom.Reset()
@@ -115,24 +180,13 @@ func TestMatch(t *testing.T) {
 		// Arrange
 		id := atom.CreateEntity()
 		atomkit.SetLocalPosition2(id, atomkit.LocalPosition2Data{X: 10, Y: 10})
-		atomkit.SetVelocity2(id, atomkit.Velocity2Data{X: 10, Y: 10})
+		atomkit.SetLocalRotation2(id, atomkit.LocalRotation2Data{X: 10, Y: 10})
 
 		// Act
-		m1 := atom.NoneOf(atomkit.Velocity2Key)
+		m := atom.AllOf(atomkit.LocalPosition2Key).NoneOf(atomkit.LocalRotation2Key)
+		mv := m.Match(atom.Default(), id)
 
 		// Assert
-		mv1 := m1.Match(id)
-		if mv1 == true {
-			t.Errorf("assert: want %v, got %v", false, mv1)
-		}
-
-		// Act
-		m2 := atom.AllOf(atomkit.LocalPosition2Key).NoneOf(atomkit.Velocity2Key)
-
-		// Assert
-		mv2 := m2.Match(id)
-		if mv2 == true {
-			t.Errorf("assert: want %v, got %v", false, mv2)
-		}
+		assert.False(t, mv, "must return false to satisfy matcher")
 	})
 }

@@ -35,7 +35,7 @@ ${ComponentData}
 
 // ${Component}Component ...
 type ${Component}Component struct {
-	context atom.Context
+	ctx atom.CTX
 	data map[atom.EntityID]${Component}Data
 }
 
@@ -47,16 +47,16 @@ func New${Component}Component() *${Component}Component {
 }
 
 // SetContext ...
-func (c *${Component}Component) SetContext(ctx atom.Context) {
-	if c.context == nil {
-		c.context = ctx
+func (c *${Component}Component) SetContext(ctx atom.CTX) {
+	if c.ctx == nil {
+		c.ctx = ctx
 	}
 }
 
 func init() {
 	x := New${Component}Component()
-	context := atom.Default().RegisterComponent(${Component}Key, x)
-	x.SetContext(context)
+	ctx := atom.Default().RegisterComponent(${Component}Key, x)
+	x.SetContext(ctx)
 }
 
 // DeleteEntity ...
@@ -72,13 +72,13 @@ func (c *${Component}Component) HasEntity(id atom.EntityID) bool {
 
 // Set${Component} ...
 func (c *${Component}Component) Set${Component}(id atom.EntityID, ${component} ${Component}Data) {
-	if c.context.HasEntity(id) {
+	if c.ctx.HasEntity(id) {
 		if c.HasEntity(id) {
 			c.data[id] = ${component}
-			c.context.ComponentUpdated(${Component}Key, id)
+			c.ctx.ComponentUpdated(${Component}Key, id)
 		} else {
 			c.data[id] = ${component}
-			c.context.ComponentAdded(${Component}Key, id)
+			c.ctx.ComponentAdded(${Component}Key, id)
 		}
 	}
 }
@@ -91,7 +91,7 @@ func (c *${Component}Component) ${Component}(id atom.EntityID) ${Component}Data 
 // Delete${Component} ...
 func (c *${Component}Component) Delete${Component}(id atom.EntityID) {
 	delete(c.data, id)
-	c.context.ComponentDeleted(${Component}Key, id)
+	c.ctx.ComponentDeleted(${Component}Key, id)
 }
 
 // Set${Component}X ...
