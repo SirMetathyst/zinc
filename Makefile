@@ -1,8 +1,5 @@
-bench:
-	go test -bench . -benchmem -benchtime 15s -cpu 1,4 -count 2
-	
 build: 
-	go build -o ./atom ./cmd/atom/main.go
+	go build -o ./zinc ./cmd/zinc/main.go
 
 clean:
 	rm -f ./coverage.html
@@ -15,4 +12,4 @@ testreport: test
 	go tool cover -html=coverage.txt -o ./coverage.html
 
 install: 
-	go install ./cmd/atom
+	go install ./cmd/zinc

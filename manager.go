@@ -1,4 +1,11 @@
-package atom
+/*
+TODO: instead of registering component with entity manager on init func, register
+with a component registry so that you can call a single method e.g. EntityManager.RegisterComponentsWithRegistry...
+instead of having to create a new component, set the context and call EntityManager.RegisterComponent for
+every single component for multiple entity managers...
+*/
+
+package zinc
 
 var entityManager = NewEntityManager()
 
@@ -10,8 +17,7 @@ func Default() *EntityManager {
 // EntityID ...
 type EntityID uint
 
-// NewEntityIDFactory ...
-func NewEntityIDFactory() FactoryFunc {
+func newEntityIDFactory() func() interface{} {
 	id := EntityID(0)
 	return func() interface{} {
 		id++
@@ -21,24 +27,24 @@ func NewEntityIDFactory() FactoryFunc {
 
 // EntityManager ...
 type EntityManager struct {
-	entityList   *EntityList
+	entityList   *el
 	groupsMap    map[uint]int
 	groups       []*g
-	pool         *Pool
-	context      Context
-	componentMap map[uint]Component
+	pool         *p
+	context      CTX
+	componentMap map[uint]CMP
 }
 
 // NewEntityManager ...
 func NewEntityManager() *EntityManager {
 	e := &EntityManager{
-		entityList:   NewEntityList(),
+		entityList:   newEntityList(),
 		groupsMap:    make(map[uint]int, 0),
-		pool:         NewPool(NewEntityIDFactory()),
-		componentMap: make(map[uint]Component),
+		pool:         newPool(newEntityIDFactory()),
+		componentMap: make(map[uint]CMP),
 	}
 
-	e.context = NewContext(
+	e.context = newContext(
 		e.componentAdded,
 		e.componentDeleted,
 		e.componentUpdated,
@@ -91,6 +97,30 @@ func (e *EntityManager) componentUpdated(key uint, id EntityID) {
 
 func (e *EntityManager) componentDeleted(key uint, id EntityID) {
 	e.groupHandleEntity(key, id)
+}
+
+// ResetAll ...
+func (e *EntityManager) ResetAll() {
+	e.Reset()
+	e.groupsMap = make(map[uint]int, 0)
+	e.groups = nil
+	e.componentMap = make(map[uint]CMP)
+}
+
+// ResetAll ...
+func ResetAll() {
+	Default().ResetAll()
+}
+
+// Reset ...
+func (e *EntityManager) Reset() {
+	e.DeleteEntities()
+	e.pool = newPool(newEntityIDFactory())
+}
+
+// Reset ...
+func Reset() {
+	Default().Reset()
 }
 
 // DeleteEntities ...
@@ -153,30 +183,50 @@ func Entities() []EntityID {
 }
 
 // RegisterComponent ...
-func (e *EntityManager) RegisterComponent(key uint, c Component) Context {
-	e.componentMap[key] = c
+func (e *EntityManager) RegisterComponent(key uint, c CMP) CTX {
+	if _, exist := e.componentMap[key]; !exist {
+		e.componentMap[key] = c
+	} else {
+		panic("component key already registered")
+	}
 	return e.context
 }
 
 // Component ...
-func (e *EntityManager) Component(key uint) (c Component, ok bool) {
+func (e *EntityManager) Component(key uint) (c CMP, ok bool) {
 	c, ok = e.componentMap[key]
 	return
 }
 
 // CreateCollector ...
-func (e *EntityManager) CreateCollector(et ...*EventTrigger) C {
+func (e *EntityManager) CreateCollector(et ...ET) C {
 	groupEvent := make([]GroupEvent, len(et))
 	group := make([]G, len(et))
 	for i, v := range et {
 		groupEvent[i] = v.GroupEvent()
 		group[i] = e.Group(v.Matcher())
 	}
-	return newCollector(group, groupEvent)
+	return NewCollector(group, groupEvent)
+}
+
+
+// CreateCollector ...
+func CreateCollector(et ...ET) C {
+	return Default().CreateCollector(et...)
+}
+
+// GroupCount ...
+func (e *EntityManager) GroupCount() int {
+	return len(e.groups)
+}
+
+// GroupCount ...
+func GroupCount() int {
+	return Default().GroupCount()
 }
 
 // Group ...
-func (e *EntityManager) Group(m *Matcher) G {
+func (e *EntityManager) Group(m M) G {
 	if idx, ok := e.groupsMap[m.Hash()]; ok {
 		return e.groups[idx]
 	}
@@ -189,12 +239,12 @@ func (e *EntityManager) Group(m *Matcher) G {
 }
 
 // Group ...
-func Group(m *Matcher) G {
+func Group(m M) G {
 	return Default().Group(m)
 }
 
-// Component ...
-type Component interface {
+// CMP ...
+type CMP interface {
 	DeleteEntity(id EntityID)
 	HasEntity(id EntityID) bool
 }

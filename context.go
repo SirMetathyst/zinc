@@ -1,10 +1,10 @@
-package atom
+package zinc
 
 // EntityEventFunc ...
 type EntityEventFunc func(key uint, id EntityID)
 
-// Context ...
-type Context interface {
+// CTX ...
+type CTX interface {
 	ComponentAdded(key uint, id EntityID)
 	ComponentDeleted(key uint, id EntityID)
 	ComponentUpdated(key uint, id EntityID)
@@ -18,14 +18,13 @@ type ctx struct {
 	hasEntityFunc        func(id EntityID) bool
 }
 
-// NewContext ...
-func NewContext(
+func newContext(
 	// Component Event(s)
 	componentAddedFunc EntityEventFunc,
 	componentDeletedFunc EntityEventFunc,
 	componentUpdatedFunc EntityEventFunc,
 	// HasEntity
-	hasEntityFunc func(id EntityID) bool) Context {
+	hasEntityFunc func(id EntityID) bool) CTX {
 
 	return ctx{
 		componentAddedFunc:   componentAddedFunc,

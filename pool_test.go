@@ -1,37 +1,41 @@
-package atom_test
+package zinc
 
 import (
 	"testing"
-
-	"github.com/SirMetathyst/atom"
+	"github.com/stretchr/testify/assert"
 )
 
-func get(t *testing.T, p *atom.Pool, id atom.EntityID) {
+func get(t *testing.T, p *p, id EntityID) {
+
+	// Act
 	r := p.Get()
-	if r != atom.EntityID(id) {
-		t.Errorf("assert: want %v, got %v", id, r)
-	}
+
+	// Assert
+	assert.Equal(t, id, r)
 }
 
-func TestPoolNew(t *testing.T) {
+func TestNewPool(t *testing.T) {
 
-	t.Run("new pool with nil factory returns nil pool", func(t *testing.T) {
-		if p := atom.NewPool(nil); p != nil {
-			t.Errorf("assert: new pool with nil factory doesn't return nil")
-		}
-	})
+	// Arrange, Act
+	p := newPool(nil);
 
-	t.Run("new pool with factory returns pool", func(t *testing.T) {
-		if p := atom.NewPool(atom.NewEntityIDFactory()); p == nil {
-			t.Errorf("assert: new pool with factory doesn't return pool")
-		}
-	})
-
+	// Assert
+	assert.Nil(t, p, "pool with nil factory must return nil")
 }
 
-func TestPool(t *testing.T) {
+func TestNewPoolWithFactory(t *testing.T) {
 
-	p := atom.NewPool(atom.NewEntityIDFactory())
+	// Arrange, Act
+	p := newPool(newEntityIDFactory());
+
+	// Assert
+	assert.NotNil(t, p, "pool with factory must not return nil")
+}
+
+func TestPoolGet(t *testing.T) {
+
+	// Arrange
+	p := newPool(newEntityIDFactory())
 
 	// 1st Get
 	// Should call factory
@@ -44,16 +48,17 @@ func TestPool(t *testing.T) {
 	get(t, p, 2)
 }
 
+
 func TestPoolPut(t *testing.T) {
 
-	p := atom.NewPool(func() interface{} {
-		return atom.EntityID(1000000)
+	// Arrange
+	p := newPool(func() interface{} {
+		return EntityID(1000000)
 	})
 
-	// Put
-	p.Put(atom.EntityID(1))
-	p.Put(atom.EntityID(2))
-	p.Put(atom.EntityID(3))
+	p.Put(EntityID(1))
+	p.Put(EntityID(2))
+	p.Put(EntityID(3))
 
 	// 1st Get
 	// Should not call factory

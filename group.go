@@ -1,11 +1,11 @@
-package atom
+package zinc
 
 // G ...
 type G interface {
 	HandleEntitySilently(id EntityID)
 	HandleEntity(key uint, id EntityID)
 	UpdateEntity(key uint, id EntityID)
-	DeleteEntity(id EntityID)
+	DeleteEntity(id EntityID) bool
 	HasEntity(id EntityID) bool
 	Entities() []EntityID
 	HandleEntityAdded(f EntityEventFunc)
@@ -15,20 +15,21 @@ type G interface {
 
 // g ...
 type g struct {
-	matcher       *Matcher
+	matcher       M
 	entityManager *EntityManager
-	entityList    *EntityList
+	entityList    *el
 	addedFunc     []EntityEventFunc
 	updatedFunc   []EntityEventFunc
 	deletedFunc   []EntityEventFunc
 }
 
 // newGroup ...
-func newGroup(e *EntityManager, m *Matcher) *g {
+// TODO: Write TEST
+func newGroup(e *EntityManager, m M) *g {
 	return &g{
 		entityManager: e,
 		matcher:       m,
-		entityList:    NewEntityList(),
+		entityList:    newEntityList(),
 	}
 }
 
@@ -49,8 +50,9 @@ func (g *g) deleteEntity(key uint, id EntityID) {
 }
 
 // HandleEntitySilently ...
+// TODO: Write TEST
 func (g *g) HandleEntitySilently(id EntityID) {
-	if ok := g.matcher.Match(id); ok {
+	if ok := g.matcher.Match(g.entityManager, id); ok {
 		g.entityList.AddEntity(id)
 	} else {
 		g.entityList.DeleteEntity(id)
@@ -58,8 +60,9 @@ func (g *g) HandleEntitySilently(id EntityID) {
 }
 
 // HandleEntity ...
+// TODO: Write TEST
 func (g *g) HandleEntity(key uint, id EntityID) {
-	if ok := g.matcher.Match(id); ok {
+	if ok := g.matcher.Match(g.entityManager, id); ok {
 		g.addEntity(key, id)
 	} else {
 		g.deleteEntity(key, id)
@@ -67,6 +70,7 @@ func (g *g) HandleEntity(key uint, id EntityID) {
 }
 
 // UpdateEntity ...
+// TODO: Write TEST
 func (g *g) UpdateEntity(key uint, id EntityID) {
 	if g.entityList.HasEntity(id) && len(g.updatedFunc) > 0 {
 		for _, h := range g.updatedFunc {
@@ -76,31 +80,37 @@ func (g *g) UpdateEntity(key uint, id EntityID) {
 }
 
 // DeleteEntity ...
-func (g *g) DeleteEntity(id EntityID) {
-	g.entityList.DeleteEntity(id)
+// TODO: Write TEST
+func (g *g) DeleteEntity(id EntityID) bool {
+	return g.entityList.DeleteEntity(id)
 }
 
 // HasEntity ...
+// TODO: Write TEST
 func (g *g) HasEntity(id EntityID) bool {
 	return g.entityList.HasEntity(id)
 }
 
 // Entities ...
+// TODO: Write TEST
 func (g *g) Entities() []EntityID {
 	return g.entityList.Entities()
 }
 
 // HandleEntityAdded ...
+// TODO: Write TEST
 func (g *g) HandleEntityAdded(f EntityEventFunc) {
 	g.addedFunc = append(g.addedFunc, f)
 }
 
 // HandleEntityUpdated ...
+// TODO: Write TEST
 func (g *g) HandleEntityUpdated(f EntityEventFunc) {
 	g.updatedFunc = append(g.updatedFunc, f)
 }
 
 // HandleEntityDeleted ...
+// TODO: Write TEST
 func (g *g) HandleEntityDeleted(f EntityEventFunc) {
 	g.deletedFunc = append(g.deletedFunc, f)
 }

@@ -1,15 +1,12 @@
-# Atom 
-`Atom` is an ECS (Entity-Component-System) package inspired by Simon Schmid's [Entitas-CSharp](https://github.com/sschmid/Entitas-CSharp) and [Atom proof-of-concept](https://github.com/sschmid/Entitas-CSharp/issues/902) but for the go language. I had searched for an ECS package for golang but I couldn't find one which I liked from the short few that I did find. So I decided to write my own.
+# Zinc 
+`ZincECS` is an entity-component-system package inspired by Simon Schmid's [Entitas-CSharp](https://github.com/sschmid/Entitas-CSharp) and [Atom proof-of-concept](https://github.com/sschmid/Entitas-CSharp/issues/902) but for the go language. I had searched for an ECS package for golang but I couldn't find one which I liked from the short few that I did find. So I decided to write my own.
 
-atom focuses on modularity of components and systems while being as small as possible. Coming in as a close second is performance. 
-
-# Contributing
-I dont really have a contribution guideline. Just post an issue or pull request if you'd like to add or change something in `Atom`. I generally welcome pull requests but don't be disappointed if it gets rejected. You can always fork it.
+Zinc focuses mainly on modularity of components/systems while performance coming in as a close second. 
 
 # Installation
-This will install the atom CLI along with the `Atom` package.
+This will install the Zinc CLI along with the `zinc` package.
 ```golang
-go get github.com/SirMetathyst/atom/cmd/...
+go get github.com/SirMetathyst/zinc/...
 ```
 
 # Quickstart
@@ -17,51 +14,51 @@ go get github.com/SirMetathyst/atom/cmd/...
 There isn't much we can do without any components so lets go ahead and generate some before we start.
 
 ```
-atom component add -p components -n position -d x:float32 -d y:float32 -o ./components
-atom component add -p components -n velocity -d x:float32 -d y:float32 -o ./components
+zinc component add -p components -n position -d x:float32 -d y:float32 -o ./components
+zinc component add -p components -n velocity -d x:float32 -d y:float32 -o ./components
 ```
-So, What's going on here? We're calling the `Atom` CLI and passing in some arguments. Firstly the `p` param tells the `Atom` CLI that we want the generated file to have the package name of `components`. Then we're telling it we want a component with the name of `position` and defining some data types for that component. The format must be in `name:type` but there are no checks done for whether the type is valid. It just replaces a value in the template. Lastly we give it a folder we want our component files to live in. Now we have some components generated to play with.
+So, What's going on here? We're calling the `Zinc` CLI and passing in some arguments. Firstly the `p` param tells the `Zinc` CLI that we want the generated file to have the package name of `components`. Then we're telling it we want a component with the name of `position` and defining some data types for that component. The format must be in `name:type` but there are no checks done for whether the type is valid. It just replaces a value in the template. Lastly we give it a folder we want our component files to live in. Now we have some components generated to play with.
 
 ```golang
 package main
 
 import (
-    "github.com/SirMetathyst/atom"
+    "github.com/SirMetathyst/zinc"
 
     // importing your components package will
     // automatically register component types
     // with the default entity manager
     // see generated files for how to do it manually
     // if required.
-    "xxx/xxx/to/your/components"
+    "xxx/xxx/to/yourkit"
 )
 
 func main() {
 
     // create an entity
     // uses the built-in default entity manager
-    id := atom.CreateEntity()
+    id := zinc.CreateEntity()
 
     // we can already use our component types 
     // setting a component will add or update it
-    components.SetPosition(id, components.PositionData{10, 10})
+    yourkit.SetPosition(id, yourkit.PositionData{10, 10})
 
 
     // get position with id
-    pos := components.Position(id)
+    pos := yourkit.Position(id)
 
 
     // there is also an API for passing in a different entity manager
     // these end in X
-    pos := components.PositionX(entityManager, id)
+    pos := yourkit.PositionX(entityManager, id)
 
     // getting all entity ids in the entity manager
-    entities := atom.Entities()
+    entities := zinc.Entities()
 
 
     // getting groups of entities with specific components
     // will return a entity group that has position and velocity component
-    group1 := atom.Group(atom.AllOf(components.PositionKey, components.VelocityKey))
+    group1 := zinc.Group(zinc.AllOf(yourkit.PositionKey, yourkit.VelocityKey))
 
     // ids of entities in group
     group1.Entities()
@@ -70,62 +67,81 @@ func main() {
     group1.HasEntity(id)
 
     // does the component exist for entity
-    ok := atom.HasPosition(id)
+    ok := yourkit.HasPosition(id)
 
     // delete the position component 
-    atom.DeletePosition(id)
+    yourkit.DeletePosition(id)
 
     // will return a entity group that has position but not velocity component
-    group2 := atom.Group(atom.AllOf(components.PositionKey).NoneOf(components.VelocityKey))  
+    group2 := zinc.Group(zinc.AllOf(yourkit.PositionKey).NoneOf(yourkit.VelocityKey))  
 }
 ```
 
 ## Systems
-Systems aren't built-in to `Atom` but they can be implemented like so: First define an interface for your systems
+Zinc has a built-in way  to init/update/cleanup your systems
+
 ```golang
-// System ...
-type System interface {
-	Update(dt float32)
-}
+sys := zinc.NewSystems()
+sys.Add(yourkit.NewPositionSystem())
+
+// init systems, must have `Initialize()` method
+sys.Initialize()
+
+// update systems, must have `Update(dt float64)` method
+sys.Update(deltaTime)
+
+// cleanup systems, must have `Cleanup()` method
+sys.Cleanup()
 
 ```
-then you can implement a system for moving your position components around. add the system to a slice and loop through those and that's your game loop. You can even have systems for drawing things in a different slice and execute them at different times.
+then you can implement a system for moving your position components around. add the system to `Systems` and loop through those and that's your game loop. You can even have systems for drawing things in a different `Systems` instance and execute them at different times. You can even return `Systems` of `Systems` and update them as a group of systems as long as that type has the supported method.
 ```golang
+
+import (
+    "github.com/SirMetathyst/zinc"
+    "github.com/xxx/yourkit"
+)
+
 // PositionSystem ...
 type PositionSystem struct {
-	group         *atom.G
-	entityManager *atom.EntityManager
+	g         zinc.G
+	em *zinc.EntityManager
 }
 
 // NewPositionSystem ...
 func NewPositionSystem() *PositionSystem {
 	return &PositionSystem{
-		entityManager: atom.Default(),
-		group:         atom.Default().Group(atom.AllOf(components.PositionKey, components.VelocityKey)),
+		em: zinc.Default(),
+		g:  zinc.Default().Group(zinc.AllOf(yourkit.PositionKey, yourkit.VelocityKey)),
 	}
 }
 
 // NewPositionSystemWith ...
-func NewPositionSystemWith(e *atom.EntityManager) *PositionSystem {
+func NewPositionSystemWith(em *zinc.EntityManager) *PositionSystem {
 	return &PositionSystem{
-		entityManager: e,
-		group:         e.Group(atom.AllOf(components.PositionKey, components.VelocityKey)),
+		em: em,
+		g:  em.Group(zinc.AllOf(yourkit.PositionKey, yourkit.VelocityKey)),
 	}
 }
 
 // Update ...
-func (s PositionSystem) Update(dt float32) {
-	for _, id := range s.group.Entities() {
-		velocity := components.VelocityX(s.entityManager, id)
-		position := components.PositionX(s.entityManager, id)
+func (s PositionSystem) Update(dt float64) {
+	for _, id := range s.g.Entities() {
+		velocity := yourkit.VelocityX(s.em, id)
+		position := yourkit.PositionX(s.em, id)
 		position.X += velocity.X * dt
 		position.Y += velocity.Y * dt
-		components.SetPositionX(s.entityManager, id, position)
+		yourkit.SetPositionX(s.em, id, position)
 	}
 }
 ```
 
-# Projects/Examples that I use `Atom` in
-- [Atom Common](https://github.com/SirMetathyst/atomkit) - Collection of Systems and Components for `Atom` projects
-- [Atombird](https://github.com/SirMetathyst/atomkit) - Flappy birds clone written with `Atom`
+# Contributing
+I dont really have a contribution guideline. Just post an issue or pull request if you'd like to add or change something in `Zinc`. I generally welcome pull requests but don't be disappointed if it gets rejected. You can always fork it.
+
+# Projects/Examples that I use `Zinc` in
+- [Zinckit](https://github.com/SirMetathyst/zinckit) - Collection of Systems and Components for `Zinc` projects
+<!--
+- [Zincbird](https://github.com/SirMetathyst/zincbird) - Flappy birds clone written with `Zinc`
+- [Zincpong](https://github.com/SirMetathyst/zincbird) - Pong clone written with `Zinc`-->
 

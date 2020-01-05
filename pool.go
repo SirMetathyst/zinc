@@ -1,24 +1,19 @@
-package atom
+package zinc
 
-// FactoryFunc ...
-type FactoryFunc func() interface{}
-
-// Pool ...
-type Pool struct {
+type p struct {
 	s []interface{}
-	f FactoryFunc
+	f func() interface{}
 }
 
-// NewPool ...
-func NewPool(f FactoryFunc) *Pool {
+func newPool(f func() interface{}) *p {
 	if f == nil {
 		return nil
 	}
-	return &Pool{f: f}
+	return &p{f: f}
 }
 
 // Get ...
-func (p *Pool) Get() interface{} {
+func (p *p) Get() interface{} {
 	l := len(p.s)
 	if l == 0 {
 		return p.f()
@@ -30,6 +25,6 @@ func (p *Pool) Get() interface{} {
 }
 
 // Put ...
-func (p *Pool) Put(v interface{}) {
+func (p *p) Put(v interface{}) {
 	p.s = append(p.s, v)
 }

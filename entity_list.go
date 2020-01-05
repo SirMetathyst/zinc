@@ -1,24 +1,16 @@
-package atom
+package zinc
 
-// EntityList ...
-type EntityList struct {
+type el struct {
 	entitiesMap map[EntityID]int
 	entities    []EntityID
 }
 
-// NewEntityList ...
-func NewEntityList() *EntityList {
-	return &EntityList{entitiesMap: make(map[EntityID]int)}
-}
-
-// HasEntity ...
-func (e *EntityList) HasEntity(id EntityID) bool {
-	_, exist := e.entitiesMap[id]
-	return exist
+func newEntityList() *el {
+	return &el{entitiesMap: make(map[EntityID]int)}
 }
 
 // AddEntity ...
-func (e *EntityList) AddEntity(id EntityID) bool {
+func (e *el) AddEntity(id EntityID) bool {
 	if _, exist := e.entitiesMap[id]; !exist {
 		e.entities = append(e.entities, id)
 		e.entitiesMap[id] = len(e.entities) - 1
@@ -28,7 +20,7 @@ func (e *EntityList) AddEntity(id EntityID) bool {
 }
 
 // DeleteEntity ...
-func (e *EntityList) DeleteEntity(id EntityID) bool {
+func (e *el) DeleteEntity(id EntityID) bool {
 	if idx, exist := e.entitiesMap[id]; exist {
 		lid := e.entities[len(e.entities)-1]
 		e.entities[idx] = lid
@@ -40,7 +32,13 @@ func (e *EntityList) DeleteEntity(id EntityID) bool {
 	return false
 }
 
+// HasEntity ...
+func (e *el) HasEntity(id EntityID) bool {
+	_, exist := e.entitiesMap[id]
+	return exist
+}
+
 // Entities ...
-func (e *EntityList) Entities() []EntityID {
+func (e *el) Entities() []EntityID {
 	return e.entities
 }
