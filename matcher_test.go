@@ -5,7 +5,7 @@ import (
 
 	"github.com/SirMetathyst/zinc"
 	"github.com/stretchr/testify/assert"
-	"github.com/SirMetathyst/zinckit"
+	"github.com/SirMetathyst/zinc/kit"
 )
 
 var (
@@ -68,8 +68,8 @@ func TestMatcherNoneOf(t *testing.T) {
 func TestMatcherAllOfHash(t *testing.T) {
 
 	// Arrange, Act
-	m1 := zinc.AllOf(zinckit.LocalPosition2Key, zinckit.Velocity2Key)
-	m2 := zinc.AllOf(zinckit.Velocity2Key, zinckit.LocalPosition2Key)
+	m1 := zinc.AllOf(kit.LocalPosition2Key, kit.Velocity2Key)
+	m2 := zinc.AllOf(kit.Velocity2Key, kit.LocalPosition2Key)
 
 	// Assert
 	assert.Equal(t, m1.Hash(), m2.Hash(), "must share identical hash")
@@ -78,8 +78,8 @@ func TestMatcherAllOfHash(t *testing.T) {
 func TestMatcherNoneOfHash(t *testing.T) {
 
 	// Arrange, Act
-	m1 := zinc.NoneOf(zinckit.LocalPosition2Key, zinckit.Velocity2Key)
-	m2 := zinc.NoneOf(zinckit.Velocity2Key, zinckit.LocalPosition2Key)
+	m1 := zinc.NoneOf(kit.LocalPosition2Key, kit.Velocity2Key)
+	m2 := zinc.NoneOf(kit.Velocity2Key, kit.LocalPosition2Key)
 
 	// Assert
 	assert.Equal(t, m1.Hash(), m2.Hash(), "must share identical hash")
@@ -88,11 +88,11 @@ func TestMatcherNoneOfHash(t *testing.T) {
 func TestMatcherHash(t *testing.T) {
 
 	// Arrange, Act
-	m1 := zinc.AllOf(zinckit.LocalPosition2Key, zinckit.Velocity2Key).
-		NoneOf(zinckit.LocalRotation2Key, zinckit.LocalScale2Key)
+	m1 := zinc.AllOf(kit.LocalPosition2Key, kit.Velocity2Key).
+		NoneOf(kit.LocalRotation2Key, kit.LocalScale2Key)
 
-	m2 := zinc.AllOf(zinckit.Velocity2Key, zinckit.LocalPosition2Key).
-		NoneOf(zinckit.LocalScale2Key, zinckit.LocalRotation2Key)
+	m2 := zinc.AllOf(kit.Velocity2Key, kit.LocalPosition2Key).
+		NoneOf(kit.LocalScale2Key, kit.LocalRotation2Key)
 	
 	// Assert
 	assert.Equal(t, m1.Hash(), m2.Hash(), "must share identical hash")
@@ -108,8 +108,8 @@ func TestMatcherMatch(t *testing.T) {
 
 		// Arrange
 		id := zinc.CreateEntity()
-		zinckit.SetLocalPosition2(id, zinckit.LocalPosition2Data{X: 10, Y: 10})
-		zinckit.SetLocalRotation2(id, zinckit.LocalRotation2Data{X: 10, Y: 10})
+		kit.SetLocalPosition2(id, kit.LocalPosition2Data{X: 10, Y: 10})
+		kit.SetLocalRotation2(id, kit.LocalRotation2Data{X: 10, Y: 10})
 
 		// Act
 		m := zinc.AllOf(0)
@@ -126,11 +126,11 @@ func TestMatcherMatch(t *testing.T) {
 
 		// Arrange
 		id := zinc.CreateEntity()
-		zinckit.SetLocalPosition2(id, zinckit.LocalPosition2Data{X: 10, Y: 10})
-		zinckit.SetLocalRotation2(id, zinckit.LocalRotation2Data{X: 10, Y: 10})
+		kit.SetLocalPosition2(id, kit.LocalPosition2Data{X: 10, Y: 10})
+		kit.SetLocalRotation2(id, kit.LocalRotation2Data{X: 10, Y: 10})
 
 		// Act
-		m := zinc.AllOf(zinckit.LocalPosition2Key, zinckit.LocalRotation2Key)
+		m := zinc.AllOf(kit.LocalPosition2Key, kit.LocalRotation2Key)
 		mv := m.Match(zinc.Default(), id)
 
 		// Assert
@@ -144,10 +144,10 @@ func TestMatcherMatch(t *testing.T) {
 
 		// Arrange
 		id := zinc.CreateEntity()
-		zinckit.SetLocalPosition2(id, zinckit.LocalPosition2Data{X: 10, Y: 10})
+		kit.SetLocalPosition2(id, kit.LocalPosition2Data{X: 10, Y: 10})
 
 		// Act
-		m := zinc.NoneOf(zinckit.LocalRotation2Key)
+		m := zinc.NoneOf(kit.LocalRotation2Key)
 		mv := m.Match(zinc.Default(), id)
 
 		// Assert
@@ -161,11 +161,11 @@ func TestMatcherMatch(t *testing.T) {
 
 		// Arrange
 		id := zinc.CreateEntity()
-		zinckit.SetLocalPosition2(id, zinckit.LocalPosition2Data{X: 10, Y: 10})
-		zinckit.SetLocalRotation2(id, zinckit.LocalRotation2Data{X: 10, Y: 10})
+		kit.SetLocalPosition2(id, kit.LocalPosition2Data{X: 10, Y: 10})
+		kit.SetLocalRotation2(id, kit.LocalRotation2Data{X: 10, Y: 10})
 
 		// Act
-		m := zinc.NoneOf(zinckit.LocalRotation2Key)
+		m := zinc.NoneOf(kit.LocalRotation2Key)
 		mv := m.Match(zinc.Default(), id)
 
 		// Assert
@@ -179,11 +179,11 @@ func TestMatcherMatch(t *testing.T) {
 
 		// Arrange
 		id := zinc.CreateEntity()
-		zinckit.SetLocalPosition2(id, zinckit.LocalPosition2Data{X: 10, Y: 10})
-		zinckit.SetLocalRotation2(id, zinckit.LocalRotation2Data{X: 10, Y: 10})
+		kit.SetLocalPosition2(id, kit.LocalPosition2Data{X: 10, Y: 10})
+		kit.SetLocalRotation2(id, kit.LocalRotation2Data{X: 10, Y: 10})
 
 		// Act
-		m := zinc.AllOf(zinckit.LocalPosition2Key).NoneOf(zinckit.LocalRotation2Key)
+		m := zinc.AllOf(kit.LocalPosition2Key).NoneOf(kit.LocalRotation2Key)
 		mv := m.Match(zinc.Default(), id)
 
 		// Assert

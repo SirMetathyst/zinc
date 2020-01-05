@@ -6,7 +6,7 @@ clean:
 	rm -f ./coverage.txt
 
 test:
-	go test -race -coverprofile=coverage.txt -covermode=zincic
+	go test -race -coverprofile=coverage.txt -covermode=atomic
 
 testreport: test
 	go tool cover -html=coverage.txt -o ./coverage.html

@@ -4,13 +4,13 @@ import (
 	"testing"
 
 	"github.com/SirMetathyst/zinc"
-	"github.com/SirMetathyst/zinckit"
+	"github.com/SirMetathyst/zinc/kit"
 	"github.com/stretchr/testify/assert"
 )
 
 func group(t *testing.T) {
 	// Arrange, Act
-	g := zinc.Group(zinc.AllOf(zinckit.LocalPosition2Key))
+	g := zinc.Group(zinc.AllOf(kit.LocalPosition2Key))
 
 	// Assert
 	assert.NotNil(t, g, "entity manager must not return nil group")
@@ -123,14 +123,14 @@ func TestEntityManagerRegisterComponent(t *testing.T) {
 
 		// Arrange
 		e := zinc.NewEntityManager()
-		cmp := zinckit.NewLocalPosition2Component()
-		ctx := e.RegisterComponent(zinckit.LocalPosition2Key, cmp)
+		cmp := kit.NewLocalPosition2Component()
+		ctx := e.RegisterComponent(kit.LocalPosition2Key, cmp)
 		cmp.SetContext(ctx)
 		id := e.CreateEntity()
 
 		// Act
 		do := func(){ 
-			zinckit.SetLocalPosition2X(e, id, zinckit.LocalPosition2Data{X: 10, Y: 20}) 
+			kit.SetLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 20}) 
 		}
 		
 		// Assert
@@ -144,8 +144,8 @@ func TestEntityManagerRegisterComponent(t *testing.T) {
 
 		do := func(){
 			// Act
-			cmp := zinckit.NewLocalPosition2Component()
-			ctx := e.RegisterComponent(zinckit.LocalPosition2Key, cmp)
+			cmp := kit.NewLocalPosition2Component()
+			ctx := e.RegisterComponent(kit.LocalPosition2Key, cmp)
 			cmp.SetContext(ctx)
 		}
 		
@@ -161,15 +161,15 @@ func TestEntityManagerResetAll(t *testing.T) {
 
 	// Arrange
 	e := zinc.NewEntityManager()
-	cmp := zinckit.NewLocalPosition2Component()
-	ctx := e.RegisterComponent(zinckit.LocalPosition2Key, cmp)
+	cmp := kit.NewLocalPosition2Component()
+	ctx := e.RegisterComponent(kit.LocalPosition2Key, cmp)
 	cmp.SetContext(ctx)
 	id := e.CreateEntity()
 
 	// Act
 	e.ResetAll()
 	do := func(){ 
-		zinckit.SetLocalPosition2X(e, id, zinckit.LocalPosition2Data{X: 10, Y: 20}) 
+		kit.SetLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 20}) 
 	}
 
 	// Assert
@@ -189,7 +189,7 @@ func TestEntityManagerCollector(t *testing.T) {
 	zinc.Reset()
 
 	// Arrange, Act
-	c := zinc.CreateCollector(zinc.Added(zinckit.LocalPosition2Key))
+	c := zinc.CreateCollector(zinc.Added(kit.LocalPosition2Key))
 
 	// Assert
 	assert.NotNil(t, c, "entity manager must not return nil collector")
