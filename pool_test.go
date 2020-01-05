@@ -1,4 +1,4 @@
-package atom
+package zinc
 
 import (
 	"testing"

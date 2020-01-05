@@ -1,4 +1,4 @@
-package atom
+package zinc
 
 // G ...
 type G interface {

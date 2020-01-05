@@ -3,18 +3,18 @@ package benchmark
 import (
 	"testing"
 
-	"github.com/SirMetathyst/atom"
+	"github.com/SirMetathyst/zinc"
 )
 
 func BenchmarkNewEntityManager(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		atom.NewEntityManager()
+		zinc.NewEntityManager()
 	}
 }
 
 func BenchmarkCreateEntity(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		atom.Reset()
-		atom.CreateEntity()
+		zinc.Reset()
+		zinc.CreateEntity()
 	}
 }

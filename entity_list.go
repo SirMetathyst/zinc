@@ -1,4 +1,4 @@
-package atom
+package zinc
 
 type el struct {
 	entitiesMap map[EntityID]int

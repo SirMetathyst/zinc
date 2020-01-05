@@ -5,7 +5,7 @@ instead of having to create a new component, set the context and call EntityMana
 every single component for multiple entity managers...
 */
 
-package atom
+package zinc
 
 var entityManager = NewEntityManager()
 

@@ -1,66 +1,66 @@
-package atom_test
+package zinc_test
 
 import (
 	"testing"
 
-	"github.com/SirMetathyst/atom"
-	"github.com/SirMetathyst/atomkit"
+	"github.com/SirMetathyst/zinc"
+	"github.com/SirMetathyst/zinckit"
 	"github.com/stretchr/testify/assert"
 )
 
 func group(t *testing.T) {
 	// Arrange, Act
-	g := atom.Group(atom.AllOf(atomkit.LocalPosition2Key))
+	g := zinc.Group(zinc.AllOf(zinckit.LocalPosition2Key))
 
 	// Assert
 	assert.NotNil(t, g, "entity manager must not return nil group")
-	assert.Equal(t, atom.GroupCount(), 1, "group count must be equal to 1")
+	assert.Equal(t, zinc.GroupCount(), 1, "group count must be equal to 1")
 }
 
 func groupCount(t *testing.T, groupCount int) {
 	// Assert
-	assert.Equalf(t, atom.GroupCount(), groupCount, "group count does not match %d", groupCount)
+	assert.Equalf(t, zinc.GroupCount(), groupCount, "group count does not match %d", groupCount)
 }
 
-func createEntities(t *testing.T, n []atom.EntityID) {
+func createEntities(t *testing.T, n []zinc.EntityID) {
 	for _, nid := range n {
 		// Act
-		id := atom.CreateEntity()
+		id := zinc.CreateEntity()
 		
 		// Assert
 		assert.Equal(t, id, nid, "created entity id does match expected id")
 	}
 }
 
-func deleteEntity(t *testing.T, n []atom.EntityID) {
+func deleteEntity(t *testing.T, n []zinc.EntityID) {
 	for _, id := range n {
 		// Act
-		atom.DeleteEntity(id)
+		zinc.DeleteEntity(id)
 
 		// Assert
-		assert.NotContains(t, atom.Entities(), id, "entity manager must not contain id")
+		assert.NotContains(t, zinc.Entities(), id, "entity manager must not contain id")
 	}
 }
 
-func entities(t *testing.T, n []atom.EntityID) {
+func entities(t *testing.T, n []zinc.EntityID) {
 	// Assert
-	assert.ElementsMatch(t, atom.Entities(), n, "entity manager must contain ids")
+	assert.ElementsMatch(t, zinc.Entities(), n, "entity manager must contain ids")
 }
 
-func hasEntities(t *testing.T, n []atom.EntityID) {
+func hasEntities(t *testing.T, n []zinc.EntityID) {
 	for _, id := range n {
 		// Act
-		has := atom.HasEntity(id)
+		has := zinc.HasEntity(id)
 
 		// Assert
 		assert.True(t, has, "entity manager must have id")
 	}
 }
 
-func doesNotHaveEntities(t *testing.T, n []atom.EntityID) {
+func doesNotHaveEntities(t *testing.T, n []zinc.EntityID) {
 	for _, id := range n {
 		// Act
-		has := atom.HasEntity(id)
+		has := zinc.HasEntity(id)
 
 		// Assert
 		assert.False(t, has, "entity manager must not have id")
@@ -71,50 +71,50 @@ func doesNotHaveEntities(t *testing.T, n []atom.EntityID) {
 func TestNewEntityManager(t *testing.T) {
 
 	// Arrange, Act
-	e := atom.NewEntityManager() 
+	e := zinc.NewEntityManager() 
 
 	// Assert
 	assert.NotNil(t, e, "must not return nil")
 }
 
 func TestEntityManagerCreateEntity(t *testing.T) {
-	atom.Reset()
-	createEntities(t, []atom.EntityID{1, 2, 3, 4, 5})
+	zinc.Reset()
+	createEntities(t, []zinc.EntityID{1, 2, 3, 4, 5})
 }
 
 func TestEntityManagerHasEntity(t *testing.T) {
-	atom.Reset()
-	createEntities(t, []atom.EntityID{1, 2, 3, 4, 5})
-	hasEntities(t, []atom.EntityID{1, 2, 3, 4, 5})
+	zinc.Reset()
+	createEntities(t, []zinc.EntityID{1, 2, 3, 4, 5})
+	hasEntities(t, []zinc.EntityID{1, 2, 3, 4, 5})
 }
 
 func TestEntityManagerDeleteEntity(t *testing.T) {
-	atom.Reset()
-	createEntities(t, []atom.EntityID{1, 2, 3, 4, 5})
-	deleteEntity(t, []atom.EntityID{1, 2, 3})
-	doesNotHaveEntities(t, []atom.EntityID{1, 2, 3})
-	hasEntities(t, []atom.EntityID{4, 5})
+	zinc.Reset()
+	createEntities(t, []zinc.EntityID{1, 2, 3, 4, 5})
+	deleteEntity(t, []zinc.EntityID{1, 2, 3})
+	doesNotHaveEntities(t, []zinc.EntityID{1, 2, 3})
+	hasEntities(t, []zinc.EntityID{4, 5})
 }
 
 func TestEntityManagerDeleteEntities(t *testing.T) {
-	atom.Reset()
-	createEntities(t, []atom.EntityID{1, 2, 3, 4, 5})
-	atom.DeleteEntities()
-	doesNotHaveEntities(t, []atom.EntityID{1, 2, 3, 4, 5})
+	zinc.Reset()
+	createEntities(t, []zinc.EntityID{1, 2, 3, 4, 5})
+	zinc.DeleteEntities()
+	doesNotHaveEntities(t, []zinc.EntityID{1, 2, 3, 4, 5})
 }
 
 func TestEntityManagerEntities(t *testing.T) {
-	atom.Reset()
-	createEntities(t, []atom.EntityID{1, 2, 3, 4, 5})
-	entities(t, []atom.EntityID{1, 2, 3, 4, 5})
+	zinc.Reset()
+	createEntities(t, []zinc.EntityID{1, 2, 3, 4, 5})
+	entities(t, []zinc.EntityID{1, 2, 3, 4, 5})
 }
 
 func TestEntityManagerReset(t *testing.T) {
-	atom.Reset()
-	createEntities(t, []atom.EntityID{1, 2, 3, 4, 5})
-	hasEntities(t, []atom.EntityID{1, 2, 3, 4, 5})
-	atom.Reset()
-	doesNotHaveEntities(t, []atom.EntityID{1, 2, 3, 4, 5})
+	zinc.Reset()
+	createEntities(t, []zinc.EntityID{1, 2, 3, 4, 5})
+	hasEntities(t, []zinc.EntityID{1, 2, 3, 4, 5})
+	zinc.Reset()
+	doesNotHaveEntities(t, []zinc.EntityID{1, 2, 3, 4, 5})
 }
 
 func TestEntityManagerRegisterComponent(t *testing.T) {
@@ -122,15 +122,15 @@ func TestEntityManagerRegisterComponent(t *testing.T) {
 	t.Run("register component type once", func(t *testing.T){
 
 		// Arrange
-		e := atom.NewEntityManager()
-		cmp := atomkit.NewLocalPosition2Component()
-		ctx := e.RegisterComponent(atomkit.LocalPosition2Key, cmp)
+		e := zinc.NewEntityManager()
+		cmp := zinckit.NewLocalPosition2Component()
+		ctx := e.RegisterComponent(zinckit.LocalPosition2Key, cmp)
 		cmp.SetContext(ctx)
 		id := e.CreateEntity()
 
 		// Act
 		do := func(){ 
-			atomkit.SetLocalPosition2X(e, id, atomkit.LocalPosition2Data{X: 10, Y: 20}) 
+			zinckit.SetLocalPosition2X(e, id, zinckit.LocalPosition2Data{X: 10, Y: 20}) 
 		}
 		
 		// Assert
@@ -140,12 +140,12 @@ func TestEntityManagerRegisterComponent(t *testing.T) {
 	t.Run("register component type twice", func(t *testing.T){
 
 		// Arrange
-		e := atom.NewEntityManager()
+		e := zinc.NewEntityManager()
 
 		do := func(){
 			// Act
-			cmp := atomkit.NewLocalPosition2Component()
-			ctx := e.RegisterComponent(atomkit.LocalPosition2Key, cmp)
+			cmp := zinckit.NewLocalPosition2Component()
+			ctx := e.RegisterComponent(zinckit.LocalPosition2Key, cmp)
 			cmp.SetContext(ctx)
 		}
 		
@@ -160,16 +160,16 @@ func TestEntityManagerRegisterComponent(t *testing.T) {
 func TestEntityManagerResetAll(t *testing.T) {
 
 	// Arrange
-	e := atom.NewEntityManager()
-	cmp := atomkit.NewLocalPosition2Component()
-	ctx := e.RegisterComponent(atomkit.LocalPosition2Key, cmp)
+	e := zinc.NewEntityManager()
+	cmp := zinckit.NewLocalPosition2Component()
+	ctx := e.RegisterComponent(zinckit.LocalPosition2Key, cmp)
 	cmp.SetContext(ctx)
 	id := e.CreateEntity()
 
 	// Act
 	e.ResetAll()
 	do := func(){ 
-		atomkit.SetLocalPosition2X(e, id, atomkit.LocalPosition2Data{X: 10, Y: 20}) 
+		zinckit.SetLocalPosition2X(e, id, zinckit.LocalPosition2Data{X: 10, Y: 20}) 
 	}
 
 	// Assert
@@ -178,7 +178,7 @@ func TestEntityManagerResetAll(t *testing.T) {
 
 
 func TestEntityManagerGroup(t *testing.T) {
-	atom.Reset()
+	zinc.Reset()
 	group(t)
 	groupCount(t, 1)
 	group(t)
@@ -186,10 +186,10 @@ func TestEntityManagerGroup(t *testing.T) {
 }
 
 func TestEntityManagerCollector(t *testing.T) {
-	atom.Reset()
+	zinc.Reset()
 
 	// Arrange, Act
-	c := atom.CreateCollector(atom.Added(atomkit.LocalPosition2Key))
+	c := zinc.CreateCollector(zinc.Added(zinckit.LocalPosition2Key))
 
 	// Assert
 	assert.NotNil(t, c, "entity manager must not return nil collector")

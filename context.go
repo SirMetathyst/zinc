@@ -1,4 +1,4 @@
-package atom
+package zinc
 
 // EntityEventFunc ...
 type EntityEventFunc func(key uint, id EntityID)

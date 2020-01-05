@@ -1,4 +1,4 @@
-package atom
+package zinc
 
 // C ...
 type C interface {

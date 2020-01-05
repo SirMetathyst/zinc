@@ -1,4 +1,4 @@
-package atom
+package zinc
 
 type p struct {
 	s []interface{}
