@@ -30,6 +30,20 @@ func NewLocalRotation2Component() *LocalRotation2Component {
 	}
 }
 
+// RegisterLocalRotation2ComponentWith ...
+func RegisterLocalRotation2ComponentWith(e *zinc.EntityManager) {
+	x := NewLocalRotation2Component()
+	ctx := e.RegisterComponent(LocalRotation2Key, x)
+	x.SetContext(ctx)
+}
+
+// RegisterLocalRotation2Component ...
+func RegisterLocalRotation2Component() {
+	x := NewLocalRotation2Component()
+	ctx := zinc.Default().RegisterComponent(LocalRotation2Key, x)
+	x.SetContext(ctx)
+}
+
 // SetContext ...
 func (c *LocalRotation2Component) SetContext(ctx zinc.CTX) {
 	if c.ctx == nil {
@@ -38,9 +52,7 @@ func (c *LocalRotation2Component) SetContext(ctx zinc.CTX) {
 }
 
 func init() {
-	x := NewLocalRotation2Component()
-	ctx := zinc.Default().RegisterComponent(LocalRotation2Key, x)
-	x.SetContext(ctx)
+	RegisterLocalRotation2Component()
 }
 
 // DeleteEntity ...

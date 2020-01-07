@@ -30,6 +30,20 @@ func NewLocalPosition2Component() *LocalPosition2Component {
 	}
 }
 
+// RegisterLocalPosition2ComponentWith ...
+func RegisterLocalPosition2ComponentWith(e *zinc.EntityManager) {
+	x := NewLocalPosition2Component()
+	ctx := e.RegisterComponent(LocalPosition2Key, x)
+	x.SetContext(ctx)
+}
+
+// RegisterLocalPosition2Component ...
+func RegisterLocalPosition2Component() {
+	x := NewLocalPosition2Component()
+	ctx := zinc.Default().RegisterComponent(LocalPosition2Key, x)
+	x.SetContext(ctx)
+}
+
 // SetContext ...
 func (c *LocalPosition2Component) SetContext(ctx zinc.CTX) {
 	if c.ctx == nil {
@@ -38,9 +52,7 @@ func (c *LocalPosition2Component) SetContext(ctx zinc.CTX) {
 }
 
 func init() {
-	x := NewLocalPosition2Component()
-	ctx := zinc.Default().RegisterComponent(LocalPosition2Key, x)
-	x.SetContext(ctx)
+	RegisterLocalPosition2Component()
 }
 
 // DeleteEntity ...

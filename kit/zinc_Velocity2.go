@@ -30,6 +30,20 @@ func NewVelocity2Component() *Velocity2Component {
 	}
 }
 
+// RegisterVelocity2ComponentWith ...
+func RegisterVelocity2ComponentWith(e *zinc.EntityManager) {
+	x := NewVelocity2Component()
+	ctx := e.RegisterComponent(Velocity2Key, x)
+	x.SetContext(ctx)
+}
+
+// RegisterVelocity2Component ...
+func RegisterVelocity2Component() {
+	x := NewVelocity2Component()
+	ctx := zinc.Default().RegisterComponent(Velocity2Key, x)
+	x.SetContext(ctx)
+}
+
 // SetContext ...
 func (c *Velocity2Component) SetContext(ctx zinc.CTX) {
 	if c.ctx == nil {
@@ -38,9 +52,7 @@ func (c *Velocity2Component) SetContext(ctx zinc.CTX) {
 }
 
 func init() {
-	x := NewVelocity2Component()
-	ctx := zinc.Default().RegisterComponent(Velocity2Key, x)
-	x.SetContext(ctx)
+	RegisterVelocity2Component()
 }
 
 // DeleteEntity ...

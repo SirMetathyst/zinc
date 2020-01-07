@@ -6,8 +6,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-
-
 func componentFunc(rkey *uint, rid *EntityID) func(key uint, id EntityID) {
 	return func(key uint, id EntityID) {
 		*rid = id

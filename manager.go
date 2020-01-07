@@ -1,8 +1,7 @@
 /*
 TODO: instead of registering component with entity manager on init func, register
 with a component registry so that you can call a single method e.g. EntityManager.RegisterComponentsWithRegistry...
-instead of having to create a new component, set the context and call EntityManager.RegisterComponent for
-every single component for multiple entity managers...
+instead of having call myKit.RegisterMyComponent for every single component for multiple entity managers...
 */
 
 package zinc

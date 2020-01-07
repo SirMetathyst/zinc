@@ -46,6 +46,20 @@ func New${Component}Component() *${Component}Component {
 	}
 }
 
+// Register${Component}ComponentWith ...
+func Register${Component}ComponentWith(e *zinc.EntityManager) {
+	x := New${Component}Component()
+	ctx := e.RegisterComponent(${Component}Key, x)
+	x.SetContext(ctx)
+}
+
+// Register${Component}Component ...
+func Register${Component}Component() {
+	x := New${Component}Component()
+	ctx := zinc.Default().RegisterComponent(${Component}Key, x)
+	x.SetContext(ctx)
+}
+
 // SetContext ...
 func (c *${Component}Component) SetContext(ctx zinc.CTX) {
 	if c.ctx == nil {
@@ -54,9 +68,7 @@ func (c *${Component}Component) SetContext(ctx zinc.CTX) {
 }
 
 func init() {
-	x := New${Component}Component()
-	ctx := zinc.Default().RegisterComponent(${Component}Key, x)
-	x.SetContext(ctx)
+	Register${Component}Component()
 }
 
 // DeleteEntity ...

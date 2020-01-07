@@ -30,6 +30,20 @@ func NewLocalScale2Component() *LocalScale2Component {
 	}
 }
 
+// RegisterLocalScale2ComponentWith ...
+func RegisterLocalScale2ComponentWith(e *zinc.EntityManager) {
+	x := NewLocalScale2Component()
+	ctx := e.RegisterComponent(LocalScale2Key, x)
+	x.SetContext(ctx)
+}
+
+// RegisterLocalScale2Component ...
+func RegisterLocalScale2Component() {
+	x := NewLocalScale2Component()
+	ctx := zinc.Default().RegisterComponent(LocalScale2Key, x)
+	x.SetContext(ctx)
+}
+
 // SetContext ...
 func (c *LocalScale2Component) SetContext(ctx zinc.CTX) {
 	if c.ctx == nil {
@@ -38,9 +52,7 @@ func (c *LocalScale2Component) SetContext(ctx zinc.CTX) {
 }
 
 func init() {
-	x := NewLocalScale2Component()
-	ctx := zinc.Default().RegisterComponent(LocalScale2Key, x)
-	x.SetContext(ctx)
+	RegisterLocalScale2Component()
 }
 
 // DeleteEntity ...

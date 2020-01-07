@@ -20,11 +20,9 @@ var (
 
 func TestMatcherHasAllOf(t *testing.T) {
 	for _, ds := range matcherData {
-
 		// Act
 		m := zinc.AllOf(ds.allOf...)
 		has := m.HasAllOf(ds.allOf...)
-
 		// Assert
 		assert.True(t, has, "has all of must return true")
 	}
@@ -32,10 +30,8 @@ func TestMatcherHasAllOf(t *testing.T) {
 
 func TestMatcherAllOf(t *testing.T) {
 	for _, ds := range matcherData {
-
 		// Act
 		m := zinc.AllOf(ds.allOf...)
-
 		// Assert
 		assert.ElementsMatch(t, m.AllOfSlice(), ds.allOf, "returned all of slice does not match input data")
 	}
@@ -43,11 +39,9 @@ func TestMatcherAllOf(t *testing.T) {
 
 func TestMatcherHasNoneOf(t *testing.T) {
 	for _, ds := range matcherData {
-
 		// Act
 		m := zinc.NoneOf(ds.noneOf...)
 		has := m.HasNoneOf(ds.noneOf...)
-
 		// Assert
 		assert.True(t, has, "has none of must return true")
 	}
@@ -55,10 +49,8 @@ func TestMatcherHasNoneOf(t *testing.T) {
 
 func TestMatcherNoneOf(t *testing.T) {
 	for _, ds := range matcherData {
-
 		// Act
 		m := zinc.NoneOf(ds.noneOf...)
-
 		// Assert
 		assert.ElementsMatch(t, m.NoneOfSlice(), ds.noneOf, "returned none of slice does not match input data")
 	}
@@ -66,54 +58,50 @@ func TestMatcherNoneOf(t *testing.T) {
 
 
 func TestMatcherAllOfHash(t *testing.T) {
-
 	// Arrange, Act
 	m1 := zinc.AllOf(kit.LocalPosition2Key, kit.Velocity2Key)
 	m2 := zinc.AllOf(kit.Velocity2Key, kit.LocalPosition2Key)
-
 	// Assert
 	assert.Equal(t, m1.Hash(), m2.Hash(), "must share identical hash")
 }
 
 func TestMatcherNoneOfHash(t *testing.T) {
-
 	// Arrange, Act
 	m1 := zinc.NoneOf(kit.LocalPosition2Key, kit.Velocity2Key)
 	m2 := zinc.NoneOf(kit.Velocity2Key, kit.LocalPosition2Key)
-
 	// Assert
 	assert.Equal(t, m1.Hash(), m2.Hash(), "must share identical hash")
 }
 
 func TestMatcherHash(t *testing.T) {
-
 	// Arrange, Act
 	m1 := zinc.AllOf(kit.LocalPosition2Key, kit.Velocity2Key).
 		NoneOf(kit.LocalRotation2Key, kit.LocalScale2Key)
 
 	m2 := zinc.AllOf(kit.Velocity2Key, kit.LocalPosition2Key).
 		NoneOf(kit.LocalScale2Key, kit.LocalRotation2Key)
-	
 	// Assert
 	assert.Equal(t, m1.Hash(), m2.Hash(), "must share identical hash")
 }
 
 
 func TestMatcherMatch(t *testing.T) {
-
+	
 	t.Run("non-existing key", func(t *testing.T) {
 
-		// Reset
-		zinc.Reset()
+		// Setup
+		e := zinc.NewEntityManager()
+		kit.RegisterLocalPosition2ComponentWith(e)
+		kit.RegisterLocalRotation2ComponentWith(e)
 
 		// Arrange
-		id := zinc.CreateEntity()
-		kit.SetLocalPosition2(id, kit.LocalPosition2Data{X: 10, Y: 10})
-		kit.SetLocalRotation2(id, kit.LocalRotation2Data{X: 10, Y: 10})
+		id := e.CreateEntity()
+		kit.SetLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 10})
+		kit.SetLocalRotation2X(e, id, kit.LocalRotation2Data{X: 10, Y: 10})
 
 		// Act
 		m := zinc.AllOf(0)
-		mv := m.Match(zinc.Default(), id)
+		mv := m.Match(e, id)
 
 		// Assert
 		assert.False(t, mv, "must return false if matcher contains non-existing key")
@@ -121,17 +109,19 @@ func TestMatcherMatch(t *testing.T) {
 
 	t.Run("all of", func(t *testing.T) {
 
-		// Reset
-		zinc.Reset()
+		// Setup
+		e := zinc.NewEntityManager()
+		kit.RegisterLocalPosition2ComponentWith(e)
+		kit.RegisterLocalRotation2ComponentWith(e)
 
 		// Arrange
-		id := zinc.CreateEntity()
-		kit.SetLocalPosition2(id, kit.LocalPosition2Data{X: 10, Y: 10})
-		kit.SetLocalRotation2(id, kit.LocalRotation2Data{X: 10, Y: 10})
+		id := e.CreateEntity()
+		kit.SetLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 10})
+		kit.SetLocalRotation2X(e, id, kit.LocalRotation2Data{X: 10, Y: 10})
 
 		// Act
 		m := zinc.AllOf(kit.LocalPosition2Key, kit.LocalRotation2Key)
-		mv := m.Match(zinc.Default(), id)
+		mv := m.Match(e, id)
 
 		// Assert
 		assert.True(t, mv, "must return true if matcher contains all of given keys")
@@ -139,16 +129,17 @@ func TestMatcherMatch(t *testing.T) {
 
 	t.Run("none of", func(t *testing.T) {
 
-		// Reset
-		zinc.Reset()
+		// Setup
+		e := zinc.NewEntityManager()
+		kit.RegisterLocalPosition2ComponentWith(e)
 
 		// Arrange
-		id := zinc.CreateEntity()
-		kit.SetLocalPosition2(id, kit.LocalPosition2Data{X: 10, Y: 10})
+		id := e.CreateEntity()
+		kit.SetLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 10})
 
 		// Act
 		m := zinc.NoneOf(kit.LocalRotation2Key)
-		mv := m.Match(zinc.Default(), id)
+		mv := m.Match(e, id)
 
 		// Assert
 		assert.True(t, mv, "must return true because matcher should not contain any of given keys")
@@ -156,17 +147,19 @@ func TestMatcherMatch(t *testing.T) {
 
 	t.Run("none of", func(t *testing.T) {
 
-		// Reset
-		zinc.Reset()
+		// Setup
+		e := zinc.NewEntityManager()
+		kit.RegisterLocalPosition2ComponentWith(e)
+		kit.RegisterLocalRotation2ComponentWith(e)
 
 		// Arrange
-		id := zinc.CreateEntity()
-		kit.SetLocalPosition2(id, kit.LocalPosition2Data{X: 10, Y: 10})
-		kit.SetLocalRotation2(id, kit.LocalRotation2Data{X: 10, Y: 10})
+		id := e.CreateEntity()
+		kit.SetLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 10})
+		kit.SetLocalRotation2X(e, id, kit.LocalRotation2Data{X: 10, Y: 10})
 
 		// Act
 		m := zinc.NoneOf(kit.LocalRotation2Key)
-		mv := m.Match(zinc.Default(), id)
+		mv := m.Match(e, id)
 
 		// Assert
 		assert.False(t, mv, "must return false because matcher contains some of given keys")
@@ -175,16 +168,18 @@ func TestMatcherMatch(t *testing.T) {
 	t.Run("all of/none of", func(t *testing.T) {
 
 		// Setup
-		zinc.Reset()
+		e := zinc.NewEntityManager()
+		kit.RegisterLocalPosition2ComponentWith(e)
+		kit.RegisterLocalRotation2ComponentWith(e)
 
 		// Arrange
-		id := zinc.CreateEntity()
-		kit.SetLocalPosition2(id, kit.LocalPosition2Data{X: 10, Y: 10})
-		kit.SetLocalRotation2(id, kit.LocalRotation2Data{X: 10, Y: 10})
+		id := e.CreateEntity()
+		kit.SetLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 10})
+		kit.SetLocalRotation2X(e, id, kit.LocalRotation2Data{X: 10, Y: 10})
 
 		// Act
 		m := zinc.AllOf(kit.LocalPosition2Key).NoneOf(kit.LocalRotation2Key)
-		mv := m.Match(zinc.Default(), id)
+		mv := m.Match(e, id)
 
 		// Assert
 		assert.False(t, mv, "must return false to satisfy matcher")

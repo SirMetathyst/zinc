@@ -50,7 +50,6 @@ func (g *g) deleteEntity(key uint, id EntityID) {
 }
 
 // HandleEntitySilently ...
-// TODO: Write TEST
 func (g *g) HandleEntitySilently(id EntityID) {
 	if ok := g.matcher.Match(g.entityManager, id); ok {
 		g.entityList.AddEntity(id)
@@ -60,7 +59,6 @@ func (g *g) HandleEntitySilently(id EntityID) {
 }
 
 // HandleEntity ...
-// TODO: Write TEST
 func (g *g) HandleEntity(key uint, id EntityID) {
 	if ok := g.matcher.Match(g.entityManager, id); ok {
 		g.addEntity(key, id)
