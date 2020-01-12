@@ -48,7 +48,7 @@ func TestEntityManagerDeleteEntities(t *testing.T) {
 	test.CreateEntities(t, e, []zinc.EntityID{1, 2, 3, 4, 5})
 	e.DeleteEntities()
 	test.DoesNotHaveEntities(t, e, []zinc.EntityID{1, 2, 3, 4, 5})
-	test.CreateEntitiesGlobal(t, []zinc.EntityID{6, 7, 8})
+	test.CreateEntities(t, e, []zinc.EntityID{5, 4, 3})
 }
 
 func TestEntityManagerEntities(t *testing.T) {
