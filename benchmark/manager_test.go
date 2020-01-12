@@ -2,7 +2,6 @@ package benchmark
 
 import (
 	"testing"
-	"time"
 
 	"github.com/SirMetathyst/zinc"
 )
