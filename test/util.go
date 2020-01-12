@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// Group ...
 func Group(t *testing.T, e *zinc.EntityManager) {
 	// Arrange, Act
 	g := e.Group(zinc.AllOf(kit.LocalPosition2Key))
@@ -15,6 +16,7 @@ func Group(t *testing.T, e *zinc.EntityManager) {
 	assert.Equal(t, 1, e.GroupCount(), "group count must be equal to 1")
 }
 
+// GroupGlobal ...
 func GroupGlobal(t *testing.T) {
 	// Arrange, Act
 	g := zinc.Group(zinc.AllOf(kit.LocalPosition2Key))
@@ -23,34 +25,39 @@ func GroupGlobal(t *testing.T) {
 	assert.Equal(t, 1, zinc.GroupCount(), "group count must be equal to 1")
 }
 
+// GroupCount ...
 func GroupCount(t *testing.T, e *zinc.EntityManager, groupCount int) {
 	// Assert
 	assert.Equalf(t, groupCount, e.GroupCount(), "group count does not match %d", groupCount)
 }
 
-func GroupCountGlobal(t *testing.T, groupCount int) {
+// GroupCountGlobal ...
+func GroupCountGlobal(t *testing.T, expectedGroupCount int) {
 	// Assert
-	assert.Equalf(t, groupCount, zinc.GroupCount(), "group count does not match %d", groupCount)
+	assert.Equalf(t, expectedGroupCount, zinc.GroupCount(), "group count does not match %d", expectedGroupCount)
 }
 
+// CreateEntities ...
 func CreateEntities(t *testing.T, e *zinc.EntityManager, n []zinc.EntityID) {
-	for _, nid := range n {
+	for _, expected := range n {
 		// Act
-		id := e.CreateEntity()
+		actual := e.CreateEntity()
 		// Assert
-		assert.Equal(t, id, nid, "created entity id does match expected id")
+		assert.Equal(t, expected, actual, "created entity id does match expected id")
 	}
 }
-
+ 
+// CreateEntitiesGlobal ...
 func CreateEntitiesGlobal(t *testing.T, n []zinc.EntityID) {
-	for _, nid := range n {
+	for _, expected := range n {
 		// Act
-		id := zinc.CreateEntity()
+		actual := zinc.CreateEntity()
 		// Assert
-		assert.Equal(t, id, nid, "created entity id does match expected id")
+		assert.Equal(t, expected, actual, "created entity id does match expected id")
 	}
 }
 
+// DeleteEntity ...
 func DeleteEntity(t *testing.T, e *zinc.EntityManager, n []zinc.EntityID) {
 	for _, id := range n {
 		// Act
@@ -60,6 +67,7 @@ func DeleteEntity(t *testing.T, e *zinc.EntityManager, n []zinc.EntityID) {
 	}
 }
 
+// DeleteEntityGlobal ...
 func DeleteEntityGlobal(t *testing.T, n []zinc.EntityID) {
 	for _, id := range n {
 		// Act
@@ -69,16 +77,19 @@ func DeleteEntityGlobal(t *testing.T, n []zinc.EntityID) {
 	}
 }
 
+// Entities ...
 func Entities(t *testing.T, e *zinc.EntityManager, n []zinc.EntityID) {
 	// Assert
 	assert.ElementsMatch(t, e.Entities(), n, "entity manager must contain ids")
 }
 
+// EntitiesGlobal ...
 func EntitiesGlobal(t *testing.T, n []zinc.EntityID) {
 	// Assert
 	assert.ElementsMatch(t, zinc.Entities(), n, "entity manager must contain ids")
 }
 
+// HasEntities ...
 func HasEntities(t *testing.T, e *zinc.EntityManager, n []zinc.EntityID) {
 	for _, id := range n {
 		// Act
@@ -88,6 +99,7 @@ func HasEntities(t *testing.T, e *zinc.EntityManager, n []zinc.EntityID) {
 	}
 }
 
+// HasEntitiesGlobal ...
 func HasEntitiesGlobal(t *testing.T, n []zinc.EntityID) {
 	for _, id := range n {
 		// Act
@@ -97,6 +109,7 @@ func HasEntitiesGlobal(t *testing.T, n []zinc.EntityID) {
 	}
 }
 
+// DoesNotHaveEntities ...
 func DoesNotHaveEntities(t *testing.T, e *zinc.EntityManager, n []zinc.EntityID) {
 	for _, id := range n {
 		// Act
@@ -106,6 +119,7 @@ func DoesNotHaveEntities(t *testing.T, e *zinc.EntityManager, n []zinc.EntityID)
 	}
 }
 
+// DoesNotHaveEntitiesGlobal ...
 func DoesNotHaveEntitiesGlobal(t *testing.T, n []zinc.EntityID) {
 	for _, id := range n {
 		// Act

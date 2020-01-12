@@ -6,30 +6,16 @@ instead of having call myKit.RegisterMyComponent for every single component for 
 
 package zinc
 
-var entityManager = NewEntityManager()
-
-// Default ...
-func Default() *EntityManager {
-	return entityManager
-}
-
 // EntityID ...
 type EntityID uint
-
-func newEntityIDFactory() func() interface{} {
-	id := EntityID(0)
-	return func() interface{} {
-		id++
-		return id
-	}
-}
 
 // EntityManager ...
 type EntityManager struct {
 	entityList   *el
 	groupsMap    map[uint]int
+	pool         []EntityID
+	id           EntityID
 	groups       []*g
-	pool         *p
 	context      CTX
 	componentMap map[uint]CMP
 }
@@ -39,7 +25,6 @@ func NewEntityManager() *EntityManager {
 	e := &EntityManager{
 		entityList:   newEntityList(),
 		groupsMap:    make(map[uint]int, 0),
-		pool:         newPool(newEntityIDFactory()),
 		componentMap: make(map[uint]CMP),
 	}
 
@@ -58,8 +43,10 @@ func (e *EntityManager) addGroup(g *g) {
 }
 
 func (e *EntityManager) deleteEntity(id EntityID) {
-	e.entityList.DeleteEntity(id)
-	e.pool.Put(id)
+	if !e.entityList.DeleteEntity(id) {
+		panic("what?!")
+	}
+	e.putID(id)
 }
 
 func (e *EntityManager) componentDeleteEntity(id EntityID) {
@@ -106,20 +93,11 @@ func (e *EntityManager) ResetAll() {
 	e.componentMap = make(map[uint]CMP)
 }
 
-// ResetAll ...
-func ResetAll() {
-	Default().ResetAll()
-}
-
 // Reset ...
 func (e *EntityManager) Reset() {
 	e.DeleteEntities()
-	e.pool = newPool(newEntityIDFactory())
-}
-
-// Reset ...
-func Reset() {
-	Default().Reset()
+	e.pool = e.pool[:0]
+	e.id = 0
 }
 
 // DeleteEntities ...
@@ -129,32 +107,34 @@ func (e *EntityManager) DeleteEntities() {
 	}
 }
 
-// DeleteEntities ...
-func DeleteEntities() {
-	Default().DeleteEntities()
+func (e *EntityManager) putID(id EntityID) {
+	e.pool = append(e.pool, id)
+}
+
+func (e *EntityManager) getID() EntityID {
+	l := len(e.pool)
+	if l == 0 {
+		e.id++
+		return e.id
+	}
+	i := l - 1
+	v := e.pool[i]
+	e.pool = e.pool[:i]
+	return v
 }
 
 // CreateEntity ...
 func (e *EntityManager) CreateEntity() EntityID {
-	v := e.pool.Get()
-	id := v.(EntityID)
-	e.entityList.AddEntity(id)
+	id := e.getID()
+	if !e.entityList.AddEntity(id) {
+		panic("what?!")
+	}
 	return id
-}
-
-// CreateEntity ...
-func CreateEntity() EntityID {
-	return Default().CreateEntity()
 }
 
 // HasEntity ...
 func (e *EntityManager) HasEntity(id EntityID) bool {
 	return e.entityList.HasEntity(id)
-}
-
-// HasEntity ...
-func HasEntity(id EntityID) bool {
-	return Default().HasEntity(id)
 }
 
 // DeleteEntity ...
@@ -166,19 +146,9 @@ func (e *EntityManager) DeleteEntity(id EntityID) {
 	}
 }
 
-// DeleteEntity ...
-func DeleteEntity(id EntityID) {
-	Default().DeleteEntity(id)
-}
-
 // Entities ...
 func (e *EntityManager) Entities() []EntityID {
 	return e.entityList.Entities()
-}
-
-// Entities ...
-func Entities() []EntityID {
-	return Default().Entities()
 }
 
 // RegisterComponent ...
@@ -208,20 +178,9 @@ func (e *EntityManager) CreateCollector(et ...ET) C {
 	return NewCollector(group, groupEvent)
 }
 
-
-// CreateCollector ...
-func CreateCollector(et ...ET) C {
-	return Default().CreateCollector(et...)
-}
-
 // GroupCount ...
 func (e *EntityManager) GroupCount() int {
 	return len(e.groups)
-}
-
-// GroupCount ...
-func GroupCount() int {
-	return Default().GroupCount()
 }
 
 // Group ...
@@ -235,11 +194,6 @@ func (e *EntityManager) Group(m M) G {
 	}
 	e.addGroup(g)
 	return g
-}
-
-// Group ...
-func Group(m M) G {
-	return Default().Group(m)
 }
 
 // CMP ...

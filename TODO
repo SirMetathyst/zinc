@@ -1,0 +1,5 @@
+Kits:
+    - FlatbufferKit (for save/load)
+    - BinaryKit     (for networking/bin packing)
+    - SyncKit       (for world replication / syncing components between machines)
+    - SDLKit        (for SDL layer, rendering, input, windows etc)
