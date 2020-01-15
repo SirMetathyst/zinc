@@ -58,6 +58,7 @@ func init() {
 // DeleteEntity ...
 func (c *LocalScale2Component) DeleteEntity(id zinc.EntityID) {
 	delete(c.data, id)
+	c.ctx.ComponentDeleted(LocalScale2Key, id)
 }
 
 // HasEntity ...
@@ -82,12 +83,6 @@ func (c *LocalScale2Component) SetLocalScale2(id zinc.EntityID, localscale2 Loca
 // LocalScale2 ...
 func (c *LocalScale2Component) LocalScale2(id zinc.EntityID) LocalScale2Data {
 	return c.data[id]
-}
-
-// DeleteLocalScale2 ...
-func (c *LocalScale2Component) DeleteLocalScale2(id zinc.EntityID) {
-	delete(c.data, id)
-	c.ctx.ComponentDeleted(LocalScale2Key, id)
 }
 
 // SetLocalScale2X ...
@@ -116,9 +111,8 @@ func LocalScale2(id zinc.EntityID) LocalScale2Data {
 
 // DeleteLocalScale2X ...
 func DeleteLocalScale2X(e *zinc.EntityManager, id zinc.EntityID) {
-	v, _ := e.Component(LocalScale2Key)
-	c := v.(*LocalScale2Component)
-	c.DeleteLocalScale2(id)
+	v, _ := e.Component(LocalPosition2Key)
+	v.DeleteEntity(id)
 }
 
 // DeleteLocalScale2 ...

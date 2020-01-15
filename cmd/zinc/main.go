@@ -74,6 +74,7 @@ func init() {
 // DeleteEntity ...
 func (c *${Component}Component) DeleteEntity(id zinc.EntityID) {
 	delete(c.data, id)
+	c.ctx.ComponentDeleted(${Component}Key, id)
 }
 
 // HasEntity ...
@@ -98,12 +99,6 @@ func (c *${Component}Component) Set${Component}(id zinc.EntityID, ${component} $
 // ${Component} ...
 func (c *${Component}Component) ${Component}(id zinc.EntityID) ${Component}Data {
 	return c.data[id]
-}
-
-// Delete${Component} ...
-func (c *${Component}Component) Delete${Component}(id zinc.EntityID) {
-	delete(c.data, id)
-	c.ctx.ComponentDeleted(${Component}Key, id)
 }
 
 // Set${Component}X ...
@@ -132,9 +127,8 @@ func ${Component}(id zinc.EntityID) ${Component}Data {
 
 // Delete${Component}X ...
 func Delete${Component}X(e *zinc.EntityManager, id zinc.EntityID) {
-	v, _ := e.Component(${Component}Key)
-	c := v.(*${Component}Component)
-	c.Delete${Component}(id)
+	v, _ := e.Component(LocalPosition2Key)
+	v.DeleteEntity(id)
 }
 
 // Delete${Component} ...

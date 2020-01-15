@@ -5,7 +5,6 @@ type G interface {
 	HandleEntitySilently(id EntityID)
 	HandleEntity(key uint, id EntityID)
 	UpdateEntity(key uint, id EntityID)
-	DeleteEntity(id EntityID) bool
 	HasEntity(id EntityID) bool
 	Entities() []EntityID
 	HandleEntityAdded(f EntityEventFunc)
@@ -75,12 +74,6 @@ func (g *g) UpdateEntity(key uint, id EntityID) {
 			h(key, id)
 		}
 	}
-}
-
-// DeleteEntity ...
-// TODO: Write TEST
-func (g *g) DeleteEntity(id EntityID) bool {
-	return g.entityList.DeleteEntity(id)
 }
 
 // HasEntity ...

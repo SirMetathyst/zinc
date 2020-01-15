@@ -58,6 +58,7 @@ func init() {
 // DeleteEntity ...
 func (c *LocalPosition2Component) DeleteEntity(id zinc.EntityID) {
 	delete(c.data, id)
+	c.ctx.ComponentDeleted(LocalPosition2Key, id)
 }
 
 // HasEntity ...
@@ -82,12 +83,6 @@ func (c *LocalPosition2Component) SetLocalPosition2(id zinc.EntityID, localposit
 // LocalPosition2 ...
 func (c *LocalPosition2Component) LocalPosition2(id zinc.EntityID) LocalPosition2Data {
 	return c.data[id]
-}
-
-// DeleteLocalPosition2 ...
-func (c *LocalPosition2Component) DeleteLocalPosition2(id zinc.EntityID) {
-	delete(c.data, id)
-	c.ctx.ComponentDeleted(LocalPosition2Key, id)
 }
 
 // SetLocalPosition2X ...
@@ -117,8 +112,7 @@ func LocalPosition2(id zinc.EntityID) LocalPosition2Data {
 // DeleteLocalPosition2X ...
 func DeleteLocalPosition2X(e *zinc.EntityManager, id zinc.EntityID) {
 	v, _ := e.Component(LocalPosition2Key)
-	c := v.(*LocalPosition2Component)
-	c.DeleteLocalPosition2(id)
+	v.DeleteEntity(id)
 }
 
 // DeleteLocalPosition2 ...

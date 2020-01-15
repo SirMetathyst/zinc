@@ -58,6 +58,7 @@ func init() {
 // DeleteEntity ...
 func (c *Velocity2Component) DeleteEntity(id zinc.EntityID) {
 	delete(c.data, id)
+	c.ctx.ComponentDeleted(Velocity2Key, id)
 }
 
 // HasEntity ...
@@ -82,12 +83,6 @@ func (c *Velocity2Component) SetVelocity2(id zinc.EntityID, velocity2 Velocity2D
 // Velocity2 ...
 func (c *Velocity2Component) Velocity2(id zinc.EntityID) Velocity2Data {
 	return c.data[id]
-}
-
-// DeleteVelocity2 ...
-func (c *Velocity2Component) DeleteVelocity2(id zinc.EntityID) {
-	delete(c.data, id)
-	c.ctx.ComponentDeleted(Velocity2Key, id)
 }
 
 // SetVelocity2X ...
@@ -116,9 +111,8 @@ func Velocity2(id zinc.EntityID) Velocity2Data {
 
 // DeleteVelocity2X ...
 func DeleteVelocity2X(e *zinc.EntityManager, id zinc.EntityID) {
-	v, _ := e.Component(Velocity2Key)
-	c := v.(*Velocity2Component)
-	c.DeleteVelocity2(id)
+	v, _ := e.Component(LocalPosition2Key)
+	v.DeleteEntity(id)
 }
 
 // DeleteVelocity2 ...

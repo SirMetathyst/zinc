@@ -55,12 +55,6 @@ func (e *EntityManager) componentDeleteEntity(id EntityID) {
 	}
 }
 
-func (e *EntityManager) groupDeleteEntity(id EntityID) {
-	for _, g := range e.groups {
-		g.DeleteEntity(id)
-	}
-}
-
 func (e *EntityManager) groupHandleEntity(key uint, id EntityID) {
 	for _, g := range e.groups {
 		g.HandleEntity(key, id)
@@ -142,7 +136,6 @@ func (e *EntityManager) DeleteEntity(id EntityID) {
 	if e.HasEntity(id) {
 		e.deleteEntity(id)
 		e.componentDeleteEntity(id)
-		e.groupDeleteEntity(id)
 	}
 }
 

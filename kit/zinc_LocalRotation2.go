@@ -58,6 +58,7 @@ func init() {
 // DeleteEntity ...
 func (c *LocalRotation2Component) DeleteEntity(id zinc.EntityID) {
 	delete(c.data, id)
+	c.ctx.ComponentDeleted(LocalRotation2Key, id)
 }
 
 // HasEntity ...
@@ -82,12 +83,6 @@ func (c *LocalRotation2Component) SetLocalRotation2(id zinc.EntityID, localrotat
 // LocalRotation2 ...
 func (c *LocalRotation2Component) LocalRotation2(id zinc.EntityID) LocalRotation2Data {
 	return c.data[id]
-}
-
-// DeleteLocalRotation2 ...
-func (c *LocalRotation2Component) DeleteLocalRotation2(id zinc.EntityID) {
-	delete(c.data, id)
-	c.ctx.ComponentDeleted(LocalRotation2Key, id)
 }
 
 // SetLocalRotation2X ...
@@ -116,9 +111,8 @@ func LocalRotation2(id zinc.EntityID) LocalRotation2Data {
 
 // DeleteLocalRotation2X ...
 func DeleteLocalRotation2X(e *zinc.EntityManager, id zinc.EntityID) {
-	v, _ := e.Component(LocalRotation2Key)
-	c := v.(*LocalRotation2Component)
-	c.DeleteLocalRotation2(id)
+	v, _ := e.Component(LocalPosition2Key)
+	v.DeleteEntity(id)
 }
 
 // DeleteLocalRotation2 ...
