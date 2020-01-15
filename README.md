@@ -3,12 +3,10 @@
 [![codecov](https://codecov.io/gh/SirMetathyst/zinc/branch/master/graph/badge.svg)](https://codecov.io/gh/SirMetathyst/zinc)
 [![Build Status](https://travis-ci.com/SirMetathyst/zinc.svg?branch=master)](https://travis-ci.com/SirMetathyst/zinc)
 
-`ZincECS` is an entity-component-system package inspired by Simon Schmid's [Entitas-CSharp](https://github.com/sschmid/Entitas-CSharp) and [Atom proof-of-concept](https://github.com/sschmid/Entitas-CSharp/issues/902) but for the go language. I had searched for an ECS package for golang but I couldn't find one which I liked from the short few that I did find. So I decided to write my own.
-
-Zinc focuses mainly on modularity of components/systems while performance coming in as a close second. 
+`ZincECS` is an entity-component-system package inspired by Simon Schmid's [Entitas-CSharp](https://github.com/sschmid/Entitas-CSharp) and [Atom proof-of-concept](https://github.com/sschmid/Entitas-CSharp/issues/902) but for the go language. ZincECS uses code-generation to achieve a nice API similar to EntitasECS using the built-in ZincCLI. This package puts focus on modularity and ease of use with performance coming in as a close second. 
 
 # Installation
-This will install the Zinc CLI along with the `zinc` package.
+This will install the ZincCLI along with the `zinc` package.
 ```golang
 go get github.com/SirMetathyst/zinc/...
 ```
@@ -21,7 +19,7 @@ There isn't much we can do without any components so lets go ahead and generate 
 zinc component add -p components -n position -d x:float32 -d y:float32 -o ./components
 zinc component add -p components -n velocity -d x:float32 -d y:float32 -o ./components
 ```
-So, What's going on here? We're calling the `Zinc` CLI and passing in some arguments. Firstly the `p` param tells the `Zinc` CLI that we want the generated file to have the package name of `components`. Then we're telling it we want a component with the name of `position` and defining some data types for that component. The format must be in `name:type` but there are no checks done for whether the type is valid. It just replaces a value in the template. Lastly we give it a folder we want our component files to live in. Now we have some components generated to play with.
+We first call the `ZincCLI` and pass in some arguments. The `p` argument tells the `ZincCLI` that we want our generated component to have the package name of `components`. Then we tell it we want a component with the name of `position` and specify the data. The format must be in `name:type` but no checks are done to ensure valid go code. Lastly, we give it a folder where we want our component files to be generated in. Now we have some components generated to play with.
 
 ```golang
 package main
@@ -29,11 +27,13 @@ package main
 import (
     "github.com/SirMetathyst/zinc"
 
-    // importing your components package will
+    // importing your component package will
     // automatically register component types
     // with the default entity manager
     // see generated files for how to do it manually
-    // if required.
+    // if required. The convention I use is to call it a "kit"
+    // where the root contains all your components and /systems
+    // contains all logic for those components
     "xxx/xxx/to/yourkit"
 )
 
@@ -82,11 +82,12 @@ func main() {
 ```
 
 ## Systems
-Zinc has a built-in way  to init/update/cleanup your systems
+Zinc has a simple, built-in way  to init/update/cleanup your systems
 
 ```golang
 sys := zinc.NewSystems()
 sys.Add(yourkit.NewPositionSystem())
+sys.Add(yourkit.NewAllSystems()...)
 
 // init systems, must have `Initialize()` method
 sys.Initialize()
@@ -141,11 +142,11 @@ func (s PositionSystem) Update(dt float64) {
 ```
 
 # Contributing
-I dont really have a contribution guideline. Just post an issue or pull request if you'd like to add or change something in `Zinc`. I generally welcome pull requests but don't be disappointed if it gets rejected. You can always fork it.
+I dont really have a contribution guideline. Just post an issue or pull request if you'd like to add or change something in `ZincECS`. I generally welcome pull requests but don't be disappointed if it gets rejected. You can always fork it.
 
-# Projects/Examples that I use `Zinc` in
-- [Zinckit](https://github.com/SirMetathyst/zinckit) - Collection of Systems and Components for `Zinc` projects
+# Projects/Examples I use ZincECS in
+- [Zinckit](https://github.com/SirMetathyst/zinckit) - Collection of Systems and Components for `ZincECS` projects
 <!--
-- [Zincbird](https://github.com/SirMetathyst/zincbird) - Flappy birds clone written with `Zinc`
-- [Zincpong](https://github.com/SirMetathyst/zincbird) - Pong clone written with `Zinc`-->
+- [Zincbird](https://github.com/SirMetathyst/zincbird) - Flappy birds clone written with `ZincECS`
+- [Zincpong](https://github.com/SirMetathyst/zincbird) - Pong clone written with `ZincECS`-->
 
