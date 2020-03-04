@@ -83,7 +83,7 @@ func TestEntityManagerRegisterComponent(t *testing.T) {
 
 		// Act
 		do := func() {
-			kit.AddLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 20})
+			kit.AddLocalPosition2X(e, id, kit.ZLocalPosition2Data{X: 10, Y: 20})
 		}
 
 		// Assert
@@ -115,7 +115,7 @@ func TestEntityManagerResetAll(t *testing.T) {
 
 	// Act
 	e.ResetAll()
-	do := func() { kit.AddLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 20}) }
+	do := func() { kit.AddLocalPosition2X(e, id, kit.ZLocalPosition2Data{X: 10, Y: 20}) }
 
 	// Assert
 	assert.Panics(t, do, "should panic because component type has been deleted due to reset all")
@@ -136,7 +136,7 @@ func TestEntityManagerCollector(t *testing.T) {
 	// Setup
 	e := zinc.NewEntityManager()
 	// Arrange, Act
-	c := e.NewCollector(zinc.Added(kit.LocalPosition2Key))
+	c := e.NewCollector(zinc.Added(kit.ZLocalPosition2))
 	// Assert
 	assert.NotNil(t, c, "entity manager must not return nil collector")
 }

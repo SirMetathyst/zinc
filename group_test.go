@@ -19,11 +19,11 @@ func TestGroupHandleEntitySilently(t *testing.T) {
 
 		// Arrange
 		id := e.CreateEntity()
-		kit.AddLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 10})
+		kit.AddLocalPosition2X(e, id, kit.ZLocalPosition2Data{X: 10, Y: 10})
 		called := false
 
 		// Act
-		g := e.Group(zinc.AllOf(kit.LocalPosition2Key, kit.LocalRotation2Key))
+		g := e.Group(zinc.AllOf(kit.ZLocalPosition2, kit.ZLocalRotation2))
 		g.HandleEntityAdded(func(key uint, id zinc.EntityID) {
 			called = true
 		})
@@ -42,12 +42,12 @@ func TestGroupHandleEntitySilently(t *testing.T) {
 
 		// Arrange
 		id := e.CreateEntity()
-		kit.AddLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 10})
-		kit.AddLocalRotation2X(e, id, kit.LocalRotation2Data{X: 10, Y: 10})
+		kit.AddLocalPosition2X(e, id, kit.ZLocalPosition2Data{X: 10, Y: 10})
+		kit.AddLocalRotation2X(e, id, kit.ZLocalRotation2Data{X: 10, Y: 10})
 		called := false
 
 		// Act
-		g := e.Group(zinc.AllOf(kit.LocalPosition2Key, kit.LocalRotation2Key))
+		g := e.Group(zinc.AllOf(kit.ZLocalPosition2, kit.ZLocalRotation2))
 		g.HandleEntityAdded(func(key uint, id zinc.EntityID) {
 			called = true
 		})
@@ -69,14 +69,14 @@ func TestGroupHandleEntity(t *testing.T) {
 
 		// Arrange
 		called := false
-		g := e.Group(zinc.AllOf(kit.LocalPosition2Key, kit.LocalRotation2Key))
+		g := e.Group(zinc.AllOf(kit.ZLocalPosition2, kit.ZLocalRotation2))
 		g.HandleEntityAdded(func(key uint, id zinc.EntityID) {
 			called = true
 		})
 
 		// Act
 		id := e.CreateEntity()
-		kit.AddLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 10})
+		kit.AddLocalPosition2X(e, id, kit.ZLocalPosition2Data{X: 10, Y: 10})
 
 		// Assert
 		assert.Equal(t, 0, len(g.Entities()), "group should not contain any entities")
@@ -92,15 +92,15 @@ func TestGroupHandleEntity(t *testing.T) {
 
 		// Arrange
 		called := false
-		g := e.Group(zinc.AllOf(kit.LocalPosition2Key, kit.LocalRotation2Key))
+		g := e.Group(zinc.AllOf(kit.ZLocalPosition2, kit.ZLocalRotation2))
 		g.HandleEntityAdded(func(key uint, id zinc.EntityID) {
 			called = true
 		})
 
 		// Act
 		id := e.CreateEntity()
-		kit.AddLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 10})
-		kit.AddLocalRotation2X(e, id, kit.LocalRotation2Data{X: 10, Y: 10})
+		kit.AddLocalPosition2X(e, id, kit.ZLocalPosition2Data{X: 10, Y: 10})
+		kit.AddLocalRotation2X(e, id, kit.ZLocalRotation2Data{X: 10, Y: 10})
 
 		// Assert
 		assert.Equal(t, 1, len(g.Entities()), "group should contain 1 entity")
@@ -118,15 +118,15 @@ func TestGroupUpdateEntity(t *testing.T) {
 
 		// Arrange
 		called := false
-		g := e.Group(zinc.AllOf(kit.LocalPosition2Key))
+		g := e.Group(zinc.AllOf(kit.ZLocalPosition2))
 		g.HandleEntityUpdated(func(key uint, id zinc.EntityID) {
 			called = true
 		})
 
 		// Act
 		id := e.CreateEntity()
-		kit.AddLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 10})
-		kit.UpdateLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 20})
+		kit.AddLocalPosition2X(e, id, kit.ZLocalPosition2Data{X: 10, Y: 10})
+		kit.UpdateLocalPosition2X(e, id, kit.ZLocalPosition2Data{X: 10, Y: 20})
 
 		// Assert
 		assert.Equal(t, 1, len(g.Entities()), "group should contain 1 entity")
@@ -144,14 +144,14 @@ func TestGroupDeleteEntity(t *testing.T) {
 
 		// Arrange
 		called := false
-		g := e.Group(zinc.AllOf(kit.LocalPosition2Key))
+		g := e.Group(zinc.AllOf(kit.ZLocalPosition2))
 		g.HandleEntityDeleted(func(key uint, id zinc.EntityID) {
 			called = true
 		})
 
 		// Act
 		id := e.CreateEntity()
-		kit.AddLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 10})
+		kit.AddLocalPosition2X(e, id, kit.ZLocalPosition2Data{X: 10, Y: 10})
 		kit.DeleteLocalPosition2X(e, id)
 
 		// Assert
@@ -169,11 +169,11 @@ func TestGroupHasEntity(t *testing.T) {
 		kit.RegisterLocalPosition2ComponentWith(e)
 
 		// Arrange
-		g := e.Group(zinc.AllOf(kit.LocalPosition2Key))
+		g := e.Group(zinc.AllOf(kit.ZLocalPosition2))
 
 		// Act
 		id := e.CreateEntity()
-		kit.AddLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 10})
+		kit.AddLocalPosition2X(e, id, kit.ZLocalPosition2Data{X: 10, Y: 10})
 		has := g.HasEntity(id)
 
 		// Assert

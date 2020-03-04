@@ -4,11 +4,11 @@ import (
 	"github.com/SirMetathyst/zinc"
 )
 
-// LocalScale2Key ...
-var LocalScale2Key uint = uint(54082440)
+// ZLocalScale2 ...
+var ZLocalScale2 uint = uint(54082440)
 
-//LocalScale2Data ...
-type LocalScale2Data struct {
+// ZLocalScale2Data ...
+type ZLocalScale2Data struct {
 	X	float32
 	Y	float32
 	
@@ -17,26 +17,26 @@ type LocalScale2Data struct {
 // LocalScale2Component ...
 type LocalScale2Component struct {
 	ctx  *zinc.ZContext
-	data map[zinc.EntityID]LocalScale2Data
+	data map[zinc.EntityID]ZLocalScale2Data
 }
 
 // RegisterLocalScale2ComponentWith ...
 func RegisterLocalScale2ComponentWith(e *zinc.ZEntityManager) {
 	x := NewLocalScale2Component()
-	ctx := e.RegisterComponent(LocalScale2Key, x)
+	ctx := e.RegisterComponent(ZLocalScale2, x)
 	x.SetContext(ctx)
 }
 
 // RegisterLocalScale2Component ...
 func RegisterLocalScale2Component() {
 	x := NewLocalScale2Component()
-	ctx := zinc.Default().RegisterComponent(LocalScale2Key, x)
+	ctx := zinc.Default().RegisterComponent(ZLocalScale2, x)
 	x.SetContext(ctx)
 }
 
 // NewLocalScale2Component ...
 func NewLocalScale2Component() *LocalScale2Component {
-	return &LocalScale2Component{data: make(map[zinc.EntityID]LocalScale2Data)}
+	return &LocalScale2Component{data: make(map[zinc.EntityID]ZLocalScale2Data)}
 }
 
 func init() {
@@ -51,21 +51,21 @@ func (c *LocalScale2Component) SetContext(ctx *zinc.ZContext) {
 }
 
 // AddLocalScale2 ...
-func (c *LocalScale2Component) AddLocalScale2(id zinc.EntityID, data LocalScale2Data) error {
+func (c *LocalScale2Component) AddLocalScale2(id zinc.EntityID, data ZLocalScale2Data) error {
 	if c.ctx.HasEntity(id) && !c.HasEntity(id) {
 		c.data[id] = data
-		c.ctx.ComponentAdded(LocalScale2Key, id)
+		c.ctx.ComponentAdded(ZLocalScale2, id)
 		return nil
 	}
 	return zinc.ErrComponentNotFound
 }
 
 // UpdateLocalScale2 ...
-func (c *LocalScale2Component) UpdateLocalScale2(id zinc.EntityID, data LocalScale2Data, silent bool) error {
+func (c *LocalScale2Component) UpdateLocalScale2(id zinc.EntityID, data ZLocalScale2Data, silent bool) error {
 	if c.ctx.HasEntity(id) && c.HasEntity(id) {
 		c.data[id] = data
 		if !silent {
-			c.ctx.ComponentUpdated(LocalScale2Key, id)
+			c.ctx.ComponentUpdated(ZLocalScale2, id)
 		}
 		return nil
 	}
@@ -79,7 +79,7 @@ func (c *LocalScale2Component) HasEntity(id zinc.EntityID) bool {
 }
 
 // LocalScale2 ...
-func (c *LocalScale2Component) LocalScale2(id zinc.EntityID) (LocalScale2Data, error) {
+func (c *LocalScale2Component) LocalScale2(id zinc.EntityID) (ZLocalScale2Data, error) {
 	data, ok := c.data[id]
 	if ok {
 		return data, nil
@@ -91,21 +91,21 @@ func (c *LocalScale2Component) LocalScale2(id zinc.EntityID) (LocalScale2Data, e
 func (c *LocalScale2Component) DeleteEntity(id zinc.EntityID) error {
 	if c.ctx.HasEntity(id) && c.HasEntity(id) {
 		delete(c.data, id)
-		c.ctx.ComponentDeleted(LocalScale2Key, id)
+		c.ctx.ComponentDeleted(ZLocalScale2, id)
 		return nil
 	} 
 	return zinc.ErrComponentNotFound
 }
 
 // AddLocalScale2X ...
-func AddLocalScale2X(e *zinc.ZEntityManager, id zinc.EntityID, data LocalScale2Data) error {
-	v := e.Component(LocalScale2Key)
+func AddLocalScale2X(e *zinc.ZEntityManager, id zinc.EntityID, data ZLocalScale2Data) error {
+	v := e.Component(ZLocalScale2)
 	c := v.(*LocalScale2Component)
 	return c.AddLocalScale2(id, data)
 }
 
 // MustAddLocalScale2X ...
-func MustAddLocalScale2X(e *zinc.ZEntityManager, id zinc.EntityID, data LocalScale2Data) {
+func MustAddLocalScale2X(e *zinc.ZEntityManager, id zinc.EntityID, data ZLocalScale2Data) {
 	err := AddLocalScale2X(e, id, data)
 	if err != nil {
 		panic(err)
@@ -113,12 +113,12 @@ func MustAddLocalScale2X(e *zinc.ZEntityManager, id zinc.EntityID, data LocalSca
 }
 
 // AddLocalScale2 ...
-func AddLocalScale2(id zinc.EntityID, data LocalScale2Data) error {
+func AddLocalScale2(id zinc.EntityID, data ZLocalScale2Data) error {
 	return AddLocalScale2X(zinc.Default(), id, data)
 }
 
 // MustAddLocalScale2 ...
-func MustAddLocalScale2(id zinc.EntityID, data LocalScale2Data) {
+func MustAddLocalScale2(id zinc.EntityID, data ZLocalScale2Data) {
 	err := AddLocalScale2X(zinc.Default(), id, data)
 	if err != nil {
 		panic(err)
@@ -126,14 +126,14 @@ func MustAddLocalScale2(id zinc.EntityID, data LocalScale2Data) {
 }
 
 // UpdateLocalScale2SilentlyX ...
-func UpdateLocalScale2SilentlyX(e *zinc.ZEntityManager, id zinc.EntityID, data LocalScale2Data) error {
-	v := e.Component(LocalScale2Key)
+func UpdateLocalScale2SilentlyX(e *zinc.ZEntityManager, id zinc.EntityID, data ZLocalScale2Data) error {
+	v := e.Component(ZLocalScale2)
 	c := v.(*LocalScale2Component)
 	return c.UpdateLocalScale2(id, data, true)
 }
 
 // MustUpdateLocalScale2SilentlyX ...
-func MustUpdateLocalScale2SilentlyX(e *zinc.ZEntityManager, id zinc.EntityID, data LocalScale2Data) {
+func MustUpdateLocalScale2SilentlyX(e *zinc.ZEntityManager, id zinc.EntityID, data ZLocalScale2Data) {
 	err := UpdateLocalScale2SilentlyX(e, id, data)
 	if err != nil {
 		panic(err)
@@ -141,12 +141,12 @@ func MustUpdateLocalScale2SilentlyX(e *zinc.ZEntityManager, id zinc.EntityID, da
 }
 
 // UpdateLocalScale2Silently ...
-func UpdateLocalScale2Silently(id zinc.EntityID, data LocalScale2Data) error {
+func UpdateLocalScale2Silently(id zinc.EntityID, data ZLocalScale2Data) error {
 	return UpdateLocalScale2SilentlyX(zinc.Default(), id, data)
 }
 
 // MustUpdateLocalScale2Silently ...
-func MustUpdateLocalScale2Silently(id zinc.EntityID, data LocalScale2Data) {
+func MustUpdateLocalScale2Silently(id zinc.EntityID, data ZLocalScale2Data) {
 	err := UpdateLocalScale2SilentlyX(zinc.Default(), id, data)
 	if err != nil {
 		panic(err)
@@ -154,14 +154,14 @@ func MustUpdateLocalScale2Silently(id zinc.EntityID, data LocalScale2Data) {
 }
 
 // UpdateLocalScale2X ...
-func UpdateLocalScale2X(e *zinc.ZEntityManager, id zinc.EntityID, data LocalScale2Data) error {
-	v := e.Component(LocalScale2Key)
+func UpdateLocalScale2X(e *zinc.ZEntityManager, id zinc.EntityID, data ZLocalScale2Data) error {
+	v := e.Component(ZLocalScale2)
 	c := v.(*LocalScale2Component)
 	return c.UpdateLocalScale2(id, data, false)
 }
 
 // MustUpdateLocalScale2X ...
-func MustUpdateLocalScale2X(e *zinc.ZEntityManager, id zinc.EntityID, data LocalScale2Data) {
+func MustUpdateLocalScale2X(e *zinc.ZEntityManager, id zinc.EntityID, data ZLocalScale2Data) {
 	err := UpdateLocalScale2X(e, id, data)
 	if err != nil {
 		panic(err)
@@ -169,12 +169,12 @@ func MustUpdateLocalScale2X(e *zinc.ZEntityManager, id zinc.EntityID, data Local
 }
 
 // UpdateLocalScale2 ...
-func UpdateLocalScale2(id zinc.EntityID, data LocalScale2Data) error {
+func UpdateLocalScale2(id zinc.EntityID, data ZLocalScale2Data) error {
 	return UpdateLocalScale2X(zinc.Default(), id, data)
 }
 
 // MustUpdateLocalScale2 ...
-func MustUpdateLocalScale2(id zinc.EntityID, data LocalScale2Data) {
+func MustUpdateLocalScale2(id zinc.EntityID, data ZLocalScale2Data) {
 	err := UpdateLocalScale2X(zinc.Default(), id, data)
 	if err != nil {
 		panic(err)
@@ -183,7 +183,7 @@ func MustUpdateLocalScale2(id zinc.EntityID, data LocalScale2Data) {
 
 // HasLocalScale2X ...
 func HasLocalScale2X(e *zinc.ZEntityManager, id zinc.EntityID) bool {
-	v := e.Component(LocalScale2Key)
+	v := e.Component(ZLocalScale2)
 	return v.HasEntity(id)
 }
 
@@ -193,14 +193,14 @@ func HasLocalScale2(id zinc.EntityID) bool {
 }
 
 // LocalScale2X ...
-func LocalScale2X(e *zinc.ZEntityManager, id zinc.EntityID) (LocalScale2Data, error) {
-	v := e.Component(LocalScale2Key)
+func LocalScale2X(e *zinc.ZEntityManager, id zinc.EntityID) (ZLocalScale2Data, error) {
+	v := e.Component(ZLocalScale2)
 	c := v.(*LocalScale2Component)
 	return c.LocalScale2(id)
 }
 
 // MustLocalScale2X ...
-func MustLocalScale2X(e *zinc.ZEntityManager, id zinc.EntityID) LocalScale2Data {
+func MustLocalScale2X(e *zinc.ZEntityManager, id zinc.EntityID) ZLocalScale2Data {
 	data, err := LocalScale2X(e, id)
 	if err != nil {
 		panic(err)
@@ -209,12 +209,12 @@ func MustLocalScale2X(e *zinc.ZEntityManager, id zinc.EntityID) LocalScale2Data 
 }
 
 // LocalScale2 ...
-func LocalScale2(id zinc.EntityID) (LocalScale2Data, error) {
+func LocalScale2(id zinc.EntityID) (ZLocalScale2Data, error) {
 	return LocalScale2X(zinc.Default(), id)
 }
 
 // MustLocalScale2 ...
-func MustLocalScale2(id zinc.EntityID) LocalScale2Data {
+func MustLocalScale2(id zinc.EntityID) ZLocalScale2Data {
 	data, err := LocalScale2X(zinc.Default(), id)
 	if err != nil {
 		panic(err)
@@ -224,7 +224,7 @@ func MustLocalScale2(id zinc.EntityID) LocalScale2Data {
 
 // DeleteLocalScale2X ...
 func DeleteLocalScale2X(e *zinc.ZEntityManager, id zinc.EntityID) error {
-	v := e.Component(LocalScale2Key)
+	v := e.Component(ZLocalScale2)
 	return v.DeleteEntity(id)
 }
 

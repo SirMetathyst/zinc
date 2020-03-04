@@ -11,7 +11,7 @@ import (
 // Group ...
 func Group(t *testing.T, e *zinc.ZEntityManager) {
 	// Arrange, Act
-	g := e.Group(zinc.AllOf(kit.LocalPosition2Key))
+	g := e.Group(zinc.AllOf(kit.ZLocalPosition2))
 	// Assert
 	assert.NotNil(t, g, "entity manager must not return nil group")
 	assert.Equal(t, 1, e.GroupCount(), "group count must be equal to 1")
@@ -20,7 +20,7 @@ func Group(t *testing.T, e *zinc.ZEntityManager) {
 // GroupGlobal ...
 func GroupGlobal(t *testing.T) {
 	// Arrange, Act
-	g := zinc.Group(zinc.AllOf(kit.LocalPosition2Key))
+	g := zinc.Group(zinc.AllOf(kit.ZLocalPosition2))
 	// Assert
 	assert.NotNil(t, g, "entity manager must not return nil group")
 	assert.Equal(t, 1, zinc.GroupCount(), "group count must be equal to 1")
