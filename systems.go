@@ -22,14 +22,15 @@ type ZSystems struct {
 	cleanup    []Cleanup
 }
 
-// NewSystems ...
-// TODO: Write TEST
+// NewSystems returns a new systems container
+// and returns it.
 func NewSystems() *ZSystems {
 	return &ZSystems{}
 }
 
-// Add ...
-// TODO: Write TEST
+// Add takes in one or more types
+// and adds them to lists based on what
+// system methods have been implemented.
 func (s *ZSystems) Add(sys ...interface{}) {
 	for _, sysv := range sys {
 		switch v := sysv.(type) {
@@ -46,24 +47,24 @@ func (s *ZSystems) Add(sys ...interface{}) {
 	}
 }
 
-// Initialize ...
-// TODO: Write TEST
+// Initialize calls the initialize method
+// on all systems in the systems list.
 func (s *ZSystems) Initialize() {
 	for _, sys := range s.initialize {
 		sys.Initialize()
 	}
 }
 
-// Update ...
-// TODO: Write TEST
+// Update calls the update method
+// on all systems in the systems list.
 func (s *ZSystems) Update(dt float64) {
 	for _, sys := range s.update {
 		sys.Update(dt)
 	}
 }
 
-// Cleanup ...
-// TODO: Write TEST
+// Cleanup calls the clean up method
+// on all systems in the systems list.
 func (s *ZSystems) Cleanup() {
 	for _, sys := range s.cleanup {
 		sys.Cleanup()

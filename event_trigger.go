@@ -12,7 +12,10 @@ const (
 	GroupEventUpdated
 )
 
-// GroupEventValid ...
+// GroupEventValid returns true
+// if the group event holds one of the
+// three valid values and false if it does
+// not.
 func GroupEventValid(e GroupEvent) bool {
 	if e >= 0 || e <= 2 {
 		return true
@@ -26,32 +29,44 @@ type ZEventTrigger struct {
 	groupEvent GroupEvent
 }
 
-// Matcher ...
+// Matcher returns the matcher of this trigger.
 func (e *ZEventTrigger) Matcher() *ZMatcher {
 	return e.matcher
 }
 
-// GroupEvent ...
+// GroupEvent returns the group event of this trigger.
 func (e *ZEventTrigger) GroupEvent() GroupEvent {
 	return e.groupEvent
 }
 
-// NewEventTrigger ...
+// NewEventTrigger creates a new event trigger and returns it.
 func NewEventTrigger(m *ZMatcher, e GroupEvent) *ZEventTrigger {
 	return &ZEventTrigger{matcher: m, groupEvent: e}
 }
 
-// Added ...
+// Added returns an event trigger with
+// a matcher that includes the given
+// component keys for matching an entity.
+// It triggers when all of the given
+// keys are added to the matcher.
 func Added(keys ...uint) *ZEventTrigger {
 	return NewEventTrigger(AllOf(keys...), GroupEventAdded)
 }
 
-// Updated ...
+// Updated returns an event trigger with
+// a matcher that includes the given
+// component keys for matching an entity.
+// It triggers when any one of the given
+// keys are updated in the matcher.
 func Updated(keys ...uint) *ZEventTrigger {
 	return NewEventTrigger(AllOf(keys...), GroupEventUpdated)
 }
 
-// Deleted ...
+// Deleted returns an event trigger with
+// a matcher that includes the given
+// component keys for matching an entity.
+// It triggers when any one of the given
+// keys are deleted from the matcher.
 func Deleted(keys ...uint) *ZEventTrigger {
 	return NewEventTrigger(AllOf(keys...), GroupEventDeleted)
 }

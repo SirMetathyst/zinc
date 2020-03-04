@@ -10,3 +10,5 @@ API
         that you can call a single method e.g. EntityManager.RegisterComponentsWithRegistry. 
         instead of having call myKit.RegisterMyComponent for every single component for multiple 
         entity managers.
+    - write example files for go.doc using example_xxx.go in project root
+    - write benchmarks

@@ -10,91 +10,37 @@ type ZGroup struct {
 	deletedFunc   []EntityEventFunc
 }
 
-// newGroup ...
-// TODO: Write TEST
-func newGroup(e *ZEntityManager, m *ZMatcher) *ZGroup {
-	return &ZGroup{
-		entityManager: e,
-		matcher:       m,
-		entityList:    newEntityList(),
-	}
-}
-
-func (g *ZGroup) addEntity(key uint, id ZEntityID) {
-	if g.entityList.AddEntity(id) && len(g.addedFunc) > 0 {
-		for _, h := range g.addedFunc {
-			h(key, id)
-		}
-	}
-}
-
-func (g *ZGroup) deleteEntity(key uint, id ZEntityID) {
-	if g.entityList.DeleteEntity(id) && len(g.deletedFunc) > 0 {
-		for _, h := range g.deletedFunc {
-			h(key, id)
-		}
-	}
-}
-
-// HandleEntitySilently ...
-func (g *ZGroup) HandleEntitySilently(id ZEntityID) {
-	if ok := g.matcher.Match(g.entityManager, id); ok {
-		g.entityList.AddEntity(id)
-	} else {
-		g.entityList.DeleteEntity(id)
-	}
-}
-
-// HandleEntity ...
-func (g *ZGroup) HandleEntity(key uint, id ZEntityID) {
-	if ok := g.matcher.Match(g.entityManager, id); ok {
-		g.addEntity(key, id)
-	} else {
-		g.deleteEntity(key, id)
-	}
-}
-
-// UpdateEntity ...
-// TODO: Write TEST
-func (g *ZGroup) UpdateEntity(key uint, id ZEntityID) {
-	if g.entityList.HasEntity(id) && len(g.updatedFunc) > 0 {
-		for _, h := range g.updatedFunc {
-			h(key, id)
-		}
-	}
-}
-
-// HasEntity ...
-// TODO: Write TEST
+// HasEntity returns true if the entity id is present
+// in the group or false if it does not.
 func (g *ZGroup) HasEntity(id ZEntityID) bool {
 	return g.entityList.HasEntity(id)
 }
 
-// Entities ...
-// TODO: Write TEST
+// Entities returns a slice of entity ids
+// associated with the current group.
 func (g *ZGroup) Entities() []ZEntityID {
 	return g.entityList.Entities()
 }
 
-// Hash ...
+// Hash returns a hash of the group's matcher.
 func (g *ZGroup) Hash() uint {
 	return g.matcher.Hash()
 }
 
-// HandleEntityAdded ...
-// TODO: Write TEST
-func (g *ZGroup) HandleEntityAdded(f EntityEventFunc) {
+// RegisterEntityAddedFunc adds a callback function which
+// is called when an entity has been added to the group.
+func (g *ZGroup) RegisterEntityAddedFunc(f EntityEventFunc) {
 	g.addedFunc = append(g.addedFunc, f)
 }
 
-// HandleEntityUpdated ...
-// TODO: Write TEST
-func (g *ZGroup) HandleEntityUpdated(f EntityEventFunc) {
+// RegisterEntityUpdatedFunc adds a callback function which
+// is called when an entity in the group has been updated.
+func (g *ZGroup) RegisterEntityUpdatedFunc(f EntityEventFunc) {
 	g.updatedFunc = append(g.updatedFunc, f)
 }
 
-// HandleEntityDeleted ...
-// TODO: Write TEST
-func (g *ZGroup) HandleEntityDeleted(f EntityEventFunc) {
+// RegisterEntityDeletedFunc adds a callback function which
+// is called when an entity has been deleted from the group.
+func (g *ZGroup) RegisterEntityDeletedFunc(f EntityEventFunc) {
 	g.deletedFunc = append(g.deletedFunc, f)
 }

@@ -25,7 +25,7 @@ func (e *ZEntityManager) deleteEntity(id ZEntityID) {
 func (e *ZEntityManager) newGroup(m *ZMatcher) *ZGroup {
 	g := newGroup(e, m)
 	for _, id := range e.Entities() {
-		g.HandleEntitySilently(id)
+		g.handleEntitySilently(id)
 	}
 	return g
 }
@@ -44,13 +44,13 @@ func (e *ZEntityManager) group(m *ZMatcher) *ZGroup {
 
 func (e *ZEntityManager) groupHandleEntity(key uint, id ZEntityID) {
 	for _, g := range e.groups {
-		g.HandleEntity(key, id)
+		g.handleEntity(key, id)
 	}
 }
 
 func (e *ZEntityManager) groupUpdateEntity(key uint, id ZEntityID) {
 	for _, g := range e.groups {
-		g.UpdateEntity(key, id)
+		g.updateEntity(key, id)
 	}
 }
 

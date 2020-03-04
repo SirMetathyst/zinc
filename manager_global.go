@@ -29,7 +29,7 @@ func DeleteEntities() {
 	Default().DeleteEntities()
 }
 
-// CreateEntity creates a new entity id and returns it.
+// CreateEntity creates a new entity and returns the entity id.
 // If an entity was previously deleted it will use the cached
 // entity id and use that one without incrementing the current id.
 func CreateEntity() ZEntityID {

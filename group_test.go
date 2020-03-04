@@ -24,7 +24,7 @@ func TestGroupHandleEntitySilently(t *testing.T) {
 
 		// Act
 		g := e.Group(zinc.AllOf(kit.ZLocalPosition2, kit.ZLocalRotation2))
-		g.HandleEntityAdded(func(key uint, id zinc.ZEntityID) {
+		g.RegisterEntityAddedFunc(func(key uint, id zinc.ZEntityID) {
 			called = true
 		})
 
@@ -48,7 +48,7 @@ func TestGroupHandleEntitySilently(t *testing.T) {
 
 		// Act
 		g := e.Group(zinc.AllOf(kit.ZLocalPosition2, kit.ZLocalRotation2))
-		g.HandleEntityAdded(func(key uint, id zinc.ZEntityID) {
+		g.RegisterEntityAddedFunc(func(key uint, id zinc.ZEntityID) {
 			called = true
 		})
 
@@ -70,7 +70,7 @@ func TestGroupHandleEntity(t *testing.T) {
 		// Arrange
 		called := false
 		g := e.Group(zinc.AllOf(kit.ZLocalPosition2, kit.ZLocalRotation2))
-		g.HandleEntityAdded(func(key uint, id zinc.ZEntityID) {
+		g.RegisterEntityAddedFunc(func(key uint, id zinc.ZEntityID) {
 			called = true
 		})
 
@@ -93,7 +93,7 @@ func TestGroupHandleEntity(t *testing.T) {
 		// Arrange
 		called := false
 		g := e.Group(zinc.AllOf(kit.ZLocalPosition2, kit.ZLocalRotation2))
-		g.HandleEntityAdded(func(key uint, id zinc.ZEntityID) {
+		g.RegisterEntityAddedFunc(func(key uint, id zinc.ZEntityID) {
 			called = true
 		})
 
@@ -119,7 +119,7 @@ func TestGroupUpdateEntity(t *testing.T) {
 		// Arrange
 		called := false
 		g := e.Group(zinc.AllOf(kit.ZLocalPosition2))
-		g.HandleEntityUpdated(func(key uint, id zinc.ZEntityID) {
+		g.RegisterEntityUpdatedFunc(func(key uint, id zinc.ZEntityID) {
 			called = true
 		})
 
@@ -145,7 +145,7 @@ func TestGroupDeleteEntity(t *testing.T) {
 		// Arrange
 		called := false
 		g := e.Group(zinc.AllOf(kit.ZLocalPosition2))
-		g.HandleEntityDeleted(func(key uint, id zinc.ZEntityID) {
+		g.RegisterEntityDeletedFunc(func(key uint, id zinc.ZEntityID) {
 			called = true
 		})
 
