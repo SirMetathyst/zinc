@@ -39,7 +39,7 @@ func GroupCountGlobal(t *testing.T, expectedGroupCount int) {
 }
 
 // CreateEntities ...
-func CreateEntities(t *testing.T, e *zinc.ZEntityManager, n []zinc.EntityID) {
+func CreateEntities(t *testing.T, e *zinc.ZEntityManager, n []zinc.ZEntityID) {
 	for _, expected := range n {
 		// Act
 		actual := e.CreateEntity()
@@ -49,7 +49,7 @@ func CreateEntities(t *testing.T, e *zinc.ZEntityManager, n []zinc.EntityID) {
 }
 
 // CreateEntitiesGlobal ...
-func CreateEntitiesGlobal(t *testing.T, n []zinc.EntityID) {
+func CreateEntitiesGlobal(t *testing.T, n []zinc.ZEntityID) {
 	for _, expected := range n {
 		// Act
 		actual := zinc.CreateEntity()
@@ -59,7 +59,7 @@ func CreateEntitiesGlobal(t *testing.T, n []zinc.EntityID) {
 }
 
 // DeleteEntity ...
-func DeleteEntity(t *testing.T, e *zinc.ZEntityManager, n []zinc.EntityID) {
+func DeleteEntity(t *testing.T, e *zinc.ZEntityManager, n []zinc.ZEntityID) {
 	for _, id := range n {
 		// Act
 		e.DeleteEntity(id)
@@ -69,7 +69,7 @@ func DeleteEntity(t *testing.T, e *zinc.ZEntityManager, n []zinc.EntityID) {
 }
 
 // DeleteEntityGlobal ...
-func DeleteEntityGlobal(t *testing.T, n []zinc.EntityID) {
+func DeleteEntityGlobal(t *testing.T, n []zinc.ZEntityID) {
 	for _, id := range n {
 		// Act
 		zinc.DeleteEntity(id)
@@ -79,19 +79,19 @@ func DeleteEntityGlobal(t *testing.T, n []zinc.EntityID) {
 }
 
 // Entities ...
-func Entities(t *testing.T, e *zinc.ZEntityManager, n []zinc.EntityID) {
+func Entities(t *testing.T, e *zinc.ZEntityManager, n []zinc.ZEntityID) {
 	// Assert
 	assert.ElementsMatch(t, e.Entities(), n, "entity manager must contain ids")
 }
 
 // EntitiesGlobal ...
-func EntitiesGlobal(t *testing.T, n []zinc.EntityID) {
+func EntitiesGlobal(t *testing.T, n []zinc.ZEntityID) {
 	// Assert
 	assert.ElementsMatch(t, zinc.Entities(), n, "entity manager must contain ids")
 }
 
 // HasEntities ...
-func HasEntities(t *testing.T, e *zinc.ZEntityManager, n []zinc.EntityID) {
+func HasEntities(t *testing.T, e *zinc.ZEntityManager, n []zinc.ZEntityID) {
 	for _, id := range n {
 		// Act
 		has := e.HasEntity(id)
@@ -101,7 +101,7 @@ func HasEntities(t *testing.T, e *zinc.ZEntityManager, n []zinc.EntityID) {
 }
 
 // HasEntitiesGlobal ...
-func HasEntitiesGlobal(t *testing.T, n []zinc.EntityID) {
+func HasEntitiesGlobal(t *testing.T, n []zinc.ZEntityID) {
 	for _, id := range n {
 		// Act
 		has := zinc.HasEntity(id)
@@ -111,7 +111,7 @@ func HasEntitiesGlobal(t *testing.T, n []zinc.EntityID) {
 }
 
 // DoesNotHaveEntities ...
-func DoesNotHaveEntities(t *testing.T, e *zinc.ZEntityManager, n []zinc.EntityID) {
+func DoesNotHaveEntities(t *testing.T, e *zinc.ZEntityManager, n []zinc.ZEntityID) {
 	for _, id := range n {
 		// Act
 		has := e.HasEntity(id)
@@ -121,7 +121,7 @@ func DoesNotHaveEntities(t *testing.T, e *zinc.ZEntityManager, n []zinc.EntityID
 }
 
 // DoesNotHaveEntitiesGlobal ...
-func DoesNotHaveEntitiesGlobal(t *testing.T, n []zinc.EntityID) {
+func DoesNotHaveEntitiesGlobal(t *testing.T, n []zinc.ZEntityID) {
 	for _, id := range n {
 		// Act
 		has := zinc.HasEntity(id)

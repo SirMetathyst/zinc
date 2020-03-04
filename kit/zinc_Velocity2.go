@@ -9,15 +9,14 @@ var ZVelocity2 uint = uint(1825051648)
 
 // ZVelocity2Data ...
 type ZVelocity2Data struct {
-	X	float32
-	Y	float32
-	
+	X float32
+	Y float32
 }
 
 // Velocity2Component ...
 type Velocity2Component struct {
 	ctx  *zinc.ZContext
-	data map[zinc.EntityID]ZVelocity2Data
+	data map[zinc.ZEntityID]ZVelocity2Data
 }
 
 // RegisterVelocity2ComponentWith ...
@@ -36,7 +35,7 @@ func RegisterVelocity2Component() {
 
 // NewVelocity2Component ...
 func NewVelocity2Component() *Velocity2Component {
-	return &Velocity2Component{data: make(map[zinc.EntityID]ZVelocity2Data)}
+	return &Velocity2Component{data: make(map[zinc.ZEntityID]ZVelocity2Data)}
 }
 
 func init() {
@@ -51,7 +50,7 @@ func (c *Velocity2Component) SetContext(ctx *zinc.ZContext) {
 }
 
 // AddVelocity2 ...
-func (c *Velocity2Component) AddVelocity2(id zinc.EntityID, data ZVelocity2Data) error {
+func (c *Velocity2Component) AddVelocity2(id zinc.ZEntityID, data ZVelocity2Data) error {
 	if c.ctx.HasEntity(id) && !c.HasEntity(id) {
 		c.data[id] = data
 		c.ctx.ComponentAdded(ZVelocity2, id)
@@ -61,7 +60,7 @@ func (c *Velocity2Component) AddVelocity2(id zinc.EntityID, data ZVelocity2Data)
 }
 
 // UpdateVelocity2 ...
-func (c *Velocity2Component) UpdateVelocity2(id zinc.EntityID, data ZVelocity2Data, silent bool) error {
+func (c *Velocity2Component) UpdateVelocity2(id zinc.ZEntityID, data ZVelocity2Data, silent bool) error {
 	if c.ctx.HasEntity(id) && c.HasEntity(id) {
 		c.data[id] = data
 		if !silent {
@@ -73,13 +72,13 @@ func (c *Velocity2Component) UpdateVelocity2(id zinc.EntityID, data ZVelocity2Da
 }
 
 // HasEntity ...
-func (c *Velocity2Component) HasEntity(id zinc.EntityID) bool {
+func (c *Velocity2Component) HasEntity(id zinc.ZEntityID) bool {
 	_, ok := c.data[id]
 	return ok
 }
 
 // Velocity2 ...
-func (c *Velocity2Component) Velocity2(id zinc.EntityID) (ZVelocity2Data, error) {
+func (c *Velocity2Component) Velocity2(id zinc.ZEntityID) (ZVelocity2Data, error) {
 	data, ok := c.data[id]
 	if ok {
 		return data, nil
@@ -88,24 +87,24 @@ func (c *Velocity2Component) Velocity2(id zinc.EntityID) (ZVelocity2Data, error)
 }
 
 // DeleteEntity ...
-func (c *Velocity2Component) DeleteEntity(id zinc.EntityID) error {
+func (c *Velocity2Component) DeleteEntity(id zinc.ZEntityID) error {
 	if c.ctx.HasEntity(id) && c.HasEntity(id) {
 		delete(c.data, id)
 		c.ctx.ComponentDeleted(ZVelocity2, id)
 		return nil
-	} 
+	}
 	return zinc.ErrComponentNotFound
 }
 
 // AddVelocity2X ...
-func AddVelocity2X(e *zinc.ZEntityManager, id zinc.EntityID, data ZVelocity2Data) error {
+func AddVelocity2X(e *zinc.ZEntityManager, id zinc.ZEntityID, data ZVelocity2Data) error {
 	v := e.Component(ZVelocity2)
 	c := v.(*Velocity2Component)
 	return c.AddVelocity2(id, data)
 }
 
 // MustAddVelocity2X ...
-func MustAddVelocity2X(e *zinc.ZEntityManager, id zinc.EntityID, data ZVelocity2Data) {
+func MustAddVelocity2X(e *zinc.ZEntityManager, id zinc.ZEntityID, data ZVelocity2Data) {
 	err := AddVelocity2X(e, id, data)
 	if err != nil {
 		panic(err)
@@ -113,12 +112,12 @@ func MustAddVelocity2X(e *zinc.ZEntityManager, id zinc.EntityID, data ZVelocity2
 }
 
 // AddVelocity2 ...
-func AddVelocity2(id zinc.EntityID, data ZVelocity2Data) error {
+func AddVelocity2(id zinc.ZEntityID, data ZVelocity2Data) error {
 	return AddVelocity2X(zinc.Default(), id, data)
 }
 
 // MustAddVelocity2 ...
-func MustAddVelocity2(id zinc.EntityID, data ZVelocity2Data) {
+func MustAddVelocity2(id zinc.ZEntityID, data ZVelocity2Data) {
 	err := AddVelocity2X(zinc.Default(), id, data)
 	if err != nil {
 		panic(err)
@@ -126,14 +125,14 @@ func MustAddVelocity2(id zinc.EntityID, data ZVelocity2Data) {
 }
 
 // UpdateVelocity2SilentlyX ...
-func UpdateVelocity2SilentlyX(e *zinc.ZEntityManager, id zinc.EntityID, data ZVelocity2Data) error {
+func UpdateVelocity2SilentlyX(e *zinc.ZEntityManager, id zinc.ZEntityID, data ZVelocity2Data) error {
 	v := e.Component(ZVelocity2)
 	c := v.(*Velocity2Component)
 	return c.UpdateVelocity2(id, data, true)
 }
 
 // MustUpdateVelocity2SilentlyX ...
-func MustUpdateVelocity2SilentlyX(e *zinc.ZEntityManager, id zinc.EntityID, data ZVelocity2Data) {
+func MustUpdateVelocity2SilentlyX(e *zinc.ZEntityManager, id zinc.ZEntityID, data ZVelocity2Data) {
 	err := UpdateVelocity2SilentlyX(e, id, data)
 	if err != nil {
 		panic(err)
@@ -141,12 +140,12 @@ func MustUpdateVelocity2SilentlyX(e *zinc.ZEntityManager, id zinc.EntityID, data
 }
 
 // UpdateVelocity2Silently ...
-func UpdateVelocity2Silently(id zinc.EntityID, data ZVelocity2Data) error {
+func UpdateVelocity2Silently(id zinc.ZEntityID, data ZVelocity2Data) error {
 	return UpdateVelocity2SilentlyX(zinc.Default(), id, data)
 }
 
 // MustUpdateVelocity2Silently ...
-func MustUpdateVelocity2Silently(id zinc.EntityID, data ZVelocity2Data) {
+func MustUpdateVelocity2Silently(id zinc.ZEntityID, data ZVelocity2Data) {
 	err := UpdateVelocity2SilentlyX(zinc.Default(), id, data)
 	if err != nil {
 		panic(err)
@@ -154,14 +153,14 @@ func MustUpdateVelocity2Silently(id zinc.EntityID, data ZVelocity2Data) {
 }
 
 // UpdateVelocity2X ...
-func UpdateVelocity2X(e *zinc.ZEntityManager, id zinc.EntityID, data ZVelocity2Data) error {
+func UpdateVelocity2X(e *zinc.ZEntityManager, id zinc.ZEntityID, data ZVelocity2Data) error {
 	v := e.Component(ZVelocity2)
 	c := v.(*Velocity2Component)
 	return c.UpdateVelocity2(id, data, false)
 }
 
 // MustUpdateVelocity2X ...
-func MustUpdateVelocity2X(e *zinc.ZEntityManager, id zinc.EntityID, data ZVelocity2Data) {
+func MustUpdateVelocity2X(e *zinc.ZEntityManager, id zinc.ZEntityID, data ZVelocity2Data) {
 	err := UpdateVelocity2X(e, id, data)
 	if err != nil {
 		panic(err)
@@ -169,12 +168,12 @@ func MustUpdateVelocity2X(e *zinc.ZEntityManager, id zinc.EntityID, data ZVeloci
 }
 
 // UpdateVelocity2 ...
-func UpdateVelocity2(id zinc.EntityID, data ZVelocity2Data) error {
+func UpdateVelocity2(id zinc.ZEntityID, data ZVelocity2Data) error {
 	return UpdateVelocity2X(zinc.Default(), id, data)
 }
 
 // MustUpdateVelocity2 ...
-func MustUpdateVelocity2(id zinc.EntityID, data ZVelocity2Data) {
+func MustUpdateVelocity2(id zinc.ZEntityID, data ZVelocity2Data) {
 	err := UpdateVelocity2X(zinc.Default(), id, data)
 	if err != nil {
 		panic(err)
@@ -182,25 +181,25 @@ func MustUpdateVelocity2(id zinc.EntityID, data ZVelocity2Data) {
 }
 
 // HasVelocity2X ...
-func HasVelocity2X(e *zinc.ZEntityManager, id zinc.EntityID) bool {
+func HasVelocity2X(e *zinc.ZEntityManager, id zinc.ZEntityID) bool {
 	v := e.Component(ZVelocity2)
 	return v.HasEntity(id)
 }
 
 // HasVelocity2 ...
-func HasVelocity2(id zinc.EntityID) bool {
+func HasVelocity2(id zinc.ZEntityID) bool {
 	return HasVelocity2X(zinc.Default(), id)
 }
 
 // Velocity2X ...
-func Velocity2X(e *zinc.ZEntityManager, id zinc.EntityID) (ZVelocity2Data, error) {
+func Velocity2X(e *zinc.ZEntityManager, id zinc.ZEntityID) (ZVelocity2Data, error) {
 	v := e.Component(ZVelocity2)
 	c := v.(*Velocity2Component)
 	return c.Velocity2(id)
 }
 
 // MustVelocity2X ...
-func MustVelocity2X(e *zinc.ZEntityManager, id zinc.EntityID) ZVelocity2Data {
+func MustVelocity2X(e *zinc.ZEntityManager, id zinc.ZEntityID) ZVelocity2Data {
 	data, err := Velocity2X(e, id)
 	if err != nil {
 		panic(err)
@@ -209,12 +208,12 @@ func MustVelocity2X(e *zinc.ZEntityManager, id zinc.EntityID) ZVelocity2Data {
 }
 
 // Velocity2 ...
-func Velocity2(id zinc.EntityID) (ZVelocity2Data, error) {
+func Velocity2(id zinc.ZEntityID) (ZVelocity2Data, error) {
 	return Velocity2X(zinc.Default(), id)
 }
 
 // MustVelocity2 ...
-func MustVelocity2(id zinc.EntityID) ZVelocity2Data {
+func MustVelocity2(id zinc.ZEntityID) ZVelocity2Data {
 	data, err := Velocity2X(zinc.Default(), id)
 	if err != nil {
 		panic(err)
@@ -223,13 +222,13 @@ func MustVelocity2(id zinc.EntityID) ZVelocity2Data {
 }
 
 // DeleteVelocity2X ...
-func DeleteVelocity2X(e *zinc.ZEntityManager, id zinc.EntityID) error {
+func DeleteVelocity2X(e *zinc.ZEntityManager, id zinc.ZEntityID) error {
 	v := e.Component(ZVelocity2)
 	return v.DeleteEntity(id)
 }
 
 // MustDeleteVelocity2X ...
-func MustDeleteVelocity2X(e *zinc.ZEntityManager, id zinc.EntityID) {
+func MustDeleteVelocity2X(e *zinc.ZEntityManager, id zinc.ZEntityID) {
 	err := DeleteVelocity2X(e, id)
 	if err != nil {
 		panic(err)
@@ -237,12 +236,12 @@ func MustDeleteVelocity2X(e *zinc.ZEntityManager, id zinc.EntityID) {
 }
 
 // DeleteVelocity2 ...
-func DeleteVelocity2(id zinc.EntityID) error {
+func DeleteVelocity2(id zinc.ZEntityID) error {
 	return DeleteVelocity2X(zinc.Default(), id)
 }
 
 // MustDeleteVelocity2 ...
-func MustDeleteVelocity2(id zinc.EntityID) {
+func MustDeleteVelocity2(id zinc.ZEntityID) {
 	err := DeleteVelocity2(id)
 	if err != nil {
 		panic(err)

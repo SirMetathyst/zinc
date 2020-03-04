@@ -1,16 +1,16 @@
 package zinc
 
 type el struct {
-	entitiesMap map[EntityID]int
-	entities    []EntityID
+	entitiesMap map[ZEntityID]int
+	entities    []ZEntityID
 }
 
 func newEntityList() *el {
-	return &el{entitiesMap: make(map[EntityID]int)}
+	return &el{entitiesMap: make(map[ZEntityID]int)}
 }
 
 // AddEntity ...
-func (e *el) AddEntity(id EntityID) bool {
+func (e *el) AddEntity(id ZEntityID) bool {
 	if _, exist := e.entitiesMap[id]; !exist {
 		e.entities = append(e.entities, id)
 		e.entitiesMap[id] = len(e.entities) - 1
@@ -20,7 +20,7 @@ func (e *el) AddEntity(id EntityID) bool {
 }
 
 // DeleteEntity ...
-func (e *el) DeleteEntity(id EntityID) bool {
+func (e *el) DeleteEntity(id ZEntityID) bool {
 	if idx, exist := e.entitiesMap[id]; exist {
 		lid := e.entities[len(e.entities)-1]
 		e.entities[idx] = lid
@@ -33,12 +33,12 @@ func (e *el) DeleteEntity(id EntityID) bool {
 }
 
 // HasEntity ...
-func (e *el) HasEntity(id EntityID) bool {
+func (e *el) HasEntity(id ZEntityID) bool {
 	_, exist := e.entitiesMap[id]
 	return exist
 }
 
 // Entities ...
-func (e *el) Entities() []EntityID {
+func (e *el) Entities() []ZEntityID {
 	return e.entities
 }

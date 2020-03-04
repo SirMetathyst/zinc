@@ -10,7 +10,7 @@ var ZIsPlaying uint = uint(4040087141)
 // IsPlayingComponent ...
 type IsPlayingComponent struct {
 	ctx  *zinc.ZContext
-	data map[zinc.EntityID]bool
+	data map[zinc.ZEntityID]bool
 }
 
 // RegisterIsPlayingComponentWith ...
@@ -29,7 +29,7 @@ func RegisterIsPlayingComponent() {
 
 // NewIsPlayingComponent ...
 func NewIsPlayingComponent() *IsPlayingComponent {
-	return &IsPlayingComponent{data: make(map[zinc.EntityID]bool)}
+	return &IsPlayingComponent{data: make(map[zinc.ZEntityID]bool)}
 }
 
 func init() {
@@ -44,7 +44,7 @@ func (c *IsPlayingComponent) SetContext(ctx *zinc.ZContext) {
 }
 
 // AddIsPlaying ...
-func (c *IsPlayingComponent) AddIsPlaying(id zinc.EntityID, value bool) error {
+func (c *IsPlayingComponent) AddIsPlaying(id zinc.ZEntityID, value bool) error {
 	if c.ctx.HasEntity(id) && !c.HasEntity(id) {
 		c.data[id] = value
 		c.ctx.ComponentAdded(ZIsPlaying, id)
@@ -54,7 +54,7 @@ func (c *IsPlayingComponent) AddIsPlaying(id zinc.EntityID, value bool) error {
 }
 
 // UpdateIsPlaying ...
-func (c *IsPlayingComponent) UpdateIsPlaying(id zinc.EntityID, value bool, silent bool) error {
+func (c *IsPlayingComponent) UpdateIsPlaying(id zinc.ZEntityID, value bool, silent bool) error {
 	if c.ctx.HasEntity(id) && c.HasEntity(id) {
 		c.data[id] = value
 		if !silent {
@@ -66,13 +66,13 @@ func (c *IsPlayingComponent) UpdateIsPlaying(id zinc.EntityID, value bool, silen
 }
 
 // HasEntity ...
-func (c *IsPlayingComponent) HasEntity(id zinc.EntityID) bool {
+func (c *IsPlayingComponent) HasEntity(id zinc.ZEntityID) bool {
 	_, ok := c.data[id]
 	return ok
 }
 
 // IsPlaying ...
-func (c *IsPlayingComponent) IsPlaying(id zinc.EntityID) (bool, error) {
+func (c *IsPlayingComponent) IsPlaying(id zinc.ZEntityID) (bool, error) {
 	data, ok := c.data[id]
 	if ok {
 		return data, nil
@@ -81,7 +81,7 @@ func (c *IsPlayingComponent) IsPlaying(id zinc.EntityID) (bool, error) {
 }
 
 // DeleteEntity ...
-func (c *IsPlayingComponent) DeleteEntity(id zinc.EntityID) error {
+func (c *IsPlayingComponent) DeleteEntity(id zinc.ZEntityID) error {
 	if c.ctx.HasEntity(id) && c.HasEntity(id) {
 		delete(c.data, id)
 		c.ctx.ComponentDeleted(ZIsPlaying, id)
@@ -91,14 +91,14 @@ func (c *IsPlayingComponent) DeleteEntity(id zinc.EntityID) error {
 }
 
 // AddIsPlayingX ...
-func AddIsPlayingX(e *zinc.ZEntityManager, id zinc.EntityID, value bool) error {
+func AddIsPlayingX(e *zinc.ZEntityManager, id zinc.ZEntityID, value bool) error {
 	v := e.Component(ZIsPlaying)
 	c := v.(*IsPlayingComponent)
 	return c.AddIsPlaying(id, value)
 }
 
 // MustAddIsPlayingX ...
-func MustAddIsPlayingX(e *zinc.ZEntityManager, id zinc.EntityID, value bool) {
+func MustAddIsPlayingX(e *zinc.ZEntityManager, id zinc.ZEntityID, value bool) {
 	err := AddIsPlayingX(e, id, value)
 	if err != nil {
 		panic(err)
@@ -106,12 +106,12 @@ func MustAddIsPlayingX(e *zinc.ZEntityManager, id zinc.EntityID, value bool) {
 }
 
 // AddIsPlaying ...
-func AddIsPlaying(id zinc.EntityID, value bool) error {
+func AddIsPlaying(id zinc.ZEntityID, value bool) error {
 	return AddIsPlayingX(zinc.Default(), id, value)
 }
 
 // MustAddIsPlaying ...
-func MustAddIsPlaying(id zinc.EntityID, value bool) {
+func MustAddIsPlaying(id zinc.ZEntityID, value bool) {
 	err := AddIsPlayingX(zinc.Default(), id, value)
 	if err != nil {
 		panic(err)
@@ -119,14 +119,14 @@ func MustAddIsPlaying(id zinc.EntityID, value bool) {
 }
 
 // UpdateIsPlayingSilentlyX ...
-func UpdateIsPlayingSilentlyX(e *zinc.ZEntityManager, id zinc.EntityID, value bool) error {
+func UpdateIsPlayingSilentlyX(e *zinc.ZEntityManager, id zinc.ZEntityID, value bool) error {
 	v := e.Component(ZIsPlaying)
 	c := v.(*IsPlayingComponent)
 	return c.UpdateIsPlaying(id, value, true)
 }
 
 // MustUpdateIsPlayingSilentlyX ...
-func MustUpdateIsPlayingSilentlyX(e *zinc.ZEntityManager, id zinc.EntityID, value bool) {
+func MustUpdateIsPlayingSilentlyX(e *zinc.ZEntityManager, id zinc.ZEntityID, value bool) {
 	err := UpdateIsPlayingSilentlyX(e, id, value)
 	if err != nil {
 		panic(err)
@@ -134,12 +134,12 @@ func MustUpdateIsPlayingSilentlyX(e *zinc.ZEntityManager, id zinc.EntityID, valu
 }
 
 // UpdateIsPlayingSilently ...
-func UpdateIsPlayingSilently(id zinc.EntityID, value bool) error {
+func UpdateIsPlayingSilently(id zinc.ZEntityID, value bool) error {
 	return UpdateIsPlayingSilentlyX(zinc.Default(), id, value)
 }
 
 // MustUpdateIsPlayingSilently ...
-func MustUpdateIsPlayingSilently(id zinc.EntityID, value bool) {
+func MustUpdateIsPlayingSilently(id zinc.ZEntityID, value bool) {
 	err := UpdateIsPlayingSilentlyX(zinc.Default(), id, value)
 	if err != nil {
 		panic(err)
@@ -147,14 +147,14 @@ func MustUpdateIsPlayingSilently(id zinc.EntityID, value bool) {
 }
 
 // UpdateIsPlayingX ...
-func UpdateIsPlayingX(e *zinc.ZEntityManager, id zinc.EntityID, value bool) error {
+func UpdateIsPlayingX(e *zinc.ZEntityManager, id zinc.ZEntityID, value bool) error {
 	v := e.Component(ZIsPlaying)
 	c := v.(*IsPlayingComponent)
 	return c.UpdateIsPlaying(id, value, false)
 }
 
 // MustUpdateIsPlayingX ...
-func MustUpdateIsPlayingX(e *zinc.ZEntityManager, id zinc.EntityID, value bool) {
+func MustUpdateIsPlayingX(e *zinc.ZEntityManager, id zinc.ZEntityID, value bool) {
 	err := UpdateIsPlayingX(e, id, value)
 	if err != nil {
 		panic(err)
@@ -162,12 +162,12 @@ func MustUpdateIsPlayingX(e *zinc.ZEntityManager, id zinc.EntityID, value bool) 
 }
 
 // UpdateIsPlaying ...
-func UpdateIsPlaying(id zinc.EntityID, value bool) error {
+func UpdateIsPlaying(id zinc.ZEntityID, value bool) error {
 	return UpdateIsPlayingX(zinc.Default(), id, value)
 }
 
 // MustUpdateIsPlaying ...
-func MustUpdateIsPlaying(id zinc.EntityID, value bool) {
+func MustUpdateIsPlaying(id zinc.ZEntityID, value bool) {
 	err := UpdateIsPlayingX(zinc.Default(), id, value)
 	if err != nil {
 		panic(err)
@@ -175,25 +175,25 @@ func MustUpdateIsPlaying(id zinc.EntityID, value bool) {
 }
 
 // HasIsPlayingX ...
-func HasIsPlayingX(e *zinc.ZEntityManager, id zinc.EntityID) bool {
+func HasIsPlayingX(e *zinc.ZEntityManager, id zinc.ZEntityID) bool {
 	v := e.Component(ZIsPlaying)
 	return v.HasEntity(id)
 }
 
 // HasIsPlaying ...
-func HasIsPlaying(id zinc.EntityID) bool {
+func HasIsPlaying(id zinc.ZEntityID) bool {
 	return HasIsPlayingX(zinc.Default(), id)
 }
 
 // IsPlayingX ...
-func IsPlayingX(e *zinc.ZEntityManager, id zinc.EntityID) (bool, error) {
+func IsPlayingX(e *zinc.ZEntityManager, id zinc.ZEntityID) (bool, error) {
 	v := e.Component(ZIsPlaying)
 	c := v.(*IsPlayingComponent)
 	return c.IsPlaying(id)
 }
 
 // MustIsPlayingX ...
-func MustIsPlayingX(e *zinc.ZEntityManager, id zinc.EntityID) bool {
+func MustIsPlayingX(e *zinc.ZEntityManager, id zinc.ZEntityID) bool {
 	data, err := IsPlayingX(e, id)
 	if err != nil {
 		panic(err)
@@ -202,12 +202,12 @@ func MustIsPlayingX(e *zinc.ZEntityManager, id zinc.EntityID) bool {
 }
 
 // IsPlaying ...
-func IsPlaying(id zinc.EntityID) (bool, error) {
+func IsPlaying(id zinc.ZEntityID) (bool, error) {
 	return IsPlayingX(zinc.Default(), id)
 }
 
 // MustIsPlaying ...
-func MustIsPlaying(id zinc.EntityID) bool {
+func MustIsPlaying(id zinc.ZEntityID) bool {
 	data, err := IsPlayingX(zinc.Default(), id)
 	if err != nil {
 		panic(err)
@@ -216,13 +216,13 @@ func MustIsPlaying(id zinc.EntityID) bool {
 }
 
 // DeleteIsPlayingX ...
-func DeleteIsPlayingX(e *zinc.ZEntityManager, id zinc.EntityID) error {
+func DeleteIsPlayingX(e *zinc.ZEntityManager, id zinc.ZEntityID) error {
 	v := e.Component(ZIsPlaying)
 	return v.DeleteEntity(id)
 }
 
 // MustDeleteIsPlayingX ...
-func MustDeleteIsPlayingX(e *zinc.ZEntityManager, id zinc.EntityID) {
+func MustDeleteIsPlayingX(e *zinc.ZEntityManager, id zinc.ZEntityID) {
 	err := DeleteIsPlayingX(e, id)
 	if err != nil {
 		panic(err)
@@ -230,12 +230,12 @@ func MustDeleteIsPlayingX(e *zinc.ZEntityManager, id zinc.EntityID) {
 }
 
 // DeleteIsPlaying ...
-func DeleteIsPlaying(id zinc.EntityID) error {
+func DeleteIsPlaying(id zinc.ZEntityID) error {
 	return DeleteIsPlayingX(zinc.Default(), id)
 }
 
 // MustDeleteIsPlaying ...
-func MustDeleteIsPlaying(id zinc.EntityID) {
+func MustDeleteIsPlaying(id zinc.ZEntityID) {
 	err := DeleteIsPlaying(id)
 	if err != nil {
 		panic(err)

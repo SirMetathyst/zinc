@@ -6,23 +6,22 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func componentFunc(rkey *uint, rid *EntityID) func(key uint, id EntityID) {
-	return func(key uint, id EntityID) {
+func componentFunc(rkey *uint, rid *ZEntityID) func(key uint, id ZEntityID) {
+	return func(key uint, id ZEntityID) {
 		*rid = id
 		*rkey = key
 	}
 }
 
-func hasEntityFunc(rid *EntityID) func(id EntityID) bool {
-	return func(id EntityID) bool {
+func hasEntityFunc(rid *ZEntityID) func(id ZEntityID) bool {
+	return func(id ZEntityID) bool {
 		*rid = id
 		return true
 	}
 }
 
-
 func TestNewContext(t *testing.T) {
-	
+
 	// Arrange, Assert
 	ctx := newContext(nil, nil, nil, nil)
 
@@ -31,13 +30,13 @@ func TestNewContext(t *testing.T) {
 }
 
 func TestContextComponentAdded(t *testing.T) {
-	
+
 	// Arrange
 	returnKey := uint(0)
-	returnID := EntityID(0)
+	returnID := ZEntityID(0)
 
 	expectedKey := uint(20)
-	expectedID := EntityID(10)
+	expectedID := ZEntityID(10)
 
 	ctx := newContext(componentFunc(&returnKey, &returnID), nil, nil, nil)
 
@@ -50,13 +49,13 @@ func TestContextComponentAdded(t *testing.T) {
 }
 
 func TestContextComponentUpdated(t *testing.T) {
-	
+
 	// Arrange
 	returnKey := uint(0)
-	returnID := EntityID(0)
+	returnID := ZEntityID(0)
 
 	expectedKey := uint(20)
-	expectedID := EntityID(10)
+	expectedID := ZEntityID(10)
 
 	ctx := newContext(nil, nil, componentFunc(&returnKey, &returnID), nil)
 
@@ -68,15 +67,14 @@ func TestContextComponentUpdated(t *testing.T) {
 	assert.Equal(t, expectedID, returnID, "returned id does match expected id")
 }
 
-
 func TestContextComponentDeleted(t *testing.T) {
-	
+
 	// Arrange
 	returnKey := uint(0)
-	returnID := EntityID(0)
+	returnID := ZEntityID(0)
 
 	expectedKey := uint(20)
-	expectedID := EntityID(10)
+	expectedID := ZEntityID(10)
 
 	ctx := newContext(nil, componentFunc(&returnKey, &returnID), nil, nil)
 
@@ -89,12 +87,12 @@ func TestContextComponentDeleted(t *testing.T) {
 }
 
 func TestContextHasEntity(t *testing.T) {
-	
+
 	// Arrange
-	returnID := EntityID(0)
+	returnID := ZEntityID(0)
 	returnState := false
 
-	expectedID := EntityID(10)
+	expectedID := ZEntityID(10)
 	expectedState := true
 
 	ctx := newContext(nil, nil, nil, hasEntityFunc(&returnID))

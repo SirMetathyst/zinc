@@ -1,14 +1,14 @@
 package zinc
 
 // EntityEventFunc ...
-type EntityEventFunc func(key uint, id EntityID)
+type EntityEventFunc func(key uint, id ZEntityID)
 
 // ZContext ...
 type ZContext struct {
 	componentAddedFunc   EntityEventFunc
 	componentDeletedFunc EntityEventFunc
 	componentUpdatedFunc EntityEventFunc
-	hasEntityFunc        func(id EntityID) bool
+	hasEntityFunc        func(id ZEntityID) bool
 }
 
 func newContext(
@@ -17,7 +17,7 @@ func newContext(
 	componentDeletedFunc EntityEventFunc,
 	componentUpdatedFunc EntityEventFunc,
 	// HasEntity
-	hasEntityFunc func(id EntityID) bool) *ZContext {
+	hasEntityFunc func(id ZEntityID) bool) *ZContext {
 
 	return &ZContext{
 		componentAddedFunc:   componentAddedFunc,
@@ -28,21 +28,21 @@ func newContext(
 }
 
 // ComponentAdded ...
-func (c ZContext) ComponentAdded(key uint, id EntityID) {
+func (c ZContext) ComponentAdded(key uint, id ZEntityID) {
 	c.componentAddedFunc(key, id)
 }
 
 // ComponentDeleted ...
-func (c ZContext) ComponentDeleted(key uint, id EntityID) {
+func (c ZContext) ComponentDeleted(key uint, id ZEntityID) {
 	c.componentDeletedFunc(key, id)
 }
 
 // ComponentUpdated ...
-func (c ZContext) ComponentUpdated(key uint, id EntityID) {
+func (c ZContext) ComponentUpdated(key uint, id ZEntityID) {
 	c.componentUpdatedFunc(key, id)
 }
 
 // HasEntity ...
-func (c ZContext) HasEntity(id EntityID) bool {
+func (c ZContext) HasEntity(id ZEntityID) bool {
 	return c.hasEntityFunc(id)
 }

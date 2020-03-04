@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	entityListData = []EntityID {1, 2000, 20}
+	entityListData = []ZEntityID{1, 2000, 20}
 )
 
 func TestNewEntityList(t *testing.T) {
@@ -75,7 +75,6 @@ func TestEntityListHasEntity(t *testing.T) {
 		assert.Equalf(t, true, has, "must return true for id: %d", v)
 	}
 }
-
 
 func TestEntityListEntities(t *testing.T) {
 

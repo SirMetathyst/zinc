@@ -6,3 +6,7 @@ Kits:
 
 API
     - add extras/optionals param for MustXXX API in zinc cli
+    - instead of registering component with entity manager on init func, register with a component registry so 
+        that you can call a single method e.g. EntityManager.RegisterComponentsWithRegistry. 
+        instead of having call myKit.RegisterMyComponent for every single component for multiple 
+        entity managers.

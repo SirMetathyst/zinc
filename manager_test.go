@@ -20,54 +20,54 @@ func TestEntityManagerCreateEntity(t *testing.T) {
 	// Setup
 	e := zinc.NewEntityManager()
 	// Assert
-	test.CreateEntities(t, e, []zinc.EntityID{1, 2, 3, 4, 5})
+	test.CreateEntities(t, e, []zinc.ZEntityID{1, 2, 3, 4, 5})
 }
 
 func TestEntityManagerHasEntity(t *testing.T) {
 	// Setup
 	e := zinc.NewEntityManager()
 	// Assert
-	test.CreateEntities(t, e, []zinc.EntityID{1, 2, 3, 4, 5})
-	test.HasEntities(t, e, []zinc.EntityID{1, 2, 3, 4, 5})
+	test.CreateEntities(t, e, []zinc.ZEntityID{1, 2, 3, 4, 5})
+	test.HasEntities(t, e, []zinc.ZEntityID{1, 2, 3, 4, 5})
 }
 
 func TestEntityManagerDeleteEntity(t *testing.T) {
 	// Setup
 	e := zinc.NewEntityManager()
 	// Assert
-	test.CreateEntities(t, e, []zinc.EntityID{1, 2, 3, 4, 5})
-	test.DeleteEntity(t, e, []zinc.EntityID{1, 2, 3})
-	test.DoesNotHaveEntities(t, e, []zinc.EntityID{1, 2, 3})
-	test.HasEntities(t, e, []zinc.EntityID{4, 5})
-	test.CreateEntities(t, e, []zinc.EntityID{3, 2, 1})
+	test.CreateEntities(t, e, []zinc.ZEntityID{1, 2, 3, 4, 5})
+	test.DeleteEntity(t, e, []zinc.ZEntityID{1, 2, 3})
+	test.DoesNotHaveEntities(t, e, []zinc.ZEntityID{1, 2, 3})
+	test.HasEntities(t, e, []zinc.ZEntityID{4, 5})
+	test.CreateEntities(t, e, []zinc.ZEntityID{3, 2, 1})
 }
 
 func TestEntityManagerDeleteEntities(t *testing.T) {
 	// Setup
 	e := zinc.NewEntityManager()
 	// Assert
-	test.CreateEntities(t, e, []zinc.EntityID{1, 2, 3, 4, 5})
+	test.CreateEntities(t, e, []zinc.ZEntityID{1, 2, 3, 4, 5})
 	e.DeleteEntities()
-	test.DoesNotHaveEntities(t, e, []zinc.EntityID{1, 2, 3, 4, 5})
-	test.CreateEntities(t, e, []zinc.EntityID{5, 4, 3})
+	test.DoesNotHaveEntities(t, e, []zinc.ZEntityID{1, 2, 3, 4, 5})
+	test.CreateEntities(t, e, []zinc.ZEntityID{5, 4, 3})
 }
 
 func TestEntityManagerEntities(t *testing.T) {
 	// Setup
 	e := zinc.NewEntityManager()
 	// Assert
-	test.CreateEntities(t, e, []zinc.EntityID{1, 2, 3, 4, 5})
-	test.Entities(t, e, []zinc.EntityID{1, 2, 3, 4, 5})
+	test.CreateEntities(t, e, []zinc.ZEntityID{1, 2, 3, 4, 5})
+	test.Entities(t, e, []zinc.ZEntityID{1, 2, 3, 4, 5})
 }
 
 func TestEntityManagerReset(t *testing.T) {
 	// Setup
 	e := zinc.NewEntityManager()
 	// Assert
-	test.CreateEntities(t, e, []zinc.EntityID{1, 2, 3, 4, 5})
-	test.HasEntities(t, e, []zinc.EntityID{1, 2, 3, 4, 5})
+	test.CreateEntities(t, e, []zinc.ZEntityID{1, 2, 3, 4, 5})
+	test.HasEntities(t, e, []zinc.ZEntityID{1, 2, 3, 4, 5})
 	e.Reset()
-	test.DoesNotHaveEntities(t, e, []zinc.EntityID{1, 2, 3, 4, 5})
+	test.DoesNotHaveEntities(t, e, []zinc.ZEntityID{1, 2, 3, 4, 5})
 }
 
 func TestEntityManagerRegisterComponent(t *testing.T) {

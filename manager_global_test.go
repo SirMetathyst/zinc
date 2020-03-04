@@ -13,53 +13,53 @@ func TestEntityManagerCreateEntityGlobal(t *testing.T) {
 	// Reset
 	zinc.Reset()
 	// Assert
-	test.CreateEntitiesGlobal(t, []zinc.EntityID{1, 2, 3, 4, 5})
+	test.CreateEntitiesGlobal(t, []zinc.ZEntityID{1, 2, 3, 4, 5})
 }
 
 func TestEntityManagerHasEntityGlobal(t *testing.T) {
 	// Reset
 	zinc.Reset()
 	// Assert
-	test.CreateEntitiesGlobal(t, []zinc.EntityID{1, 2, 3, 4, 5})
-	test.HasEntitiesGlobal(t, []zinc.EntityID{1, 2, 3, 4, 5})
+	test.CreateEntitiesGlobal(t, []zinc.ZEntityID{1, 2, 3, 4, 5})
+	test.HasEntitiesGlobal(t, []zinc.ZEntityID{1, 2, 3, 4, 5})
 }
 
 func TestEntityManagerDeleteEntityGlobal(t *testing.T) {
 	// Reset
 	zinc.Reset()
 	// Assert
-	test.CreateEntitiesGlobal(t, []zinc.EntityID{1, 2, 3, 4, 5})
-	test.DeleteEntityGlobal(t, []zinc.EntityID{1, 2, 3})
-	test.DoesNotHaveEntitiesGlobal(t, []zinc.EntityID{1, 2, 3})
-	test.HasEntitiesGlobal(t, []zinc.EntityID{4, 5})
-	test.CreateEntitiesGlobal(t, []zinc.EntityID{3, 2, 1})
+	test.CreateEntitiesGlobal(t, []zinc.ZEntityID{1, 2, 3, 4, 5})
+	test.DeleteEntityGlobal(t, []zinc.ZEntityID{1, 2, 3})
+	test.DoesNotHaveEntitiesGlobal(t, []zinc.ZEntityID{1, 2, 3})
+	test.HasEntitiesGlobal(t, []zinc.ZEntityID{4, 5})
+	test.CreateEntitiesGlobal(t, []zinc.ZEntityID{3, 2, 1})
 }
 
 func TestEntityManagerDeleteEntitiesGlobal(t *testing.T) {
 	// Reset
 	zinc.Reset()
 	// Assert
-	test.CreateEntitiesGlobal(t, []zinc.EntityID{1, 2, 3, 4, 5})
+	test.CreateEntitiesGlobal(t, []zinc.ZEntityID{1, 2, 3, 4, 5})
 	zinc.DeleteEntities()
-	test.DoesNotHaveEntitiesGlobal(t, []zinc.EntityID{1, 2, 3, 4, 5})
+	test.DoesNotHaveEntitiesGlobal(t, []zinc.ZEntityID{1, 2, 3, 4, 5})
 }
 
 func TestEntityManagerEntitiesGlobal(t *testing.T) {
 	// Reset
 	zinc.Reset()
 	// Assert
-	test.CreateEntitiesGlobal(t, []zinc.EntityID{1, 2, 3, 4, 5})
-	test.EntitiesGlobal(t, []zinc.EntityID{1, 2, 3, 4, 5})
+	test.CreateEntitiesGlobal(t, []zinc.ZEntityID{1, 2, 3, 4, 5})
+	test.EntitiesGlobal(t, []zinc.ZEntityID{1, 2, 3, 4, 5})
 }
 
 func TestEntityManagerResetGlobal(t *testing.T) {
 	// Reset
 	zinc.Reset()
 	// Assert
-	test.CreateEntitiesGlobal(t, []zinc.EntityID{1, 2, 3, 4, 5})
-	test.HasEntitiesGlobal(t, []zinc.EntityID{1, 2, 3, 4, 5})
+	test.CreateEntitiesGlobal(t, []zinc.ZEntityID{1, 2, 3, 4, 5})
+	test.HasEntitiesGlobal(t, []zinc.ZEntityID{1, 2, 3, 4, 5})
 	zinc.Reset()
-	test.DoesNotHaveEntitiesGlobal(t, []zinc.EntityID{1, 2, 3, 4, 5})
+	test.DoesNotHaveEntitiesGlobal(t, []zinc.ZEntityID{1, 2, 3, 4, 5})
 }
 
 func TestEntityManagerRegisterComponentGlobal(t *testing.T) {

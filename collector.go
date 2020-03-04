@@ -45,7 +45,7 @@ func newCollector(ce ...ZCollectorEvent) *ZCollector {
 	return collector
 }
 
-func (c *ZCollector) addEntity(key uint, id EntityID) {
+func (c *ZCollector) addEntity(key uint, id ZEntityID) {
 	c.entityList.AddEntity(id)
 }
 
@@ -78,6 +78,6 @@ func (c *ZCollector) ClearCollectedEntities() {
 
 // Entities ...
 // TODO: Write TEST
-func (c *ZCollector) Entities() []EntityID {
+func (c *ZCollector) Entities() []ZEntityID {
 	return c.entityList.Entities()
 }

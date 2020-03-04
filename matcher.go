@@ -76,13 +76,13 @@ func (m *ZMatcher) updateHash() {
 		hash(661, m.noneOf...))
 }
 
-func (m *ZMatcher) match(e *ZEntityManager, key uint, id EntityID) bool {
+func (m *ZMatcher) match(e *ZEntityManager, key uint, id ZEntityID) bool {
 	c := e.Component(key)
 	return c.HasEntity(id)
 }
 
 // Match ...
-func (m *ZMatcher) Match(e *ZEntityManager, id EntityID) bool {
+func (m *ZMatcher) Match(e *ZEntityManager, id ZEntityID) bool {
 	for _, k := range m.allOf {
 		if !m.match(e, k, id) {
 			return false

@@ -32,7 +32,7 @@ type Z{{.UpperComponentName}}Data struct {
 // {{.UpperComponentName}}Component ...
 type {{.UpperComponentName}}Component struct {
 	ctx  *zinc.ZContext
-	data map[zinc.EntityID]Z{{.UpperComponentName}}Data
+	data map[zinc.ZEntityID]Z{{.UpperComponentName}}Data
 }
 
 // Register{{.UpperComponentName}}ComponentWith ...
@@ -51,7 +51,7 @@ func Register{{.UpperComponentName}}Component() {
 
 // New{{.UpperComponentName}}Component ...
 func New{{.UpperComponentName}}Component() *{{.UpperComponentName}}Component {
-	return &{{.UpperComponentName}}Component{data: make(map[zinc.EntityID]Z{{.UpperComponentName}}Data)}
+	return &{{.UpperComponentName}}Component{data: make(map[zinc.ZEntityID]Z{{.UpperComponentName}}Data)}
 }
 
 func init() {
@@ -66,7 +66,7 @@ func (c *{{.UpperComponentName}}Component) SetContext(ctx *zinc.ZContext) {
 }
 
 // Add{{.UpperComponentName}} ...
-func (c *{{.UpperComponentName}}Component) Add{{.UpperComponentName}}(id zinc.EntityID, data Z{{.UpperComponentName}}Data) error {
+func (c *{{.UpperComponentName}}Component) Add{{.UpperComponentName}}(id zinc.ZEntityID, data Z{{.UpperComponentName}}Data) error {
 	if c.ctx.HasEntity(id) && !c.HasEntity(id) {
 		c.data[id] = data
 		c.ctx.ComponentAdded(Z{{.UpperComponentName}}, id)
@@ -76,7 +76,7 @@ func (c *{{.UpperComponentName}}Component) Add{{.UpperComponentName}}(id zinc.En
 }
 
 // Update{{.UpperComponentName}} ...
-func (c *{{.UpperComponentName}}Component) Update{{.UpperComponentName}}(id zinc.EntityID, data Z{{.UpperComponentName}}Data, silent bool) error {
+func (c *{{.UpperComponentName}}Component) Update{{.UpperComponentName}}(id zinc.ZEntityID, data Z{{.UpperComponentName}}Data, silent bool) error {
 	if c.ctx.HasEntity(id) && c.HasEntity(id) {
 		c.data[id] = data
 		if !silent {
@@ -88,13 +88,13 @@ func (c *{{.UpperComponentName}}Component) Update{{.UpperComponentName}}(id zinc
 }
 
 // HasEntity ...
-func (c *{{.UpperComponentName}}Component) HasEntity(id zinc.EntityID) bool {
+func (c *{{.UpperComponentName}}Component) HasEntity(id zinc.ZEntityID) bool {
 	_, ok := c.data[id]
 	return ok
 }
 
 // {{.UpperComponentName}} ...
-func (c *{{.UpperComponentName}}Component) {{.UpperComponentName}}(id zinc.EntityID) (Z{{.UpperComponentName}}Data, error) {
+func (c *{{.UpperComponentName}}Component) {{.UpperComponentName}}(id zinc.ZEntityID) (Z{{.UpperComponentName}}Data, error) {
 	data, ok := c.data[id]
 	if ok {
 		return data, nil
@@ -103,7 +103,7 @@ func (c *{{.UpperComponentName}}Component) {{.UpperComponentName}}(id zinc.Entit
 }
 
 // DeleteEntity ...
-func (c *{{.UpperComponentName}}Component) DeleteEntity(id zinc.EntityID) error {
+func (c *{{.UpperComponentName}}Component) DeleteEntity(id zinc.ZEntityID) error {
 	if c.ctx.HasEntity(id) && c.HasEntity(id) {
 		delete(c.data, id)
 		c.ctx.ComponentDeleted(Z{{.UpperComponentName}}, id)
@@ -113,14 +113,14 @@ func (c *{{.UpperComponentName}}Component) DeleteEntity(id zinc.EntityID) error 
 }
 
 // Add{{.UpperComponentName}}X ...
-func Add{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.EntityID, data Z{{.UpperComponentName}}Data) error {
+func Add{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.ZEntityID, data Z{{.UpperComponentName}}Data) error {
 	v := e.Component(Z{{.UpperComponentName}})
 	c := v.(*{{.UpperComponentName}}Component)
 	return c.Add{{.UpperComponentName}}(id, data)
 }
 
 // MustAdd{{.UpperComponentName}}X ...
-func MustAdd{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.EntityID, data Z{{.UpperComponentName}}Data) {
+func MustAdd{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.ZEntityID, data Z{{.UpperComponentName}}Data) {
 	err := Add{{.UpperComponentName}}X(e, id, data)
 	if err != nil {
 		panic(err)
@@ -128,12 +128,12 @@ func MustAdd{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.EntityID, d
 }
 
 // Add{{.UpperComponentName}} ...
-func Add{{.UpperComponentName}}(id zinc.EntityID, data Z{{.UpperComponentName}}Data) error {
+func Add{{.UpperComponentName}}(id zinc.ZEntityID, data Z{{.UpperComponentName}}Data) error {
 	return Add{{.UpperComponentName}}X(zinc.Default(), id, data)
 }
 
 // MustAdd{{.UpperComponentName}} ...
-func MustAdd{{.UpperComponentName}}(id zinc.EntityID, data Z{{.UpperComponentName}}Data) {
+func MustAdd{{.UpperComponentName}}(id zinc.ZEntityID, data Z{{.UpperComponentName}}Data) {
 	err := Add{{.UpperComponentName}}X(zinc.Default(), id, data)
 	if err != nil {
 		panic(err)
@@ -141,14 +141,14 @@ func MustAdd{{.UpperComponentName}}(id zinc.EntityID, data Z{{.UpperComponentNam
 }
 
 // Update{{.UpperComponentName}}SilentlyX ...
-func Update{{.UpperComponentName}}SilentlyX(e *zinc.ZEntityManager, id zinc.EntityID, data Z{{.UpperComponentName}}Data) error {
+func Update{{.UpperComponentName}}SilentlyX(e *zinc.ZEntityManager, id zinc.ZEntityID, data Z{{.UpperComponentName}}Data) error {
 	v := e.Component(Z{{.UpperComponentName}})
 	c := v.(*{{.UpperComponentName}}Component)
 	return c.Update{{.UpperComponentName}}(id, data, true)
 }
 
 // MustUpdate{{.UpperComponentName}}SilentlyX ...
-func MustUpdate{{.UpperComponentName}}SilentlyX(e *zinc.ZEntityManager, id zinc.EntityID, data Z{{.UpperComponentName}}Data) {
+func MustUpdate{{.UpperComponentName}}SilentlyX(e *zinc.ZEntityManager, id zinc.ZEntityID, data Z{{.UpperComponentName}}Data) {
 	err := Update{{.UpperComponentName}}SilentlyX(e, id, data)
 	if err != nil {
 		panic(err)
@@ -156,12 +156,12 @@ func MustUpdate{{.UpperComponentName}}SilentlyX(e *zinc.ZEntityManager, id zinc.
 }
 
 // Update{{.UpperComponentName}}Silently ...
-func Update{{.UpperComponentName}}Silently(id zinc.EntityID, data Z{{.UpperComponentName}}Data) error {
+func Update{{.UpperComponentName}}Silently(id zinc.ZEntityID, data Z{{.UpperComponentName}}Data) error {
 	return Update{{.UpperComponentName}}SilentlyX(zinc.Default(), id, data)
 }
 
 // MustUpdate{{.UpperComponentName}}Silently ...
-func MustUpdate{{.UpperComponentName}}Silently(id zinc.EntityID, data Z{{.UpperComponentName}}Data) {
+func MustUpdate{{.UpperComponentName}}Silently(id zinc.ZEntityID, data Z{{.UpperComponentName}}Data) {
 	err := Update{{.UpperComponentName}}SilentlyX(zinc.Default(), id, data)
 	if err != nil {
 		panic(err)
@@ -169,14 +169,14 @@ func MustUpdate{{.UpperComponentName}}Silently(id zinc.EntityID, data Z{{.UpperC
 }
 
 // Update{{.UpperComponentName}}X ...
-func Update{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.EntityID, data Z{{.UpperComponentName}}Data) error {
+func Update{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.ZEntityID, data Z{{.UpperComponentName}}Data) error {
 	v := e.Component(Z{{.UpperComponentName}})
 	c := v.(*{{.UpperComponentName}}Component)
 	return c.Update{{.UpperComponentName}}(id, data, false)
 }
 
 // MustUpdate{{.UpperComponentName}}X ...
-func MustUpdate{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.EntityID, data Z{{.UpperComponentName}}Data) {
+func MustUpdate{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.ZEntityID, data Z{{.UpperComponentName}}Data) {
 	err := Update{{.UpperComponentName}}X(e, id, data)
 	if err != nil {
 		panic(err)
@@ -184,12 +184,12 @@ func MustUpdate{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.EntityID
 }
 
 // Update{{.UpperComponentName}} ...
-func Update{{.UpperComponentName}}(id zinc.EntityID, data Z{{.UpperComponentName}}Data) error {
+func Update{{.UpperComponentName}}(id zinc.ZEntityID, data Z{{.UpperComponentName}}Data) error {
 	return Update{{.UpperComponentName}}X(zinc.Default(), id, data)
 }
 
 // MustUpdate{{.UpperComponentName}} ...
-func MustUpdate{{.UpperComponentName}}(id zinc.EntityID, data Z{{.UpperComponentName}}Data) {
+func MustUpdate{{.UpperComponentName}}(id zinc.ZEntityID, data Z{{.UpperComponentName}}Data) {
 	err := Update{{.UpperComponentName}}X(zinc.Default(), id, data)
 	if err != nil {
 		panic(err)
@@ -197,25 +197,25 @@ func MustUpdate{{.UpperComponentName}}(id zinc.EntityID, data Z{{.UpperComponent
 }
 
 // Has{{.UpperComponentName}}X ...
-func Has{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.EntityID) bool {
+func Has{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.ZEntityID) bool {
 	v := e.Component(Z{{.UpperComponentName}})
 	return v.HasEntity(id)
 }
 
 // Has{{.UpperComponentName}} ...
-func Has{{.UpperComponentName}}(id zinc.EntityID) bool {
+func Has{{.UpperComponentName}}(id zinc.ZEntityID) bool {
 	return Has{{.UpperComponentName}}X(zinc.Default(), id)
 }
 
 // {{.UpperComponentName}}X ...
-func {{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.EntityID) (Z{{.UpperComponentName}}Data, error) {
+func {{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.ZEntityID) (Z{{.UpperComponentName}}Data, error) {
 	v := e.Component(Z{{.UpperComponentName}})
 	c := v.(*{{.UpperComponentName}}Component)
 	return c.{{.UpperComponentName}}(id)
 }
 
 // Must{{.UpperComponentName}}X ...
-func Must{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.EntityID) Z{{.UpperComponentName}}Data {
+func Must{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.ZEntityID) Z{{.UpperComponentName}}Data {
 	data, err := {{.UpperComponentName}}X(e, id)
 	if err != nil {
 		panic(err)
@@ -224,12 +224,12 @@ func Must{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.EntityID) Z{{.
 }
 
 // {{.UpperComponentName}} ...
-func {{.UpperComponentName}}(id zinc.EntityID) (Z{{.UpperComponentName}}Data, error) {
+func {{.UpperComponentName}}(id zinc.ZEntityID) (Z{{.UpperComponentName}}Data, error) {
 	return {{.UpperComponentName}}X(zinc.Default(), id)
 }
 
 // Must{{.UpperComponentName}} ...
-func Must{{.UpperComponentName}}(id zinc.EntityID) Z{{.UpperComponentName}}Data {
+func Must{{.UpperComponentName}}(id zinc.ZEntityID) Z{{.UpperComponentName}}Data {
 	data, err := {{.UpperComponentName}}X(zinc.Default(), id)
 	if err != nil {
 		panic(err)
@@ -238,13 +238,13 @@ func Must{{.UpperComponentName}}(id zinc.EntityID) Z{{.UpperComponentName}}Data 
 }
 
 // Delete{{.UpperComponentName}}X ...
-func Delete{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.EntityID) error {
+func Delete{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.ZEntityID) error {
 	v := e.Component(Z{{.UpperComponentName}})
 	return v.DeleteEntity(id)
 }
 
 // MustDelete{{.UpperComponentName}}X ...
-func MustDelete{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.EntityID) {
+func MustDelete{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.ZEntityID) {
 	err := Delete{{.UpperComponentName}}X(e, id)
 	if err != nil {
 		panic(err)
@@ -252,12 +252,12 @@ func MustDelete{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.EntityID
 }
 
 // Delete{{.UpperComponentName}} ...
-func Delete{{.UpperComponentName}}(id zinc.EntityID) error {
+func Delete{{.UpperComponentName}}(id zinc.ZEntityID) error {
 	return Delete{{.UpperComponentName}}X(zinc.Default(), id)
 }
 
 // MustDelete{{.UpperComponentName}} ...
-func MustDelete{{.UpperComponentName}}(id zinc.EntityID) {
+func MustDelete{{.UpperComponentName}}(id zinc.ZEntityID) {
 	err := Delete{{.UpperComponentName}}(id)
 	if err != nil {
 		panic(err)
@@ -282,7 +282,7 @@ var Z{{.UpperComponentName}} uint = uint({{.ComponentNameHash}})
 // {{.UpperComponentName}}Component ...
 type {{.UpperComponentName}}Component struct {
 	ctx  *zinc.ZContext
-	data map[zinc.EntityID]{{range $Index, $Element := .ComponentVariables }}{{$Element.Type}}{{end}}
+	data map[zinc.ZEntityID]{{range $Index, $Element := .ComponentVariables }}{{$Element.Type}}{{end}}
 }
 
 // Register{{.UpperComponentName}}ComponentWith ...
@@ -301,7 +301,7 @@ func Register{{.UpperComponentName}}Component() {
 
 // New{{.UpperComponentName}}Component ...
 func New{{.UpperComponentName}}Component() *{{.UpperComponentName}}Component {
-	return &{{.UpperComponentName}}Component{data: make(map[zinc.EntityID]{{range $Index, $Element := .ComponentVariables }}{{$Element.Type}}{{end}})}
+	return &{{.UpperComponentName}}Component{data: make(map[zinc.ZEntityID]{{range $Index, $Element := .ComponentVariables }}{{$Element.Type}}{{end}})}
 }
 
 func init() {
@@ -316,7 +316,7 @@ func (c *{{.UpperComponentName}}Component) SetContext(ctx *zinc.ZContext) {
 }
 
 // Add{{.UpperComponentName}} ...
-func (c *{{.UpperComponentName}}Component) Add{{.UpperComponentName}}(id zinc.EntityID, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}} {{$Element.Type}}{{end}}) error {
+func (c *{{.UpperComponentName}}Component) Add{{.UpperComponentName}}(id zinc.ZEntityID, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}} {{$Element.Type}}{{end}}) error {
 	if c.ctx.HasEntity(id) && !c.HasEntity(id) {
 		c.data[id] = {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}}{{end}}
 		c.ctx.ComponentAdded(Z{{.UpperComponentName}}, id)
@@ -326,7 +326,7 @@ func (c *{{.UpperComponentName}}Component) Add{{.UpperComponentName}}(id zinc.En
 }
 
 // Update{{.UpperComponentName}} ...
-func (c *{{.UpperComponentName}}Component) Update{{.UpperComponentName}}(id zinc.EntityID, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}} {{$Element.Type}}{{end}}, silent bool) error {
+func (c *{{.UpperComponentName}}Component) Update{{.UpperComponentName}}(id zinc.ZEntityID, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}} {{$Element.Type}}{{end}}, silent bool) error {
 	if c.ctx.HasEntity(id) && c.HasEntity(id) {
 		c.data[id] = {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}}{{end}}
 		if !silent {
@@ -338,13 +338,13 @@ func (c *{{.UpperComponentName}}Component) Update{{.UpperComponentName}}(id zinc
 }
 
 // HasEntity ...
-func (c *{{.UpperComponentName}}Component) HasEntity(id zinc.EntityID) bool {
+func (c *{{.UpperComponentName}}Component) HasEntity(id zinc.ZEntityID) bool {
 	_, ok := c.data[id]
 	return ok
 }
 
 // {{.UpperComponentName}} ...
-func (c *{{.UpperComponentName}}Component) {{.UpperComponentName}}(id zinc.EntityID) ({{range $Index, $Element := .ComponentVariables }}{{$Element.Type}}{{end}}, error) {
+func (c *{{.UpperComponentName}}Component) {{.UpperComponentName}}(id zinc.ZEntityID) ({{range $Index, $Element := .ComponentVariables }}{{$Element.Type}}{{end}}, error) {
 	data, ok := c.data[id]
 	if ok {
 		return data, nil
@@ -353,7 +353,7 @@ func (c *{{.UpperComponentName}}Component) {{.UpperComponentName}}(id zinc.Entit
 }
 
 // DeleteEntity ...
-func (c *{{.UpperComponentName}}Component) DeleteEntity(id zinc.EntityID) error {
+func (c *{{.UpperComponentName}}Component) DeleteEntity(id zinc.ZEntityID) error {
 	if c.ctx.HasEntity(id) && c.HasEntity(id) {
 		delete(c.data, id)
 		c.ctx.ComponentDeleted(Z{{.UpperComponentName}}, id)
@@ -363,14 +363,14 @@ func (c *{{.UpperComponentName}}Component) DeleteEntity(id zinc.EntityID) error 
 }
 
 // Add{{.UpperComponentName}}X ...
-func Add{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.EntityID, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}} {{$Element.Type}}{{end}}) error {
+func Add{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.ZEntityID, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}} {{$Element.Type}}{{end}}) error {
 	v := e.Component(Z{{.UpperComponentName}})
 	c := v.(*{{.UpperComponentName}}Component)
 	return c.Add{{.UpperComponentName}}(id, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}}{{end}})
 }
 
 // MustAdd{{.UpperComponentName}}X ...
-func MustAdd{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.EntityID, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}} {{$Element.Type}}{{end}}) {
+func MustAdd{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.ZEntityID, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}} {{$Element.Type}}{{end}}) {
 	err := Add{{.UpperComponentName}}X(e, id, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}}{{end}})
 	if err != nil {
 		panic(err)
@@ -378,12 +378,12 @@ func MustAdd{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.EntityID, {
 }
 
 // Add{{.UpperComponentName}} ...
-func Add{{.UpperComponentName}}(id zinc.EntityID, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}} {{$Element.Type}}{{end}}) error {
+func Add{{.UpperComponentName}}(id zinc.ZEntityID, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}} {{$Element.Type}}{{end}}) error {
 	return Add{{.UpperComponentName}}X(zinc.Default(), id, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}}{{end}})
 }
 
 // MustAdd{{.UpperComponentName}} ...
-func MustAdd{{.UpperComponentName}}(id zinc.EntityID, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}} {{$Element.Type}}{{end}}) {
+func MustAdd{{.UpperComponentName}}(id zinc.ZEntityID, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}} {{$Element.Type}}{{end}}) {
 	err := Add{{.UpperComponentName}}X(zinc.Default(), id, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}}{{end}})
 	if err != nil {
 		panic(err)
@@ -391,14 +391,14 @@ func MustAdd{{.UpperComponentName}}(id zinc.EntityID, {{range $Index, $Element :
 }
 
 // Update{{.UpperComponentName}}SilentlyX ...
-func Update{{.UpperComponentName}}SilentlyX(e *zinc.ZEntityManager, id zinc.EntityID, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}} {{$Element.Type}}{{end}}) error {
+func Update{{.UpperComponentName}}SilentlyX(e *zinc.ZEntityManager, id zinc.ZEntityID, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}} {{$Element.Type}}{{end}}) error {
 	v := e.Component(Z{{.UpperComponentName}})
 	c := v.(*{{.UpperComponentName}}Component)
 	return c.Update{{.UpperComponentName}}(id, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}}{{end}}, true)
 }
 
 // MustUpdate{{.UpperComponentName}}SilentlyX ...
-func MustUpdate{{.UpperComponentName}}SilentlyX(e *zinc.ZEntityManager, id zinc.EntityID, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}} {{$Element.Type}}{{end}}) {
+func MustUpdate{{.UpperComponentName}}SilentlyX(e *zinc.ZEntityManager, id zinc.ZEntityID, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}} {{$Element.Type}}{{end}}) {
 	err := Update{{.UpperComponentName}}SilentlyX(e, id, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}}{{end}})
 	if err != nil {
 		panic(err)
@@ -406,12 +406,12 @@ func MustUpdate{{.UpperComponentName}}SilentlyX(e *zinc.ZEntityManager, id zinc.
 }
 
 // Update{{.UpperComponentName}}Silently ...
-func Update{{.UpperComponentName}}Silently(id zinc.EntityID, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}} {{$Element.Type}}{{end}}) error {
+func Update{{.UpperComponentName}}Silently(id zinc.ZEntityID, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}} {{$Element.Type}}{{end}}) error {
 	return Update{{.UpperComponentName}}SilentlyX(zinc.Default(), id, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}}{{end}})
 }
 
 // MustUpdate{{.UpperComponentName}}Silently ...
-func MustUpdate{{.UpperComponentName}}Silently(id zinc.EntityID, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}} {{$Element.Type}}{{end}}) {
+func MustUpdate{{.UpperComponentName}}Silently(id zinc.ZEntityID, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}} {{$Element.Type}}{{end}}) {
 	err := Update{{.UpperComponentName}}SilentlyX(zinc.Default(), id, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}}{{end}})
 	if err != nil {
 		panic(err)
@@ -419,14 +419,14 @@ func MustUpdate{{.UpperComponentName}}Silently(id zinc.EntityID, {{range $Index,
 }
 
 // Update{{.UpperComponentName}}X ...
-func Update{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.EntityID, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}} {{$Element.Type}}{{end}}) error {
+func Update{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.ZEntityID, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}} {{$Element.Type}}{{end}}) error {
 	v := e.Component(Z{{.UpperComponentName}})
 	c := v.(*{{.UpperComponentName}}Component)
 	return c.Update{{.UpperComponentName}}(id, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}}{{end}}, false)
 }
 
 // MustUpdate{{.UpperComponentName}}X ...
-func MustUpdate{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.EntityID, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}} {{$Element.Type}}{{end}}) {
+func MustUpdate{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.ZEntityID, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}} {{$Element.Type}}{{end}}) {
 	err := Update{{.UpperComponentName}}X(e, id, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}}{{end}})
 	if err != nil {
 		panic(err)
@@ -434,12 +434,12 @@ func MustUpdate{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.EntityID
 }
 
 // Update{{.UpperComponentName}} ...
-func Update{{.UpperComponentName}}(id zinc.EntityID, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}} {{$Element.Type}}{{end}}) error {
+func Update{{.UpperComponentName}}(id zinc.ZEntityID, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}} {{$Element.Type}}{{end}}) error {
 	return Update{{.UpperComponentName}}X(zinc.Default(), id, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}}{{end}})
 }
 
 // MustUpdate{{.UpperComponentName}} ...
-func MustUpdate{{.UpperComponentName}}(id zinc.EntityID, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}} {{$Element.Type}}{{end}}) {
+func MustUpdate{{.UpperComponentName}}(id zinc.ZEntityID, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}} {{$Element.Type}}{{end}}) {
 	err := Update{{.UpperComponentName}}X(zinc.Default(), id, {{range $Index, $Element := .ComponentVariables }}{{$Element.Identifier}}{{end}})
 	if err != nil {
 		panic(err)
@@ -447,25 +447,25 @@ func MustUpdate{{.UpperComponentName}}(id zinc.EntityID, {{range $Index, $Elemen
 }
 
 // Has{{.UpperComponentName}}X ...
-func Has{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.EntityID) bool {
+func Has{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.ZEntityID) bool {
 	v := e.Component(Z{{.UpperComponentName}})
 	return v.HasEntity(id)
 }
 
 // Has{{.UpperComponentName}} ...
-func Has{{.UpperComponentName}}(id zinc.EntityID) bool {
+func Has{{.UpperComponentName}}(id zinc.ZEntityID) bool {
 	return Has{{.UpperComponentName}}X(zinc.Default(), id)
 }
 
 // {{.UpperComponentName}}X ...
-func {{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.EntityID) ({{range $Index, $Element := .ComponentVariables }}{{$Element.Type}}{{end}}, error) {
+func {{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.ZEntityID) ({{range $Index, $Element := .ComponentVariables }}{{$Element.Type}}{{end}}, error) {
 	v := e.Component(Z{{.UpperComponentName}})
 	c := v.(*{{.UpperComponentName}}Component)
 	return c.{{.UpperComponentName}}(id)
 }
 
 // Must{{.UpperComponentName}}X ...
-func Must{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.EntityID) {{range $Index, $Element := .ComponentVariables }}{{$Element.Type}}{{end}} {
+func Must{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.ZEntityID) {{range $Index, $Element := .ComponentVariables }}{{$Element.Type}}{{end}} {
 	data, err := {{.UpperComponentName}}X(e, id)
 	if err != nil {
 		panic(err)
@@ -474,12 +474,12 @@ func Must{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.EntityID) {{ra
 }
 
 // {{.UpperComponentName}} ...
-func {{.UpperComponentName}}(id zinc.EntityID) ({{range $Index, $Element := .ComponentVariables }}{{$Element.Type}}{{end}}, error) {
+func {{.UpperComponentName}}(id zinc.ZEntityID) ({{range $Index, $Element := .ComponentVariables }}{{$Element.Type}}{{end}}, error) {
 	return {{.UpperComponentName}}X(zinc.Default(), id)
 }
 
 // Must{{.UpperComponentName}} ...
-func Must{{.UpperComponentName}}(id zinc.EntityID) {{range $Index, $Element := .ComponentVariables }}{{$Element.Type}}{{end}} {
+func Must{{.UpperComponentName}}(id zinc.ZEntityID) {{range $Index, $Element := .ComponentVariables }}{{$Element.Type}}{{end}} {
 	data, err := {{.UpperComponentName}}X(zinc.Default(), id)
 	if err != nil {
 		panic(err)
@@ -488,13 +488,13 @@ func Must{{.UpperComponentName}}(id zinc.EntityID) {{range $Index, $Element := .
 }
 
 // Delete{{.UpperComponentName}}X ...
-func Delete{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.EntityID) error {
+func Delete{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.ZEntityID) error {
 	v := e.Component(Z{{.UpperComponentName}})
 	return v.DeleteEntity(id)
 }
 
 // MustDelete{{.UpperComponentName}}X ...
-func MustDelete{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.EntityID) {
+func MustDelete{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.ZEntityID) {
 	err := Delete{{.UpperComponentName}}X(e, id)
 	if err != nil {
 		panic(err)
@@ -502,12 +502,12 @@ func MustDelete{{.UpperComponentName}}X(e *zinc.ZEntityManager, id zinc.EntityID
 }
 
 // Delete{{.UpperComponentName}} ...
-func Delete{{.UpperComponentName}}(id zinc.EntityID) error {
+func Delete{{.UpperComponentName}}(id zinc.ZEntityID) error {
 	return Delete{{.UpperComponentName}}X(zinc.Default(), id)
 }
 
 // MustDelete{{.UpperComponentName}} ...
-func MustDelete{{.UpperComponentName}}(id zinc.EntityID) {
+func MustDelete{{.UpperComponentName}}(id zinc.ZEntityID) {
 	err := Delete{{.UpperComponentName}}(id)
 	if err != nil {
 		panic(err)

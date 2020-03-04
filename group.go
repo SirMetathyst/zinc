@@ -20,7 +20,7 @@ func newGroup(e *ZEntityManager, m *ZMatcher) *ZGroup {
 	}
 }
 
-func (g *ZGroup) addEntity(key uint, id EntityID) {
+func (g *ZGroup) addEntity(key uint, id ZEntityID) {
 	if g.entityList.AddEntity(id) && len(g.addedFunc) > 0 {
 		for _, h := range g.addedFunc {
 			h(key, id)
@@ -28,7 +28,7 @@ func (g *ZGroup) addEntity(key uint, id EntityID) {
 	}
 }
 
-func (g *ZGroup) deleteEntity(key uint, id EntityID) {
+func (g *ZGroup) deleteEntity(key uint, id ZEntityID) {
 	if g.entityList.DeleteEntity(id) && len(g.deletedFunc) > 0 {
 		for _, h := range g.deletedFunc {
 			h(key, id)
@@ -37,7 +37,7 @@ func (g *ZGroup) deleteEntity(key uint, id EntityID) {
 }
 
 // HandleEntitySilently ...
-func (g *ZGroup) HandleEntitySilently(id EntityID) {
+func (g *ZGroup) HandleEntitySilently(id ZEntityID) {
 	if ok := g.matcher.Match(g.entityManager, id); ok {
 		g.entityList.AddEntity(id)
 	} else {
@@ -46,7 +46,7 @@ func (g *ZGroup) HandleEntitySilently(id EntityID) {
 }
 
 // HandleEntity ...
-func (g *ZGroup) HandleEntity(key uint, id EntityID) {
+func (g *ZGroup) HandleEntity(key uint, id ZEntityID) {
 	if ok := g.matcher.Match(g.entityManager, id); ok {
 		g.addEntity(key, id)
 	} else {
@@ -56,7 +56,7 @@ func (g *ZGroup) HandleEntity(key uint, id EntityID) {
 
 // UpdateEntity ...
 // TODO: Write TEST
-func (g *ZGroup) UpdateEntity(key uint, id EntityID) {
+func (g *ZGroup) UpdateEntity(key uint, id ZEntityID) {
 	if g.entityList.HasEntity(id) && len(g.updatedFunc) > 0 {
 		for _, h := range g.updatedFunc {
 			h(key, id)
@@ -66,13 +66,13 @@ func (g *ZGroup) UpdateEntity(key uint, id EntityID) {
 
 // HasEntity ...
 // TODO: Write TEST
-func (g *ZGroup) HasEntity(id EntityID) bool {
+func (g *ZGroup) HasEntity(id ZEntityID) bool {
 	return g.entityList.HasEntity(id)
 }
 
 // Entities ...
 // TODO: Write TEST
-func (g *ZGroup) Entities() []EntityID {
+func (g *ZGroup) Entities() []ZEntityID {
 	return g.entityList.Entities()
 }
 

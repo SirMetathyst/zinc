@@ -9,15 +9,14 @@ var ZLocalRotation2 uint = uint(4108562484)
 
 // ZLocalRotation2Data ...
 type ZLocalRotation2Data struct {
-	X	float32
-	Y	float32
-	
+	X float32
+	Y float32
 }
 
 // LocalRotation2Component ...
 type LocalRotation2Component struct {
 	ctx  *zinc.ZContext
-	data map[zinc.EntityID]ZLocalRotation2Data
+	data map[zinc.ZEntityID]ZLocalRotation2Data
 }
 
 // RegisterLocalRotation2ComponentWith ...
@@ -36,7 +35,7 @@ func RegisterLocalRotation2Component() {
 
 // NewLocalRotation2Component ...
 func NewLocalRotation2Component() *LocalRotation2Component {
-	return &LocalRotation2Component{data: make(map[zinc.EntityID]ZLocalRotation2Data)}
+	return &LocalRotation2Component{data: make(map[zinc.ZEntityID]ZLocalRotation2Data)}
 }
 
 func init() {
@@ -51,7 +50,7 @@ func (c *LocalRotation2Component) SetContext(ctx *zinc.ZContext) {
 }
 
 // AddLocalRotation2 ...
-func (c *LocalRotation2Component) AddLocalRotation2(id zinc.EntityID, data ZLocalRotation2Data) error {
+func (c *LocalRotation2Component) AddLocalRotation2(id zinc.ZEntityID, data ZLocalRotation2Data) error {
 	if c.ctx.HasEntity(id) && !c.HasEntity(id) {
 		c.data[id] = data
 		c.ctx.ComponentAdded(ZLocalRotation2, id)
@@ -61,7 +60,7 @@ func (c *LocalRotation2Component) AddLocalRotation2(id zinc.EntityID, data ZLoca
 }
 
 // UpdateLocalRotation2 ...
-func (c *LocalRotation2Component) UpdateLocalRotation2(id zinc.EntityID, data ZLocalRotation2Data, silent bool) error {
+func (c *LocalRotation2Component) UpdateLocalRotation2(id zinc.ZEntityID, data ZLocalRotation2Data, silent bool) error {
 	if c.ctx.HasEntity(id) && c.HasEntity(id) {
 		c.data[id] = data
 		if !silent {
@@ -73,13 +72,13 @@ func (c *LocalRotation2Component) UpdateLocalRotation2(id zinc.EntityID, data ZL
 }
 
 // HasEntity ...
-func (c *LocalRotation2Component) HasEntity(id zinc.EntityID) bool {
+func (c *LocalRotation2Component) HasEntity(id zinc.ZEntityID) bool {
 	_, ok := c.data[id]
 	return ok
 }
 
 // LocalRotation2 ...
-func (c *LocalRotation2Component) LocalRotation2(id zinc.EntityID) (ZLocalRotation2Data, error) {
+func (c *LocalRotation2Component) LocalRotation2(id zinc.ZEntityID) (ZLocalRotation2Data, error) {
 	data, ok := c.data[id]
 	if ok {
 		return data, nil
@@ -88,24 +87,24 @@ func (c *LocalRotation2Component) LocalRotation2(id zinc.EntityID) (ZLocalRotati
 }
 
 // DeleteEntity ...
-func (c *LocalRotation2Component) DeleteEntity(id zinc.EntityID) error {
+func (c *LocalRotation2Component) DeleteEntity(id zinc.ZEntityID) error {
 	if c.ctx.HasEntity(id) && c.HasEntity(id) {
 		delete(c.data, id)
 		c.ctx.ComponentDeleted(ZLocalRotation2, id)
 		return nil
-	} 
+	}
 	return zinc.ErrComponentNotFound
 }
 
 // AddLocalRotation2X ...
-func AddLocalRotation2X(e *zinc.ZEntityManager, id zinc.EntityID, data ZLocalRotation2Data) error {
+func AddLocalRotation2X(e *zinc.ZEntityManager, id zinc.ZEntityID, data ZLocalRotation2Data) error {
 	v := e.Component(ZLocalRotation2)
 	c := v.(*LocalRotation2Component)
 	return c.AddLocalRotation2(id, data)
 }
 
 // MustAddLocalRotation2X ...
-func MustAddLocalRotation2X(e *zinc.ZEntityManager, id zinc.EntityID, data ZLocalRotation2Data) {
+func MustAddLocalRotation2X(e *zinc.ZEntityManager, id zinc.ZEntityID, data ZLocalRotation2Data) {
 	err := AddLocalRotation2X(e, id, data)
 	if err != nil {
 		panic(err)
@@ -113,12 +112,12 @@ func MustAddLocalRotation2X(e *zinc.ZEntityManager, id zinc.EntityID, data ZLoca
 }
 
 // AddLocalRotation2 ...
-func AddLocalRotation2(id zinc.EntityID, data ZLocalRotation2Data) error {
+func AddLocalRotation2(id zinc.ZEntityID, data ZLocalRotation2Data) error {
 	return AddLocalRotation2X(zinc.Default(), id, data)
 }
 
 // MustAddLocalRotation2 ...
-func MustAddLocalRotation2(id zinc.EntityID, data ZLocalRotation2Data) {
+func MustAddLocalRotation2(id zinc.ZEntityID, data ZLocalRotation2Data) {
 	err := AddLocalRotation2X(zinc.Default(), id, data)
 	if err != nil {
 		panic(err)
@@ -126,14 +125,14 @@ func MustAddLocalRotation2(id zinc.EntityID, data ZLocalRotation2Data) {
 }
 
 // UpdateLocalRotation2SilentlyX ...
-func UpdateLocalRotation2SilentlyX(e *zinc.ZEntityManager, id zinc.EntityID, data ZLocalRotation2Data) error {
+func UpdateLocalRotation2SilentlyX(e *zinc.ZEntityManager, id zinc.ZEntityID, data ZLocalRotation2Data) error {
 	v := e.Component(ZLocalRotation2)
 	c := v.(*LocalRotation2Component)
 	return c.UpdateLocalRotation2(id, data, true)
 }
 
 // MustUpdateLocalRotation2SilentlyX ...
-func MustUpdateLocalRotation2SilentlyX(e *zinc.ZEntityManager, id zinc.EntityID, data ZLocalRotation2Data) {
+func MustUpdateLocalRotation2SilentlyX(e *zinc.ZEntityManager, id zinc.ZEntityID, data ZLocalRotation2Data) {
 	err := UpdateLocalRotation2SilentlyX(e, id, data)
 	if err != nil {
 		panic(err)
@@ -141,12 +140,12 @@ func MustUpdateLocalRotation2SilentlyX(e *zinc.ZEntityManager, id zinc.EntityID,
 }
 
 // UpdateLocalRotation2Silently ...
-func UpdateLocalRotation2Silently(id zinc.EntityID, data ZLocalRotation2Data) error {
+func UpdateLocalRotation2Silently(id zinc.ZEntityID, data ZLocalRotation2Data) error {
 	return UpdateLocalRotation2SilentlyX(zinc.Default(), id, data)
 }
 
 // MustUpdateLocalRotation2Silently ...
-func MustUpdateLocalRotation2Silently(id zinc.EntityID, data ZLocalRotation2Data) {
+func MustUpdateLocalRotation2Silently(id zinc.ZEntityID, data ZLocalRotation2Data) {
 	err := UpdateLocalRotation2SilentlyX(zinc.Default(), id, data)
 	if err != nil {
 		panic(err)
@@ -154,14 +153,14 @@ func MustUpdateLocalRotation2Silently(id zinc.EntityID, data ZLocalRotation2Data
 }
 
 // UpdateLocalRotation2X ...
-func UpdateLocalRotation2X(e *zinc.ZEntityManager, id zinc.EntityID, data ZLocalRotation2Data) error {
+func UpdateLocalRotation2X(e *zinc.ZEntityManager, id zinc.ZEntityID, data ZLocalRotation2Data) error {
 	v := e.Component(ZLocalRotation2)
 	c := v.(*LocalRotation2Component)
 	return c.UpdateLocalRotation2(id, data, false)
 }
 
 // MustUpdateLocalRotation2X ...
-func MustUpdateLocalRotation2X(e *zinc.ZEntityManager, id zinc.EntityID, data ZLocalRotation2Data) {
+func MustUpdateLocalRotation2X(e *zinc.ZEntityManager, id zinc.ZEntityID, data ZLocalRotation2Data) {
 	err := UpdateLocalRotation2X(e, id, data)
 	if err != nil {
 		panic(err)
@@ -169,12 +168,12 @@ func MustUpdateLocalRotation2X(e *zinc.ZEntityManager, id zinc.EntityID, data ZL
 }
 
 // UpdateLocalRotation2 ...
-func UpdateLocalRotation2(id zinc.EntityID, data ZLocalRotation2Data) error {
+func UpdateLocalRotation2(id zinc.ZEntityID, data ZLocalRotation2Data) error {
 	return UpdateLocalRotation2X(zinc.Default(), id, data)
 }
 
 // MustUpdateLocalRotation2 ...
-func MustUpdateLocalRotation2(id zinc.EntityID, data ZLocalRotation2Data) {
+func MustUpdateLocalRotation2(id zinc.ZEntityID, data ZLocalRotation2Data) {
 	err := UpdateLocalRotation2X(zinc.Default(), id, data)
 	if err != nil {
 		panic(err)
@@ -182,25 +181,25 @@ func MustUpdateLocalRotation2(id zinc.EntityID, data ZLocalRotation2Data) {
 }
 
 // HasLocalRotation2X ...
-func HasLocalRotation2X(e *zinc.ZEntityManager, id zinc.EntityID) bool {
+func HasLocalRotation2X(e *zinc.ZEntityManager, id zinc.ZEntityID) bool {
 	v := e.Component(ZLocalRotation2)
 	return v.HasEntity(id)
 }
 
 // HasLocalRotation2 ...
-func HasLocalRotation2(id zinc.EntityID) bool {
+func HasLocalRotation2(id zinc.ZEntityID) bool {
 	return HasLocalRotation2X(zinc.Default(), id)
 }
 
 // LocalRotation2X ...
-func LocalRotation2X(e *zinc.ZEntityManager, id zinc.EntityID) (ZLocalRotation2Data, error) {
+func LocalRotation2X(e *zinc.ZEntityManager, id zinc.ZEntityID) (ZLocalRotation2Data, error) {
 	v := e.Component(ZLocalRotation2)
 	c := v.(*LocalRotation2Component)
 	return c.LocalRotation2(id)
 }
 
 // MustLocalRotation2X ...
-func MustLocalRotation2X(e *zinc.ZEntityManager, id zinc.EntityID) ZLocalRotation2Data {
+func MustLocalRotation2X(e *zinc.ZEntityManager, id zinc.ZEntityID) ZLocalRotation2Data {
 	data, err := LocalRotation2X(e, id)
 	if err != nil {
 		panic(err)
@@ -209,12 +208,12 @@ func MustLocalRotation2X(e *zinc.ZEntityManager, id zinc.EntityID) ZLocalRotatio
 }
 
 // LocalRotation2 ...
-func LocalRotation2(id zinc.EntityID) (ZLocalRotation2Data, error) {
+func LocalRotation2(id zinc.ZEntityID) (ZLocalRotation2Data, error) {
 	return LocalRotation2X(zinc.Default(), id)
 }
 
 // MustLocalRotation2 ...
-func MustLocalRotation2(id zinc.EntityID) ZLocalRotation2Data {
+func MustLocalRotation2(id zinc.ZEntityID) ZLocalRotation2Data {
 	data, err := LocalRotation2X(zinc.Default(), id)
 	if err != nil {
 		panic(err)
@@ -223,13 +222,13 @@ func MustLocalRotation2(id zinc.EntityID) ZLocalRotation2Data {
 }
 
 // DeleteLocalRotation2X ...
-func DeleteLocalRotation2X(e *zinc.ZEntityManager, id zinc.EntityID) error {
+func DeleteLocalRotation2X(e *zinc.ZEntityManager, id zinc.ZEntityID) error {
 	v := e.Component(ZLocalRotation2)
 	return v.DeleteEntity(id)
 }
 
 // MustDeleteLocalRotation2X ...
-func MustDeleteLocalRotation2X(e *zinc.ZEntityManager, id zinc.EntityID) {
+func MustDeleteLocalRotation2X(e *zinc.ZEntityManager, id zinc.ZEntityID) {
 	err := DeleteLocalRotation2X(e, id)
 	if err != nil {
 		panic(err)
@@ -237,12 +236,12 @@ func MustDeleteLocalRotation2X(e *zinc.ZEntityManager, id zinc.EntityID) {
 }
 
 // DeleteLocalRotation2 ...
-func DeleteLocalRotation2(id zinc.EntityID) error {
+func DeleteLocalRotation2(id zinc.ZEntityID) error {
 	return DeleteLocalRotation2X(zinc.Default(), id)
 }
 
 // MustDeleteLocalRotation2 ...
-func MustDeleteLocalRotation2(id zinc.EntityID) {
+func MustDeleteLocalRotation2(id zinc.ZEntityID) {
 	err := DeleteLocalRotation2(id)
 	if err != nil {
 		panic(err)
