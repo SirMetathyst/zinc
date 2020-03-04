@@ -2,7 +2,6 @@ package kit
 
 import (
 	"github.com/SirMetathyst/zinc"
-	"fmt"
 )
 
 // LocalPosition2Key ...
@@ -52,25 +51,25 @@ func (c *LocalPosition2Component) SetContext(ctx *zinc.ZContext) {
 }
 
 // AddLocalPosition2 ...
-func (c *LocalPosition2Component) AddLocalPosition2(id zinc.EntityID, data LocalPosition2Data) {
+func (c *LocalPosition2Component) AddLocalPosition2(id zinc.EntityID, data LocalPosition2Data) error {
 	if c.ctx.HasEntity(id) && !c.HasEntity(id) {
 		c.data[id] = data
 		c.ctx.ComponentAdded(LocalPosition2Key, id)
-	} else {
-		panic(fmt.Sprintf("zinc: component LocalPosition2 already exists on entity %d", id))
+		return nil
 	}
+	return zinc.ErrComponentNotFound
 }
 
 // UpdateLocalPosition2 ...
-func (c *LocalPosition2Component) UpdateLocalPosition2(id zinc.EntityID, data LocalPosition2Data, silent bool) {
+func (c *LocalPosition2Component) UpdateLocalPosition2(id zinc.EntityID, data LocalPosition2Data, silent bool) error {
 	if c.ctx.HasEntity(id) && c.HasEntity(id) {
 		c.data[id] = data
 		if !silent {
 			c.ctx.ComponentUpdated(LocalPosition2Key, id)
 		}
-	} else {
-		panic(fmt.Sprintf("zinc: component LocalPosition2 does not exist on entity %d", id))
+		return nil
 	}
+	return zinc.ErrComponentNotFound
 }
 
 // HasEntity ...
@@ -80,62 +79,111 @@ func (c *LocalPosition2Component) HasEntity(id zinc.EntityID) bool {
 }
 
 // LocalPosition2 ...
-func (c *LocalPosition2Component) LocalPosition2(id zinc.EntityID) LocalPosition2Data {
-	if data, ok := c.data[id]; ok {
-		return data
+func (c *LocalPosition2Component) LocalPosition2(id zinc.EntityID) (LocalPosition2Data, error) {
+	data, ok := c.data[id]
+	if ok {
+		return data, nil
 	}
-	panic(fmt.Sprintf("zinc: component LocalPosition2 does not exist on entity %d", id))
+	return data, zinc.ErrComponentNotFound
 }
 
 // DeleteEntity ...
-func (c *LocalPosition2Component) DeleteEntity(id zinc.EntityID) {
+func (c *LocalPosition2Component) DeleteEntity(id zinc.EntityID) error {
 	if c.ctx.HasEntity(id) && c.HasEntity(id) {
 		delete(c.data, id)
 		c.ctx.ComponentDeleted(LocalPosition2Key, id)
-	} else {
-		panic(fmt.Sprintf("zinc: component LocalPosition2 does not exist on entity %d", id))
-	}
+		return nil
+	} 
+	return zinc.ErrComponentNotFound
 }
 
 // AddLocalPosition2X ...
-func AddLocalPosition2X(e *zinc.ZEntityManager, id zinc.EntityID, data LocalPosition2Data) {
-	v, _ := e.Component(LocalPosition2Key)
+func AddLocalPosition2X(e *zinc.ZEntityManager, id zinc.EntityID, data LocalPosition2Data) error {
+	v := e.Component(LocalPosition2Key)
 	c := v.(*LocalPosition2Component)
-	c.AddLocalPosition2(id, data)
+	return c.AddLocalPosition2(id, data)
+}
+
+// MustAddLocalPosition2X ...
+func MustAddLocalPosition2X(e *zinc.ZEntityManager, id zinc.EntityID, data LocalPosition2Data) {
+	err := AddLocalPosition2X(e, id, data)
+	if err != nil {
+		panic(err)
+	}
 }
 
 // AddLocalPosition2 ...
-func AddLocalPosition2(id zinc.EntityID, data LocalPosition2Data) {
-	AddLocalPosition2X(zinc.Default(), id, data)
+func AddLocalPosition2(id zinc.EntityID, data LocalPosition2Data) error {
+	return AddLocalPosition2X(zinc.Default(), id, data)
 }
 
-// UpdateLocalPosition2X ...
-func UpdateLocalPosition2SilentlyX(e *zinc.ZEntityManager, id zinc.EntityID, data LocalPosition2Data) {
-	v, _ := e.Component(LocalPosition2Key)
+// MustAddLocalPosition2 ...
+func MustAddLocalPosition2(id zinc.EntityID, data LocalPosition2Data) {
+	err := AddLocalPosition2X(zinc.Default(), id, data)
+	if err != nil {
+		panic(err)
+	}
+}
+
+// UpdateLocalPosition2SilentlyX ...
+func UpdateLocalPosition2SilentlyX(e *zinc.ZEntityManager, id zinc.EntityID, data LocalPosition2Data) error {
+	v := e.Component(LocalPosition2Key)
 	c := v.(*LocalPosition2Component)
-	c.UpdateLocalPosition2(id, data, true)
+	return c.UpdateLocalPosition2(id, data, true)
+}
+
+// MustUpdateLocalPosition2SilentlyX ...
+func MustUpdateLocalPosition2SilentlyX(e *zinc.ZEntityManager, id zinc.EntityID, data LocalPosition2Data) {
+	err := UpdateLocalPosition2SilentlyX(e, id, data)
+	if err != nil {
+		panic(err)
+	}
 }
 
 // UpdateLocalPosition2Silently ...
-func UpdateLocalPosition2Silently(id zinc.EntityID, data LocalPosition2Data) {
-	UpdateLocalPosition2SilentlyX(zinc.Default(), id, data)
+func UpdateLocalPosition2Silently(id zinc.EntityID, data LocalPosition2Data) error {
+	return UpdateLocalPosition2SilentlyX(zinc.Default(), id, data)
+}
+
+// MustUpdateLocalPosition2Silently ...
+func MustUpdateLocalPosition2Silently(id zinc.EntityID, data LocalPosition2Data) {
+	err := UpdateLocalPosition2SilentlyX(zinc.Default(), id, data)
+	if err != nil {
+		panic(err)
+	}
 }
 
 // UpdateLocalPosition2X ...
-func UpdateLocalPosition2X(e *zinc.ZEntityManager, id zinc.EntityID, data LocalPosition2Data) {
-	v, _ := e.Component(LocalPosition2Key)
+func UpdateLocalPosition2X(e *zinc.ZEntityManager, id zinc.EntityID, data LocalPosition2Data) error {
+	v := e.Component(LocalPosition2Key)
 	c := v.(*LocalPosition2Component)
-	c.UpdateLocalPosition2(id, data, false)
+	return c.UpdateLocalPosition2(id, data, false)
+}
+
+// MustUpdateLocalPosition2X ...
+func MustUpdateLocalPosition2X(e *zinc.ZEntityManager, id zinc.EntityID, data LocalPosition2Data) {
+	err := UpdateLocalPosition2X(e, id, data)
+	if err != nil {
+		panic(err)
+	}
 }
 
 // UpdateLocalPosition2 ...
-func UpdateLocalPosition2(id zinc.EntityID, data LocalPosition2Data) {
-	UpdateLocalPosition2X(zinc.Default(), id, data)
+func UpdateLocalPosition2(id zinc.EntityID, data LocalPosition2Data) error {
+	return UpdateLocalPosition2X(zinc.Default(), id, data)
+}
+
+// MustUpdateLocalPosition2 ...
+func MustUpdateLocalPosition2(id zinc.EntityID, data LocalPosition2Data) {
+	err := UpdateLocalPosition2X(zinc.Default(), id, data)
+	if err != nil {
+		panic(err)
+	}
 }
 
 // HasLocalPosition2X ...
 func HasLocalPosition2X(e *zinc.ZEntityManager, id zinc.EntityID) bool {
-	v, _ := e.Component(LocalPosition2Key)
+	v := e.Component(LocalPosition2Key)
 	return v.HasEntity(id)
 }
 
@@ -145,24 +193,58 @@ func HasLocalPosition2(id zinc.EntityID) bool {
 }
 
 // LocalPosition2X ...
-func LocalPosition2X(e *zinc.ZEntityManager, id zinc.EntityID) LocalPosition2Data {
-	v, _ := e.Component(LocalPosition2Key)
+func LocalPosition2X(e *zinc.ZEntityManager, id zinc.EntityID) (LocalPosition2Data, error) {
+	v := e.Component(LocalPosition2Key)
 	c := v.(*LocalPosition2Component)
 	return c.LocalPosition2(id)
 }
 
+// MustLocalPosition2X ...
+func MustLocalPosition2X(e *zinc.ZEntityManager, id zinc.EntityID) LocalPosition2Data {
+	data, err := LocalPosition2X(e, id)
+	if err != nil {
+		panic(err)
+	}
+	return data
+}
+
 // LocalPosition2 ...
-func LocalPosition2(id zinc.EntityID) LocalPosition2Data {
+func LocalPosition2(id zinc.EntityID) (LocalPosition2Data, error) {
 	return LocalPosition2X(zinc.Default(), id)
 }
 
+// MustLocalPosition2 ...
+func MustLocalPosition2(id zinc.EntityID) LocalPosition2Data {
+	data, err := LocalPosition2X(zinc.Default(), id)
+	if err != nil {
+		panic(err)
+	}
+	return data
+}
+
 // DeleteLocalPosition2X ...
-func DeleteLocalPosition2X(e *zinc.ZEntityManager, id zinc.EntityID) {
-	v, _ := e.Component(LocalPosition2Key)
-	v.DeleteEntity(id)
+func DeleteLocalPosition2X(e *zinc.ZEntityManager, id zinc.EntityID) error {
+	v := e.Component(LocalPosition2Key)
+	return v.DeleteEntity(id)
+}
+
+// MustDeleteLocalPosition2X ...
+func MustDeleteLocalPosition2X(e *zinc.ZEntityManager, id zinc.EntityID) {
+	err := DeleteLocalPosition2X(e, id)
+	if err != nil {
+		panic(err)
+	}
 }
 
 // DeleteLocalPosition2 ...
-func DeleteLocalPosition2(id zinc.EntityID) {
-	DeleteLocalPosition2X(zinc.Default(), id)
+func DeleteLocalPosition2(id zinc.EntityID) error {
+	return DeleteLocalPosition2X(zinc.Default(), id)
+}
+
+// MustDeleteLocalPosition2 ...
+func MustDeleteLocalPosition2(id zinc.EntityID) {
+	err := DeleteLocalPosition2(id)
+	if err != nil {
+		panic(err)
+	}
 }

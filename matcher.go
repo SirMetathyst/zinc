@@ -77,10 +77,8 @@ func (m *ZMatcher) updateHash() {
 }
 
 func (m *ZMatcher) match(e *ZEntityManager, key uint, id EntityID) bool {
-	if c, ok := e.Component(key); ok {
-		return c.HasEntity(id)
-	}
-	return false
+	c := e.Component(key)
+	return c.HasEntity(id)
 }
 
 // Match ...

@@ -6,10 +6,15 @@ instead of having call myKit.RegisterMyComponent for every single component for 
 
 package zinc
 
-import "fmt"
+import (
+	"errors"
+)
 
 var (
-	
+	// ErrComponentNotFound ...
+	ErrComponentNotFound = errors.New("zinc: component was not found. Are you sure the EntityID is correct?")
+	// ErrUnregisteredComponent ...
+	ErrUnregisteredComponent = errors.New("zinc: component was not found. Did you forget to call RegisterComponent")
 )
 
 // EntityID ...
@@ -167,12 +172,12 @@ func (e *ZEntityManager) RegisterComponent(key uint, c Component) *ZContext {
 }
 
 // Component ...
-func (e *ZEntityManager) Component(key uint) (c Component, ok bool) {
-	c, ok = e.componentMap[key]
+func (e *ZEntityManager) Component(key uint) Component {
+	c, ok := e.componentMap[key]
 	if !ok {
-		panic(fmt.Sprintf("Failed to get component for key %v. Did you forgot to register the component?", key))
+		panic(ErrUnregisteredComponent)
 	}
-	return
+	return c
 }
 
 // NewCollector ...
@@ -206,6 +211,6 @@ func (e *ZEntityManager) Group(m *ZMatcher) *ZGroup {
 
 // Component ...
 type Component interface {
-	DeleteEntity(id EntityID)
+	DeleteEntity(id EntityID) error
 	HasEntity(id EntityID) bool
 }

@@ -39,7 +39,7 @@ kit_gen() {
     #${ZINC} active
     #${ZINC} state -var bool
     #${ZINC} blah -d *bool
-    #${ZINC} isPlaying
+    ${ZINC} isPlaying -var bool
 }
 
 bench() {

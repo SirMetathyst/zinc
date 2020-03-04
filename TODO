@@ -5,5 +5,4 @@ Kits:
     - SDLKit        (for SDL layer, rendering, input, windows etc)
 
 API
-    - add error message when failing to fetch component using em.Component()
-    - also, probably shouldn't panic for Add/Remove/Delete etc and instead return an error
+    - add extras/optionals param for MustXXX API in zinc cli

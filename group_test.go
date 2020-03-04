@@ -15,6 +15,7 @@ func TestGroupHandleEntitySilently(t *testing.T) {
 		// Setup
 		e := zinc.NewEntityManager()
 		kit.RegisterLocalPosition2ComponentWith(e)
+		kit.RegisterLocalRotation2ComponentWith(e)
 
 		// Arrange
 		id := e.CreateEntity()
@@ -64,6 +65,7 @@ func TestGroupHandleEntity(t *testing.T) {
 		// Setup
 		e := zinc.NewEntityManager()
 		kit.RegisterLocalPosition2ComponentWith(e)
+		kit.RegisterLocalRotation2ComponentWith(e)
 
 		// Arrange
 		called := false

@@ -98,11 +98,13 @@ func TestMatcherMatch(t *testing.T) {
 		kit.AddLocalRotation2X(e, id, kit.LocalRotation2Data{X: 10, Y: 10})
 
 		// Act
-		m := zinc.AllOf(0)
-		mv := m.Match(e, id)
+		f := func() {
+			m := zinc.AllOf(0)
+			m.Match(e, id)
+		}
 
 		// Assert
-		assert.False(t, mv, "must return false if matcher contains non-existing key")
+		assert.Panics(t, f, "must panic if matcher attempts to match non-existing key")
 	})
 
 	t.Run("all of", func(t *testing.T) {
@@ -130,6 +132,7 @@ func TestMatcherMatch(t *testing.T) {
 		// Setup
 		e := zinc.NewEntityManager()
 		kit.RegisterLocalPosition2ComponentWith(e)
+		kit.RegisterLocalRotation2ComponentWith(e)
 
 		// Arrange
 		id := e.CreateEntity()
