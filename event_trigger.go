@@ -12,42 +12,46 @@ const (
 	GroupEventUpdated
 )
 
-// ET ...
-type ET interface {
-	Matcher() M
-	GroupEvent() GroupEvent
+// GroupEventValid ...
+func GroupEventValid(e GroupEvent) bool {
+	if e >= 0 || e <= 2 {
+		return true
+	}
+	return false
 }
 
-type et struct {
-	m M
-	e GroupEvent
+// ZEventTrigger ...
+type ZEventTrigger struct {
+	matcher    *ZMatcher
+	groupEvent GroupEvent
 }
 
 // Matcher ...
-func (e *et) Matcher() M {
-	return e.m
+func (e *ZEventTrigger) Matcher() *ZMatcher {
+	return e.matcher
 }
 
 // GroupEvent ...
-func (e *et) GroupEvent() GroupEvent {
-	return e.e
+func (e *ZEventTrigger) GroupEvent() GroupEvent {
+	return e.groupEvent
 }
 
-func newEventTrigger(m M, e GroupEvent) ET {
-	return &et{m: m, e: e}
+// NewEventTrigger ...
+func NewEventTrigger(m *ZMatcher, e GroupEvent) *ZEventTrigger {
+	return &ZEventTrigger{matcher: m, groupEvent: e}
 }
 
 // Added ...
-func Added(keys ...uint) ET {
-	return newEventTrigger(AllOf(keys...), GroupEventAdded)
+func Added(keys ...uint) *ZEventTrigger {
+	return NewEventTrigger(AllOf(keys...), GroupEventAdded)
 }
 
 // Updated ...
-func Updated(keys ...uint) ET {
-	return newEventTrigger(AllOf(keys...), GroupEventUpdated)
+func Updated(keys ...uint) *ZEventTrigger {
+	return NewEventTrigger(AllOf(keys...), GroupEventUpdated)
 }
 
 // Deleted ...
-func Deleted(keys ...uint) ET {
-	return newEventTrigger(AllOf(keys...), GroupEventDeleted)
+func Deleted(keys ...uint) *ZEventTrigger {
+	return NewEventTrigger(AllOf(keys...), GroupEventDeleted)
 }

@@ -3,7 +3,7 @@ package zinc
 var entityManager = NewEntityManager()
 
 // Default ...
-func Default() *EntityManager {
+func Default() *ZEntityManager {
 	return entityManager
 }
 
@@ -42,9 +42,9 @@ func Entities() []EntityID {
 	return Default().Entities()
 }
 
-// CreateCollector ...
-func CreateCollector(et ...ET) C {
-	return Default().CreateCollector(et...)
+// NewCollector ...
+func NewCollector(et ...*ZEventTrigger) *ZCollector {
+	return Default().NewCollector(et...)
 }
 
 // GroupCount ...
@@ -53,6 +53,6 @@ func GroupCount() int {
 }
 
 // Group ...
-func Group(m M) G {
+func Group(m *ZMatcher) *ZGroup {
 	return Default().Group(m)
 }

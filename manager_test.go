@@ -2,15 +2,16 @@ package zinc_test
 
 import (
 	"testing"
-	"github.com/SirMetathyst/zinc/test"
+
 	"github.com/SirMetathyst/zinc"
 	"github.com/SirMetathyst/zinc/kit"
+	"github.com/SirMetathyst/zinc/test"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewEntityManager(t *testing.T) {
 	// Arrange, Act
-	e := zinc.NewEntityManager() 
+	e := zinc.NewEntityManager()
 	// Assert
 	assert.NotNil(t, e, "must not return nil")
 }
@@ -71,7 +72,7 @@ func TestEntityManagerReset(t *testing.T) {
 
 func TestEntityManagerRegisterComponent(t *testing.T) {
 
-	t.Run("register component type once", func(t *testing.T){
+	t.Run("register component type once", func(t *testing.T) {
 
 		// Setup
 		e := zinc.NewEntityManager()
@@ -81,21 +82,21 @@ func TestEntityManagerRegisterComponent(t *testing.T) {
 		id := e.CreateEntity()
 
 		// Act
-		do := func(){ 
-			kit.SetLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 20}) 
+		do := func() {
+			kit.AddLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 20})
 		}
-		
+
 		// Assert
 		assert.NotPanics(t, do, "should not panic because component type has been registered")
 	})
 
-	t.Run("register component type twice", func(t *testing.T){
+	t.Run("register component type twice", func(t *testing.T) {
 
 		// Arrange
 		e := zinc.NewEntityManager()
 
 		// Act
-		do := func(){ kit.RegisterLocalPosition2ComponentWith(e) }
+		do := func() { kit.RegisterLocalPosition2ComponentWith(e) }
 		do()
 
 		// Assert
@@ -114,7 +115,7 @@ func TestEntityManagerResetAll(t *testing.T) {
 
 	// Act
 	e.ResetAll()
-	do := func(){ kit.SetLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 20}) }
+	do := func() { kit.AddLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 20}) }
 
 	// Assert
 	assert.Panics(t, do, "should panic because component type has been deleted due to reset all")
@@ -131,11 +132,11 @@ func TestEntityManagerGroup(t *testing.T) {
 	test.GroupCount(t, e, 1)
 }
 
-func TestEntityManagerCollector(t *testing.T) {	
+func TestEntityManagerCollector(t *testing.T) {
 	// Setup
 	e := zinc.NewEntityManager()
 	// Arrange, Act
-	c := e.CreateCollector(zinc.Added(kit.LocalPosition2Key))
+	c := e.NewCollector(zinc.Added(kit.LocalPosition2Key))
 	// Assert
 	assert.NotNil(t, c, "entity manager must not return nil collector")
 }

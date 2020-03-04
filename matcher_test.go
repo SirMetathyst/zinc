@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/SirMetathyst/zinc"
-	"github.com/stretchr/testify/assert"
 	"github.com/SirMetathyst/zinc/kit"
+	"github.com/stretchr/testify/assert"
 )
 
 var (
@@ -56,7 +56,6 @@ func TestMatcherNoneOf(t *testing.T) {
 	}
 }
 
-
 func TestMatcherAllOfHash(t *testing.T) {
 	// Arrange, Act
 	m1 := zinc.AllOf(kit.LocalPosition2Key, kit.Velocity2Key)
@@ -84,9 +83,8 @@ func TestMatcherHash(t *testing.T) {
 	assert.Equal(t, m1.Hash(), m2.Hash(), "must share identical hash")
 }
 
-
 func TestMatcherMatch(t *testing.T) {
-	
+
 	t.Run("non-existing key", func(t *testing.T) {
 
 		// Setup
@@ -96,8 +94,8 @@ func TestMatcherMatch(t *testing.T) {
 
 		// Arrange
 		id := e.CreateEntity()
-		kit.SetLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 10})
-		kit.SetLocalRotation2X(e, id, kit.LocalRotation2Data{X: 10, Y: 10})
+		kit.AddLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 10})
+		kit.AddLocalRotation2X(e, id, kit.LocalRotation2Data{X: 10, Y: 10})
 
 		// Act
 		m := zinc.AllOf(0)
@@ -116,8 +114,8 @@ func TestMatcherMatch(t *testing.T) {
 
 		// Arrange
 		id := e.CreateEntity()
-		kit.SetLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 10})
-		kit.SetLocalRotation2X(e, id, kit.LocalRotation2Data{X: 10, Y: 10})
+		kit.AddLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 10})
+		kit.AddLocalRotation2X(e, id, kit.LocalRotation2Data{X: 10, Y: 10})
 
 		// Act
 		m := zinc.AllOf(kit.LocalPosition2Key, kit.LocalRotation2Key)
@@ -135,7 +133,7 @@ func TestMatcherMatch(t *testing.T) {
 
 		// Arrange
 		id := e.CreateEntity()
-		kit.SetLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 10})
+		kit.AddLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 10})
 
 		// Act
 		m := zinc.NoneOf(kit.LocalRotation2Key)
@@ -154,8 +152,8 @@ func TestMatcherMatch(t *testing.T) {
 
 		// Arrange
 		id := e.CreateEntity()
-		kit.SetLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 10})
-		kit.SetLocalRotation2X(e, id, kit.LocalRotation2Data{X: 10, Y: 10})
+		kit.AddLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 10})
+		kit.AddLocalRotation2X(e, id, kit.LocalRotation2Data{X: 10, Y: 10})
 
 		// Act
 		m := zinc.NoneOf(kit.LocalRotation2Key)
@@ -174,8 +172,8 @@ func TestMatcherMatch(t *testing.T) {
 
 		// Arrange
 		id := e.CreateEntity()
-		kit.SetLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 10})
-		kit.SetLocalRotation2X(e, id, kit.LocalRotation2Data{X: 10, Y: 10})
+		kit.AddLocalPosition2X(e, id, kit.LocalPosition2Data{X: 10, Y: 10})
+		kit.AddLocalRotation2X(e, id, kit.LocalRotation2Data{X: 10, Y: 10})
 
 		// Act
 		m := zinc.AllOf(kit.LocalPosition2Key).NoneOf(kit.LocalRotation2Key)

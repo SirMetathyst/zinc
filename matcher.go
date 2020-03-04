@@ -1,35 +1,19 @@
 package zinc
 
-// M ...
-type M interface {
-	
-	HasAllOf(keys ...uint) bool
-	HasNoneOf(keys ...uint) bool
-
-	AllOfSlice() []uint
-	AllOf(keys ...uint) M
-	NoneOfSlice() []uint
-	NoneOf(keys ...uint) M
-
-	Match(e *EntityManager, id EntityID) bool 
-	Hash() uint 
-}
-
-
-// Matcher ...
-type m struct {
-	allOf         []uint
-	noneOf        []uint
-	hash          uint
+// ZMatcher ...
+type ZMatcher struct {
+	allOf  []uint
+	noneOf []uint
+	hash   uint
 }
 
 // NewMatcher ...
-func NewMatcher() M {
-	return &m{}
+func NewMatcher() *ZMatcher {
+	return &ZMatcher{}
 }
 
 // HasAllOf ...
-func (m *m) HasAllOf(keys ...uint) bool {
+func (m *ZMatcher) HasAllOf(keys ...uint) bool {
 	c := 0
 	for _, v := range m.allOf {
 		for _, k := range keys {
@@ -42,7 +26,7 @@ func (m *m) HasAllOf(keys ...uint) bool {
 }
 
 // HasNoneOf ...
-func (m *m) HasNoneOf(keys ...uint) bool {
+func (m *ZMatcher) HasNoneOf(keys ...uint) bool {
 	c := 0
 	for _, v := range m.noneOf {
 		for _, k := range keys {
@@ -55,12 +39,12 @@ func (m *m) HasNoneOf(keys ...uint) bool {
 }
 
 // AllOfSlice ...
-func (m *m) AllOfSlice() []uint {
+func (m *ZMatcher) AllOfSlice() []uint {
 	return m.allOf
 }
 
 // AllOf ...
-func (m *m) AllOf(keys ...uint) M {
+func (m *ZMatcher) AllOf(keys ...uint) *ZMatcher {
 	for _, key := range keys {
 		if has := m.HasAllOf(key); !has {
 			m.allOf = append(m.allOf, key)
@@ -71,12 +55,12 @@ func (m *m) AllOf(keys ...uint) M {
 }
 
 // NoneOfSlice ...
-func (m *m) NoneOfSlice() []uint {
+func (m *ZMatcher) NoneOfSlice() []uint {
 	return m.noneOf
 }
 
 // NoneOf ...
-func (m *m) NoneOf(keys ...uint) M {
+func (m *ZMatcher) NoneOf(keys ...uint) *ZMatcher {
 	for _, key := range keys {
 		if has := m.HasNoneOf(key); !has {
 			m.noneOf = append(m.noneOf, key)
@@ -86,13 +70,13 @@ func (m *m) NoneOf(keys ...uint) M {
 	return m
 }
 
-func (m *m) updateHash() {
+func (m *ZMatcher) updateHash() {
 	m.hash = hash(647,
 		hash(653, m.allOf...),
 		hash(661, m.noneOf...))
 }
 
-func (m *m) match(e *EntityManager, key uint, id EntityID) bool {
+func (m *ZMatcher) match(e *ZEntityManager, key uint, id EntityID) bool {
 	if c, ok := e.Component(key); ok {
 		return c.HasEntity(id)
 	}
@@ -100,7 +84,7 @@ func (m *m) match(e *EntityManager, key uint, id EntityID) bool {
 }
 
 // Match ...
-func (m *m) Match(e *EntityManager, id EntityID) bool {
+func (m *ZMatcher) Match(e *ZEntityManager, id EntityID) bool {
 	for _, k := range m.allOf {
 		if !m.match(e, k, id) {
 			return false
@@ -115,17 +99,17 @@ func (m *m) Match(e *EntityManager, id EntityID) bool {
 }
 
 // Hash ...
-func (m *m) Hash() uint {
+func (m *ZMatcher) Hash() uint {
 	return m.hash
 }
 
 // AllOf ...
-func AllOf(keys ...uint) M {
+func AllOf(keys ...uint) *ZMatcher {
 	return NewMatcher().AllOf(keys...)
 }
 
 // NoneOf ...
-func NoneOf(keys ...uint) M {
+func NoneOf(keys ...uint) *ZMatcher {
 	return NewMatcher().NoneOf(keys...)
 }
 

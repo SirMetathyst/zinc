@@ -1,7 +1,7 @@
 #!/bin/bash
 
-ZINC="zinc component add -p kit -n"
-FLOAT32_2="-d x:float32 -d y:float32"
+ZINC="zinc component -package kit -name"
+FLOAT32_2="-var x:float32 -var y:float32"
 
 
 _rm() {
@@ -36,6 +36,10 @@ kit_gen() {
 	${ZINC} LocalRotation2 ${FLOAT32_2}
 	${ZINC} LocalScale2    ${FLOAT32_2}
 	${ZINC} Velocity2      ${FLOAT32_2}
+    #${ZINC} active
+    #${ZINC} state -var bool
+    #${ZINC} blah -d *bool
+    #${ZINC} isPlaying
 }
 
 bench() {

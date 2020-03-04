@@ -1,37 +1,59 @@
 package zinc
 
-// C ...
-type C interface {
-	Entities() []EntityID
-	ClearCollectedEntities()
+// ZCollector ...
+type ZCollector struct {
+	collectorEvent []ZCollectorEvent
+	entityList     *el
 }
 
-type c struct {
-	group      []G
-	groupEvent []GroupEvent
-	entityList *el
+// ZCollectorEvent ...
+type ZCollectorEvent struct {
+	groupEvent GroupEvent
+	group      *ZGroup
 }
 
-// NewCollector ...
+// Group ...
+func (e *ZCollectorEvent) Group() *ZGroup {
+	return e.group
+}
+
+// GroupEvent ...
+func (e *ZCollectorEvent) GroupEvent() GroupEvent {
+	return e.groupEvent
+}
+
+func newCollectorEvent(g *ZGroup, e GroupEvent) ZCollectorEvent {
+	if g == nil {
+		panic("group cannot be nil")
+	}
+	if !GroupEventValid(e) {
+		panic("invalid group event")
+	}
+	return ZCollectorEvent{group: g, groupEvent: e}
+}
+
 // TODO: Write TEST
-func NewCollector(group []G, groupEvent []GroupEvent) C {
-	collector := &c{
-		group:      group,
-		groupEvent: groupEvent,
-		entityList: newEntityList(),
+func newCollector(ce ...ZCollectorEvent) *ZCollector {
+	if len(ce) == 0 || ce == nil {
+		panic("collector event cannot be nil and must have at least one event")
+	}
+	collector := &ZCollector{
+		collectorEvent: ce,
+		entityList:     newEntityList(),
 	}
 	collector.activate()
 	return collector
 }
 
-func (c *c) addEntity(key uint, id EntityID) {
+func (c *ZCollector) addEntity(key uint, id EntityID) {
 	c.entityList.AddEntity(id)
 }
 
 // activate ...
-func (c *c) activate() {
-	for i, group := range c.group {
-		groupEvent := c.groupEvent[i]
+func (c *ZCollector) activate() {
+	for _, collectorEvent := range c.collectorEvent {
+		group := collectorEvent.Group()
+		groupEvent := collectorEvent.GroupEvent()
 		switch groupEvent {
 		case GroupEventAdded:
 			group.HandleEntityAdded(c.addEntity)
@@ -48,7 +70,7 @@ func (c *c) activate() {
 
 // ClearCollectedEntities ...
 // TODO: Write TEST
-func (c *c) ClearCollectedEntities() {
+func (c *ZCollector) ClearCollectedEntities() {
 	for _, id := range c.entityList.Entities() {
 		c.entityList.DeleteEntity(id)
 	}
@@ -56,6 +78,6 @@ func (c *c) ClearCollectedEntities() {
 
 // Entities ...
 // TODO: Write TEST
-func (c *c) Entities() []EntityID {
+func (c *ZCollector) Entities() []EntityID {
 	return c.entityList.Entities()
 }

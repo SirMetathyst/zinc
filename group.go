@@ -1,21 +1,9 @@
 package zinc
 
-// G ...
-type G interface {
-	HandleEntitySilently(id EntityID)
-	HandleEntity(key uint, id EntityID)
-	UpdateEntity(key uint, id EntityID)
-	HasEntity(id EntityID) bool
-	Entities() []EntityID
-	HandleEntityAdded(f EntityEventFunc)
-	HandleEntityDeleted(f EntityEventFunc)
-	HandleEntityUpdated(f EntityEventFunc)
-}
-
-// g ...
-type g struct {
-	matcher       M
-	entityManager *EntityManager
+// ZGroup ...
+type ZGroup struct {
+	matcher       *ZMatcher
+	entityManager *ZEntityManager
 	entityList    *el
 	addedFunc     []EntityEventFunc
 	updatedFunc   []EntityEventFunc
@@ -24,15 +12,15 @@ type g struct {
 
 // newGroup ...
 // TODO: Write TEST
-func newGroup(e *EntityManager, m M) *g {
-	return &g{
+func newGroup(e *ZEntityManager, m *ZMatcher) *ZGroup {
+	return &ZGroup{
 		entityManager: e,
 		matcher:       m,
 		entityList:    newEntityList(),
 	}
 }
 
-func (g *g) addEntity(key uint, id EntityID) {
+func (g *ZGroup) addEntity(key uint, id EntityID) {
 	if g.entityList.AddEntity(id) && len(g.addedFunc) > 0 {
 		for _, h := range g.addedFunc {
 			h(key, id)
@@ -40,7 +28,7 @@ func (g *g) addEntity(key uint, id EntityID) {
 	}
 }
 
-func (g *g) deleteEntity(key uint, id EntityID) {
+func (g *ZGroup) deleteEntity(key uint, id EntityID) {
 	if g.entityList.DeleteEntity(id) && len(g.deletedFunc) > 0 {
 		for _, h := range g.deletedFunc {
 			h(key, id)
@@ -49,7 +37,7 @@ func (g *g) deleteEntity(key uint, id EntityID) {
 }
 
 // HandleEntitySilently ...
-func (g *g) HandleEntitySilently(id EntityID) {
+func (g *ZGroup) HandleEntitySilently(id EntityID) {
 	if ok := g.matcher.Match(g.entityManager, id); ok {
 		g.entityList.AddEntity(id)
 	} else {
@@ -58,7 +46,7 @@ func (g *g) HandleEntitySilently(id EntityID) {
 }
 
 // HandleEntity ...
-func (g *g) HandleEntity(key uint, id EntityID) {
+func (g *ZGroup) HandleEntity(key uint, id EntityID) {
 	if ok := g.matcher.Match(g.entityManager, id); ok {
 		g.addEntity(key, id)
 	} else {
@@ -68,7 +56,7 @@ func (g *g) HandleEntity(key uint, id EntityID) {
 
 // UpdateEntity ...
 // TODO: Write TEST
-func (g *g) UpdateEntity(key uint, id EntityID) {
+func (g *ZGroup) UpdateEntity(key uint, id EntityID) {
 	if g.entityList.HasEntity(id) && len(g.updatedFunc) > 0 {
 		for _, h := range g.updatedFunc {
 			h(key, id)
@@ -78,30 +66,35 @@ func (g *g) UpdateEntity(key uint, id EntityID) {
 
 // HasEntity ...
 // TODO: Write TEST
-func (g *g) HasEntity(id EntityID) bool {
+func (g *ZGroup) HasEntity(id EntityID) bool {
 	return g.entityList.HasEntity(id)
 }
 
 // Entities ...
 // TODO: Write TEST
-func (g *g) Entities() []EntityID {
+func (g *ZGroup) Entities() []EntityID {
 	return g.entityList.Entities()
+}
+
+// Hash ...
+func (g *ZGroup) Hash() uint {
+	return g.matcher.Hash()
 }
 
 // HandleEntityAdded ...
 // TODO: Write TEST
-func (g *g) HandleEntityAdded(f EntityEventFunc) {
+func (g *ZGroup) HandleEntityAdded(f EntityEventFunc) {
 	g.addedFunc = append(g.addedFunc, f)
 }
 
 // HandleEntityUpdated ...
 // TODO: Write TEST
-func (g *g) HandleEntityUpdated(f EntityEventFunc) {
+func (g *ZGroup) HandleEntityUpdated(f EntityEventFunc) {
 	g.updatedFunc = append(g.updatedFunc, f)
 }
 
 // HandleEntityDeleted ...
 // TODO: Write TEST
-func (g *g) HandleEntityDeleted(f EntityEventFunc) {
+func (g *ZGroup) HandleEntityDeleted(f EntityEventFunc) {
 	g.deletedFunc = append(g.deletedFunc, f)
 }

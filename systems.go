@@ -1,58 +1,45 @@
 package zinc
 
-// S ...
-type S interface{}
-
-// U ...
-type U interface {
+// Update ...
+type Update interface {
 	Update(dt float64)
 }
 
-// CU ...
-type CU interface {
+// Cleanup ...
+type Cleanup interface {
 	Cleanup()
 }
 
-// I ...
-type I interface {
+// Initialize ...
+type Initialize interface {
 	Initialize()
 }
 
-// SS ...
-type SS interface {
-	// Initialize ...
-	I
-	// Update ...
-	U
-	// Cleanup ...
-	CU
-	Add(sys ...S)
-}
-
-type sys struct {
-	initialize []I
-	update    []U
-	cleanup   []CU
+// ZSystems ...
+type ZSystems struct {
+	initialize []Initialize
+	update     []Update
+	cleanup    []Cleanup
 }
 
 // NewSystems ...
 // TODO: Write TEST
-func NewSystems() SS {
-	return &sys{}
+func NewSystems() *ZSystems {
+	return &ZSystems{}
 }
 
 // Add ...
 // TODO: Write TEST
-func (s *sys) Add(sys ...S) {
+func (s *ZSystems) Add(sys ...interface{}) {
 	for _, sysv := range sys {
 		switch v := sysv.(type) {
-		case I:
+		case Initialize:
 			s.initialize = append(s.initialize, v)
 			break
-		case U:
+		case Update:
 			s.update = append(s.update, v)
 			break
-		case CU:
+		case Cleanup:
 			s.cleanup = append(s.cleanup, v)
 			break
 		}
@@ -61,7 +48,7 @@ func (s *sys) Add(sys ...S) {
 
 // Initialize ...
 // TODO: Write TEST
-func (s *sys) Initialize() {
+func (s *ZSystems) Initialize() {
 	for _, sys := range s.initialize {
 		sys.Initialize()
 	}
@@ -69,7 +56,7 @@ func (s *sys) Initialize() {
 
 // Update ...
 // TODO: Write TEST
-func (s *sys) Update(dt float64) {
+func (s *ZSystems) Update(dt float64) {
 	for _, sys := range s.update {
 		sys.Update(dt)
 	}
@@ -77,7 +64,7 @@ func (s *sys) Update(dt float64) {
 
 // Cleanup ...
 // TODO: Write TEST
-func (s *sys) Cleanup() {
+func (s *ZSystems) Cleanup() {
 	for _, sys := range s.cleanup {
 		sys.Cleanup()
 	}
