@@ -16,10 +16,14 @@ go get github.com/SirMetathyst/zinc/...
 There isn't much we can do without any components so lets go ahead and generate some before we start.
 
 ```
-zinc component add -p components -n position -d x:float32 -d y:float32 -o ./components
-zinc component add -p components -n velocity -d x:float32 -d y:float32 -o ./components
+zinc <component> -package|-import|-name|-var|-extras|-unique
+---
+zinc component -package components -name position -var x:float32 -var y:float32
+zinc component -package components -name velocity -var x:float32 -var y:float32
 ```
-We first call the `ZincCLI` and pass in some arguments. The `p` argument tells the `ZincCLI` that we want our generated component to have the package name of `components`. Then we tell it we want a component with the name of `position` and specify the data. The format must be in `name:type` but no checks are done to ensure valid go code. Lastly, we give it a folder where we want our component files to be generated in. Now we have some components generated to play with.
+We first execute the `ZincCLI` and pass in some arguments. The `-package` argument means we want our generated component to have the package name of `components` and `-name` specifies the name of the component with `-var` being the data. The format must be in `name:type` or `type`.
+
+## Components
 
 ```golang
 package main
@@ -31,10 +35,9 @@ import (
     // automatically register component types
     // with the default entity manager
     // see generated files for how to do it manually
-    // if required. The convention I use is to call it a "kit"
-    // where the root contains all your components and /systems
-    // contains all logic for those components
-    "xxx/xxx/to/yourkit"
+    // if required. The convention recommended is to have the "kit"
+    // suffix for packages which extend zinc funtionality.
+    "path/to/yourkit"
 )
 
 func main() {
@@ -43,41 +46,88 @@ func main() {
     // uses the built-in default entity manager
     id := zinc.CreateEntity()
 
-    // we can already use our component types 
-    // setting a component will add or update it
-    yourkit.SetPosition(id, yourkit.PositionData{10, 10})
+    // Adding a component on an entity.
+    // The `Add` method could return an error which will result in 
+    // ErrEntityComponentAlreadyExists or ErrEntityNotFound
+    err := yourkit.AddPosition(id, yourkit.ZPositionData{10, 10})
+
+    // Deleting a component on an entity.
+    // The `Delete` method could return an error which will result in 
+    // ErrEntityComponentNotFound or ErrEntityNotFound
+    err := yourkit.DeletePosition(id)
+
+    // Updating a component on an entity.
+    // The `Update` method could return an error which will result in 
+    // ErrEntityComponentNotFound or ErrEntityNotFound
+    err := yourkit.UpdatePosition(id, yourkit.ZPositionData{10, 10})
+
+    // Updating a component on an entity silently.
+    // The `UpdateSilently` method will update the component
+    // on an entity but will not notify groups. This method 
+    // could return an error which will result in 
+    // ErrEntityComponentNotFound or 
+    // ErrEntityNotFound
+    err := yourkit.UpdatePositionSilently(id, yourkit.ZPositionData{10, 10})
+
+    // Setting a component on an entity.
+    // The `Set` method will call the `Add` method if the component
+    // has not been added to an entity and if it already exists it will
+    // call `Update` instead and return an error if any
+    err := yourkit.SetPosition(id, yourkit.ZPositionData{10, 10})
+
+    // getting a component from an entity.
+    // It can return an error which will result in 
+    // ErrEntityComponentNotFound or ErrEntityNotFound
+    position, err := yourkit.Position(id)
+
+    // You can generate an optional API which prefix as "Must"
+    // which allows you to write code without checking the errors
+    // yourself however these methods expect the error to be nil and
+    // will panic if they are not
+    pos := yourkit.MustPosition(id) 
+
+    // You can also pass in a different entity manager
+    // through the methods which end in X
+    pos := yourkit.MustPositionX(myOtherEntityManager, id)
+}
+```
+```golang
+// Full list of possible functions for generated component `position`
+
+xxx
+```
 
 
-    // get position with id
-    pos := yourkit.Position(id)
+## Entity Manager
+```golang
+func entityManagerExample() {
 
+    /////////////////////
+    // Create components 
+    /////////////////////
 
-    // there is also an API for passing in a different entity manager
-    // these end in X
-    pos := yourkit.PositionX(entityManager, id)
+    // ...
 
-    // getting all entity ids in the entity manager
+    // get all created entity ids in the default
+    // entity manager instance
     entities := zinc.Entities()
 
+    // TODO: add examples for the rest 
+}
+```
 
-    // getting groups of entities with specific components
-    // will return a entity group that has position and velocity component
-    group1 := zinc.Group(zinc.AllOf(yourkit.PositionKey, yourkit.VelocityKey))
+## Groups
 
-    // ids of entities in group
-    group1.Entities()
+```golang
+func groupsExample() {
 
-    // does the group have an entity?
-    group1.HasEntity(id)
+    // create a matcher 
+    matcher := zinc.AllOf(yourkit.ZPosition, yourkit.ZVelocity)
 
-    // does the component exist for entity
-    ok := yourkit.HasPosition(id)
+    // create a group
+    group1 := zinc.Group(matcher)
 
-    // delete the position component 
-    yourkit.DeletePosition(id)
-
-    // will return a entity group that has position but not velocity component
-    group2 := zinc.Group(zinc.AllOf(yourkit.PositionKey).NoneOf(yourkit.VelocityKey))  
+    // TODO: complete section
 }
 ```
 
@@ -98,6 +148,9 @@ sys.Update(deltaTime)
 // cleanup systems, must have `Cleanup()` method
 sys.Cleanup()
 
+// shutdown systems, must have `Shutdown()` method
+sys.Shutdown()
+
 ```
 then you can implement a system for moving your position components around. add the system to `Systems` and loop through those and that's your game loop. You can even have systems for drawing things in a different `Systems` instance and execute them at different times. You can even return `Systems` of `Systems` and update them as a group of systems as long as that type has the supported method.
 ```golang
@@ -109,34 +162,34 @@ import (
 
 // PositionSystem ...
 type PositionSystem struct {
-	g         zinc.G
-	em *zinc.EntityManager
+	group   zinc.ZGroup
+	em      *zinc.ZEntityManager
 }
 
 // NewPositionSystem ...
 func NewPositionSystem() *PositionSystem {
 	return &PositionSystem{
-		em: zinc.Default(),
-		g:  zinc.Default().Group(zinc.AllOf(yourkit.PositionKey, yourkit.VelocityKey)),
+		em:     zinc.Default(),
+		group:  zinc.Default().Group(zinc.AllOf(yourkit.ZPosition, yourkit.ZVelocity)),
 	}
 }
 
 // NewPositionSystemWith ...
-func NewPositionSystemWith(em *zinc.EntityManager) *PositionSystem {
+func NewPositionSystemWith(em *zinc.ZEntityManager) *PositionSystem {
 	return &PositionSystem{
-		em: em,
-		g:  em.Group(zinc.AllOf(yourkit.PositionKey, yourkit.VelocityKey)),
+		em:     em,
+		group:  em.Group(zinc.AllOf(yourkit.ZPosition, yourkit.ZVelocity)),
 	}
 }
 
 // Update ...
 func (s PositionSystem) Update(dt float64) {
-	for _, id := range s.g.Entities() {
-		velocity := yourkit.VelocityX(s.em, id)
-		position := yourkit.PositionX(s.em, id)
+	for _, id := range s.group.Entities() {
+		velocity := yourkit.MustVelocityX(s.em, id)
+		position := yourkit.MustPositionX(s.em, id)
 		position.X += velocity.X * dt
 		position.Y += velocity.Y * dt
-		yourkit.SetPositionX(s.em, id, position)
+		yourkit.MustSetPositionX(s.em, id, position)
 	}
 }
 ```
