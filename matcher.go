@@ -1,10 +1,16 @@
 package zinc
 
+import "errors"
+
+var (
+	// ErrNilMatcher ...
+	ErrNilMatcher = errors.New("zinc: matcher is nil")
+)
+
 // ZMatcher ...
 type ZMatcher struct {
 	allOf  []uint
 	noneOf []uint
-	hash   uint
 }
 
 // NewMatcher creates a new matcher and returns it.
@@ -94,18 +100,6 @@ func (m *ZMatcher) Match(e *ZEntityManager, id ZEntityID) bool {
 // Hash returns a hash of the current matcher.
 func (m *ZMatcher) Hash() uint {
 	return hash(647, hash(653, m.allOf...), hash(661, m.noneOf...))
-}
-
-// AllOf includes the given component keys
-// for matching an entity.
-func AllOf(keys ...uint) *ZMatcher {
-	return NewMatcher().AllOf(keys...)
-}
-
-// NoneOf excludes the given component keys
-// for matching an entity.
-func NoneOf(keys ...uint) *ZMatcher {
-	return NewMatcher().NoneOf(keys...)
 }
 
 func hash(factor uint, x ...uint) uint {

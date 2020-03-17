@@ -1,6 +1,12 @@
 package zinc
 
 func newGroup(e *ZEntityManager, m *ZMatcher) *ZGroup {
+	if e == nil {
+		panic(ErrNilEntityManager)
+	}
+	if m == nil {
+		panic(ErrNilMatcher)
+	}
 	return &ZGroup{
 		entityManager: e,
 		matcher:       m,

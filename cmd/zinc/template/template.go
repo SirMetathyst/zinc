@@ -38,11 +38,23 @@ func (c *ComponentVariable) UpperIdentifier() string {
 	return strings.Title(c.Identifier)
 }
 
+// CliData ...
+type CliData struct {
+	PackageName   string
+	Imports       []string
+	ComponentName string
+	Unique        bool
+	Extras        bool
+	ComponentData []string
+}
+
 // Data ...
 type Data struct {
 	PackageName        string
 	Imports            []string
 	ComponentName      string
+	Unique             bool
+	Extras             bool
 	ComponentVariables []ComponentVariable
 }
 
@@ -80,13 +92,15 @@ func NewComponentVariablesFrom(variables []string, delimeter string) []Component
 }
 
 // NewTemplateDataFrom ...
-func NewTemplateDataFrom(packageName string, imports []string, componentName string, componentData []string) Data {
-	componentVariables := NewComponentVariablesFrom(componentData, ":")
+func NewTemplateDataFrom(v CliData) Data {
+	componentVariables := NewComponentVariablesFrom(v.ComponentData, ":")
 	return Data{
-		PackageName:        packageName,
-		ComponentName:      componentName,
+		PackageName:        v.PackageName,
+		ComponentName:      v.ComponentName,
 		ComponentVariables: componentVariables,
-		Imports:            imports,
+		Unique:             v.Unique,
+		Imports:            v.Imports,
+		Extras:             v.Extras,
 	}
 }
 

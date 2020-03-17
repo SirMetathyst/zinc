@@ -8,77 +8,118 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var (
-	matcherData = []struct {
+func TestMatcherHasAllOf(t *testing.T) {
+
+	// Arrange
+	data := []struct {
 		allOf  []uint
 		noneOf []uint
 	}{
 		{allOf: []uint{1, 2, 3}, noneOf: []uint{0, 10, 20}},
 		{allOf: []uint{0, 10, 2}, noneOf: []uint{99, 82, 10}},
 	}
-)
 
-func TestMatcherHasAllOf(t *testing.T) {
-	for _, ds := range matcherData {
+	for _, d := range data {
+
 		// Act
-		m := zinc.AllOf(ds.allOf...)
-		has := m.HasAllOf(ds.allOf...)
+		m := zinc.AllOf(d.allOf...)
+		has := m.HasAllOf(d.allOf...)
+
 		// Assert
 		assert.True(t, has, "has all of must return true")
 	}
 }
 
 func TestMatcherAllOf(t *testing.T) {
-	for _, ds := range matcherData {
+
+	// Arrange
+	data := []struct {
+		allOf  []uint
+		noneOf []uint
+	}{
+		{allOf: []uint{1, 2, 3}, noneOf: []uint{0, 10, 20}},
+		{allOf: []uint{0, 10, 2}, noneOf: []uint{99, 82, 10}},
+	}
+
+	for _, d := range data {
+
 		// Act
-		m := zinc.AllOf(ds.allOf...)
+		m := zinc.AllOf(d.allOf...)
+
 		// Assert
-		assert.ElementsMatch(t, m.AllOfSlice(), ds.allOf, "returned all of slice does not match input data")
+		assert.ElementsMatch(t, m.AllOfSlice(), d.allOf, "returned all of slice does not match input data")
 	}
 }
 
 func TestMatcherHasNoneOf(t *testing.T) {
-	for _, ds := range matcherData {
+
+	// Arrange
+	data := []struct {
+		allOf  []uint
+		noneOf []uint
+	}{
+		{allOf: []uint{1, 2, 3}, noneOf: []uint{0, 10, 20}},
+		{allOf: []uint{0, 10, 2}, noneOf: []uint{99, 82, 10}},
+	}
+
+	for _, d := range data {
+
 		// Act
-		m := zinc.NoneOf(ds.noneOf...)
-		has := m.HasNoneOf(ds.noneOf...)
+		m := zinc.NoneOf(d.noneOf...)
+		has := m.HasNoneOf(d.noneOf...)
+
 		// Assert
 		assert.True(t, has, "has none of must return true")
 	}
 }
 
 func TestMatcherNoneOf(t *testing.T) {
-	for _, ds := range matcherData {
+
+	// Arrange
+	data := []struct {
+		allOf  []uint
+		noneOf []uint
+	}{
+		{allOf: []uint{1, 2, 3}, noneOf: []uint{0, 10, 20}},
+		{allOf: []uint{0, 10, 2}, noneOf: []uint{99, 82, 10}},
+	}
+
+	for _, d := range data {
+
 		// Act
-		m := zinc.NoneOf(ds.noneOf...)
+		m := zinc.NoneOf(d.noneOf...)
+
 		// Assert
-		assert.ElementsMatch(t, m.NoneOfSlice(), ds.noneOf, "returned none of slice does not match input data")
+		assert.ElementsMatch(t, m.NoneOfSlice(), d.noneOf, "returned none of slice does not match input data")
 	}
 }
 
 func TestMatcherAllOfHash(t *testing.T) {
+
 	// Arrange, Act
 	m1 := zinc.AllOf(kit.ZLocalPosition2, kit.ZVelocity2)
 	m2 := zinc.AllOf(kit.ZVelocity2, kit.ZLocalPosition2)
+
 	// Assert
 	assert.Equal(t, m1.Hash(), m2.Hash(), "must share identical hash")
 }
 
 func TestMatcherNoneOfHash(t *testing.T) {
+
 	// Arrange, Act
 	m1 := zinc.NoneOf(kit.ZLocalPosition2, kit.ZVelocity2)
 	m2 := zinc.NoneOf(kit.ZVelocity2, kit.ZLocalPosition2)
+
 	// Assert
 	assert.Equal(t, m1.Hash(), m2.Hash(), "must share identical hash")
 }
 
 func TestMatcherHash(t *testing.T) {
-	// Arrange, Act
-	m1 := zinc.AllOf(kit.ZLocalPosition2, kit.ZVelocity2).
-		NoneOf(kit.ZLocalRotation2, kit.ZLocalScale2)
 
-	m2 := zinc.AllOf(kit.ZVelocity2, kit.ZLocalPosition2).
-		NoneOf(kit.ZLocalScale2, kit.ZLocalRotation2)
+	// Arrange, Act
+	m1 := zinc.AllOf(kit.ZLocalPosition2, kit.ZVelocity2).NoneOf(kit.ZLocalRotation2, kit.ZLocalScale2)
+	m2 := zinc.AllOf(kit.ZVelocity2, kit.ZLocalPosition2).NoneOf(kit.ZLocalScale2, kit.ZLocalRotation2)
+
 	// Assert
 	assert.Equal(t, m1.Hash(), m2.Hash(), "must share identical hash")
 }

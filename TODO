@@ -12,3 +12,9 @@ API
         entity managers.
     - write example files for go.doc using example_xxx.go in project root
     - write benchmarks
+    - Make SyncKit compatible with Entitas through Entitas Sync Framework so that you can write your game code
+        in golang+zinc and your view/client code in Unity3D+Entitas
+    - Possibly add a FilteredGroup and FilteredCollector which calls a provided function to determine
+        if an entity should be added to it's entity list. aka. grab all entities that have a Health
+        component and a Monster component where health is greater than 50. Function can return true to
+        tell the type to retain the entity or false to discard it.

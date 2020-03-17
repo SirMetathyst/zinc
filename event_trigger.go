@@ -1,5 +1,12 @@
 package zinc
 
+import "errors"
+
+var (
+	// ErrInvalidGroupEvent ...
+	ErrInvalidGroupEvent = errors.New("zinc: invalid group event")
+)
+
 // GroupEvent ...
 type GroupEvent uint
 
@@ -17,7 +24,7 @@ const (
 // three valid values and false if it does
 // not.
 func GroupEventValid(e GroupEvent) bool {
-	if e >= 0 || e <= 2 {
+	if e >= 0 && e <= 2 {
 		return true
 	}
 	return false
@@ -40,7 +47,15 @@ func (e *ZEventTrigger) GroupEvent() GroupEvent {
 }
 
 // NewEventTrigger creates a new event trigger and returns it.
+// Panics if the matcher is nil or the group event is not one of
+// GroupEventAdded|GroupEventDeleted|GroupEventUpdated
 func NewEventTrigger(m *ZMatcher, e GroupEvent) *ZEventTrigger {
+	if m == nil {
+		panic(ErrNilMatcher)
+	}
+	if !GroupEventValid(e) {
+		panic(ErrInvalidGroupEvent)
+	}
 	return &ZEventTrigger{matcher: m, groupEvent: e}
 }
 

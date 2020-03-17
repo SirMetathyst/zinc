@@ -15,11 +15,18 @@ type Initialize interface {
 	Initialize()
 }
 
+// Shutdown ...
+type Shutdown interface {
+	Shutdown()
+}
+
 // ZSystems ...
 type ZSystems struct {
+	systems    []interface{}
 	initialize []Initialize
 	update     []Update
 	cleanup    []Cleanup
+	shutdown   []Shutdown
 }
 
 // NewSystems returns a new systems container
@@ -33,18 +40,57 @@ func NewSystems() *ZSystems {
 // system methods have been implemented.
 func (s *ZSystems) Add(sys ...interface{}) {
 	for _, sysv := range sys {
-		switch v := sysv.(type) {
-		case Initialize:
+		add := false
+		if v, ok := sysv.(Initialize); ok {
 			s.initialize = append(s.initialize, v)
-			break
-		case Update:
+			add = true
+		}
+		if v, ok := sysv.(Update); ok {
 			s.update = append(s.update, v)
-			break
-		case Cleanup:
+			add = true
+		}
+		if v, ok := sysv.(Cleanup); ok {
 			s.cleanup = append(s.cleanup, v)
-			break
+			add = true
+		}
+		if v, ok := sysv.(Shutdown); ok {
+			s.shutdown = append(s.shutdown, v)
+			add = true
+		}
+		if add {
+			s.systems = append(s.systems, sysv)
 		}
 	}
+}
+
+// SystemsSlice returns a slice of all system
+// types that have been added.
+func (s *ZSystems) SystemsSlice() []interface{} {
+	return s.systems
+}
+
+// InitializeSystemsSlice returns a slice of initialize
+// systems.
+func (s *ZSystems) InitializeSystemsSlice() []Initialize {
+	return s.initialize
+}
+
+// UpdateSystemsSlice returns a slice of update
+// systems.
+func (s *ZSystems) UpdateSystemsSlice() []Update {
+	return s.update
+}
+
+// CleanupSystemsSlice returns a slice of Cleanup
+// systems.
+func (s *ZSystems) CleanupSystemsSlice() []Cleanup {
+	return s.cleanup
+}
+
+// ShutdownSystemsSlice returns a slice of shutdown
+// systems.
+func (s *ZSystems) ShutdownSystemsSlice() []Shutdown {
+	return s.shutdown
 }
 
 // Initialize calls the initialize method
@@ -68,5 +114,13 @@ func (s *ZSystems) Update(dt float64) {
 func (s *ZSystems) Cleanup() {
 	for _, sys := range s.cleanup {
 		sys.Cleanup()
+	}
+}
+
+// Shutdown calls the shutdown method
+// on all systems in the systems list.
+func (s *ZSystems) Shutdown() {
+	for _, sys := range s.shutdown {
+		sys.Shutdown()
 	}
 }

@@ -1,19 +1,26 @@
 package zinc
 
+import "errors"
+
+var (
+	// ErrNilCollectorEventSlice ...
+	ErrNilCollectorEventSlice = errors.New("zinc: collector event slice is nil")
+)
+
 func newCollectorEvent(g *ZGroup, e GroupEvent) ZCollectorEvent {
 	if g == nil {
-		panic("group cannot be nil")
+		panic(ErrNilGroup)
 	}
 	if !GroupEventValid(e) {
-		panic("invalid group event")
+		panic(ErrInvalidGroupEvent)
 	}
 	return ZCollectorEvent{group: g, groupEvent: e}
 }
 
 // TODO: Write TEST
 func newCollector(ce ...ZCollectorEvent) *ZCollector {
-	if len(ce) == 0 || ce == nil {
-		panic("collector event cannot be nil and must have at least one event")
+	if ce == nil {
+		panic(ErrNilCollectorEventSlice)
 	}
 	collector := &ZCollector{
 		collectorEvent: ce,

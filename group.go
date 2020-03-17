@@ -1,5 +1,12 @@
 package zinc
 
+import "errors"
+
+var (
+	// ErrNilGroup ...
+	ErrNilGroup = errors.New("zinc: group is nil")
+)
+
 // ZGroup ...
 type ZGroup struct {
 	matcher       *ZMatcher

@@ -45,24 +45,30 @@ func (c *IsPlayingComponent) SetContext(ctx *zinc.ZContext) {
 
 // AddIsPlaying ...
 func (c *IsPlayingComponent) AddIsPlaying(id zinc.ZEntityID, value bool) error {
-	if c.ctx.HasEntity(id) && !c.HasEntity(id) {
-		c.data[id] = value
-		c.ctx.ComponentAdded(ZIsPlaying, id)
-		return nil
+	if c.ctx.HasEntity(id) {
+		if !c.HasEntity(id) {
+			c.data[id] = value
+			c.ctx.ComponentAdded(ZIsPlaying, id)
+			return nil
+		}
+		return zinc.ErrEntityComponentAlreadyExists
 	}
-	return zinc.ErrComponentNotFound
+	return zinc.ErrEntityNotFound
 }
 
 // UpdateIsPlaying ...
 func (c *IsPlayingComponent) UpdateIsPlaying(id zinc.ZEntityID, value bool, silent bool) error {
-	if c.ctx.HasEntity(id) && c.HasEntity(id) {
-		c.data[id] = value
-		if !silent {
-			c.ctx.ComponentUpdated(ZIsPlaying, id)
+	if c.ctx.HasEntity(id) {
+		if c.HasEntity(id) {
+			c.data[id] = value
+			if !silent {
+				c.ctx.ComponentUpdated(ZIsPlaying, id)
+			}
+			return nil
 		}
-		return nil
+		return zinc.ErrEntityComponentNotFound
 	}
-	return zinc.ErrComponentNotFound
+	return zinc.ErrEntityNotFound
 }
 
 // HasEntity ...
@@ -74,20 +80,26 @@ func (c *IsPlayingComponent) HasEntity(id zinc.ZEntityID) bool {
 // IsPlaying ...
 func (c *IsPlayingComponent) IsPlaying(id zinc.ZEntityID) (bool, error) {
 	data, ok := c.data[id]
-	if ok {
-		return data, nil
+	if c.ctx.HasEntity(id) {
+		if ok {
+			return data, nil
+		}
+		return data, zinc.ErrEntityComponentNotFound
 	}
-	return data, zinc.ErrComponentNotFound
+	return data, zinc.ErrEntityNotFound
 }
 
 // DeleteEntity ...
 func (c *IsPlayingComponent) DeleteEntity(id zinc.ZEntityID) error {
-	if c.ctx.HasEntity(id) && c.HasEntity(id) {
-		delete(c.data, id)
-		c.ctx.ComponentDeleted(ZIsPlaying, id)
-		return nil
+	if c.ctx.HasEntity(id) {
+		if c.HasEntity(id) {
+			delete(c.data, id)
+			c.ctx.ComponentDeleted(ZIsPlaying, id)
+			return nil
+		}
+		return zinc.ErrEntityComponentNotFound
 	}
-	return zinc.ErrComponentNotFound
+	return zinc.ErrEntityNotFound
 }
 
 // AddIsPlayingX ...
@@ -96,6 +108,7 @@ func AddIsPlayingX(e *zinc.ZEntityManager, id zinc.ZEntityID, value bool) error 
 	c := v.(*IsPlayingComponent)
 	return c.AddIsPlaying(id, value)
 }
+
 
 // MustAddIsPlayingX ...
 func MustAddIsPlayingX(e *zinc.ZEntityManager, id zinc.ZEntityID, value bool) {
@@ -109,6 +122,7 @@ func MustAddIsPlayingX(e *zinc.ZEntityManager, id zinc.ZEntityID, value bool) {
 func AddIsPlaying(id zinc.ZEntityID, value bool) error {
 	return AddIsPlayingX(zinc.Default(), id, value)
 }
+
 
 // MustAddIsPlaying ...
 func MustAddIsPlaying(id zinc.ZEntityID, value bool) {
@@ -125,6 +139,7 @@ func UpdateIsPlayingSilentlyX(e *zinc.ZEntityManager, id zinc.ZEntityID, value b
 	return c.UpdateIsPlaying(id, value, true)
 }
 
+
 // MustUpdateIsPlayingSilentlyX ...
 func MustUpdateIsPlayingSilentlyX(e *zinc.ZEntityManager, id zinc.ZEntityID, value bool) {
 	err := UpdateIsPlayingSilentlyX(e, id, value)
@@ -137,6 +152,7 @@ func MustUpdateIsPlayingSilentlyX(e *zinc.ZEntityManager, id zinc.ZEntityID, val
 func UpdateIsPlayingSilently(id zinc.ZEntityID, value bool) error {
 	return UpdateIsPlayingSilentlyX(zinc.Default(), id, value)
 }
+
 
 // MustUpdateIsPlayingSilently ...
 func MustUpdateIsPlayingSilently(id zinc.ZEntityID, value bool) {
@@ -153,6 +169,7 @@ func UpdateIsPlayingX(e *zinc.ZEntityManager, id zinc.ZEntityID, value bool) err
 	return c.UpdateIsPlaying(id, value, false)
 }
 
+
 // MustUpdateIsPlayingX ...
 func MustUpdateIsPlayingX(e *zinc.ZEntityManager, id zinc.ZEntityID, value bool) {
 	err := UpdateIsPlayingX(e, id, value)
@@ -166,9 +183,43 @@ func UpdateIsPlaying(id zinc.ZEntityID, value bool) error {
 	return UpdateIsPlayingX(zinc.Default(), id, value)
 }
 
+
 // MustUpdateIsPlaying ...
 func MustUpdateIsPlaying(id zinc.ZEntityID, value bool) {
 	err := UpdateIsPlayingX(zinc.Default(), id, value)
+	if err != nil {
+		panic(err)
+	}
+}
+
+// SetIsPlayingX ...
+func SetIsPlayingX(e *zinc.ZEntityManager, id zinc.ZEntityID, value bool) error {
+	v := e.Component(ZIsPlaying)
+	c := v.(*IsPlayingComponent)
+	if c.HasEntity(id) {
+		return c.UpdateIsPlaying(id, value, false)
+	}
+	return c.AddIsPlaying(id, value)
+}
+
+
+// MustSetIsPlayingX ...
+func MustSetIsPlayingX(e *zinc.ZEntityManager, id zinc.ZEntityID, value bool) {
+	err := SetIsPlayingX(e, id, value)
+	if err != nil {
+		panic(err)
+	}
+}
+
+// SetIsPlaying ...
+func SetIsPlaying(id zinc.ZEntityID, value bool) error {
+	return SetIsPlayingX(zinc.Default(), id, value)
+}
+
+
+// MustSetIsPlaying ...
+func MustSetIsPlaying(id zinc.ZEntityID, value bool) {
+	err := SetIsPlaying(id, value)
 	if err != nil {
 		panic(err)
 	}
@@ -192,6 +243,7 @@ func IsPlayingX(e *zinc.ZEntityManager, id zinc.ZEntityID) (bool, error) {
 	return c.IsPlaying(id)
 }
 
+
 // MustIsPlayingX ...
 func MustIsPlayingX(e *zinc.ZEntityManager, id zinc.ZEntityID) bool {
 	data, err := IsPlayingX(e, id)
@@ -205,6 +257,7 @@ func MustIsPlayingX(e *zinc.ZEntityManager, id zinc.ZEntityID) bool {
 func IsPlaying(id zinc.ZEntityID) (bool, error) {
 	return IsPlayingX(zinc.Default(), id)
 }
+
 
 // MustIsPlaying ...
 func MustIsPlaying(id zinc.ZEntityID) bool {
@@ -221,6 +274,7 @@ func DeleteIsPlayingX(e *zinc.ZEntityManager, id zinc.ZEntityID) error {
 	return v.DeleteEntity(id)
 }
 
+
 // MustDeleteIsPlayingX ...
 func MustDeleteIsPlayingX(e *zinc.ZEntityManager, id zinc.ZEntityID) {
 	err := DeleteIsPlayingX(e, id)
@@ -233,6 +287,7 @@ func MustDeleteIsPlayingX(e *zinc.ZEntityManager, id zinc.ZEntityID) {
 func DeleteIsPlaying(id zinc.ZEntityID) error {
 	return DeleteIsPlayingX(zinc.Default(), id)
 }
+
 
 // MustDeleteIsPlaying ...
 func MustDeleteIsPlaying(id zinc.ZEntityID) {

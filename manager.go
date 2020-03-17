@@ -5,12 +5,18 @@ import (
 )
 
 var (
-	// ErrComponentNil ...
-	ErrComponentNil = errors.New("zinc: component is nil")
+	// ErrEntityComponentAlreadyExists ...
+	ErrEntityComponentAlreadyExists = errors.New("zinc: component is already on the entity")
+	// ErrNilComponent ...
+	ErrNilComponent = errors.New("zinc: component is nil")
+	// ErrNilEntityManager ...
+	ErrNilEntityManager = errors.New("zinc: entity manager is nil")
 	// ErrComponentAlreadyRegistered ...
 	ErrComponentAlreadyRegistered = errors.New("zinc: component has already been registered. Perhaps RegisterComponent was called more than once or there was a hash collision?")
-	// ErrComponentNotFound ...
-	ErrComponentNotFound = errors.New("zinc: component was not found. Are you sure the entity id is correct?")
+	// ErrEntityComponentNotFound ...
+	ErrEntityComponentNotFound = errors.New("zinc: component was not found on the entity. Are you sure you added the component first?")
+	// ErrEntityNotFound ...
+	ErrEntityNotFound = errors.New("zinc: entity was not found. Are you sure the entity id is correct?")
 	// ErrUnregisteredComponent ...
 	ErrUnregisteredComponent = errors.New("zinc: component was not found. Did you forget to call RegisterComponent")
 )
@@ -129,7 +135,7 @@ func (e *ZEntityManager) RegisterComponent(key uint, c Component) *ZContext {
 		if c != nil {
 			e.componentMap[key] = c
 		} else {
-			panic(ErrComponentNil)
+			panic(ErrNilComponent)
 		}
 	} else {
 		panic(ErrComponentAlreadyRegistered)
