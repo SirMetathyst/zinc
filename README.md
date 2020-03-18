@@ -130,42 +130,35 @@ MustDeletePosition(id zinc.ZEntityID) // optional extra
 
 ## Entity Manager
 ```golang
-func entityManagerExample() {
+/////////////////////
+// Create components 
+/////////////////////
 
-    /////////////////////
-    // Create components 
-    /////////////////////
+// ...
 
-    // ...
+// get all created entity ids in the default
+// entity manager instance
+entities := zinc.Entities()
 
-    // get all created entity ids in the default
-    // entity manager instance
-    entities := zinc.Entities()
-
-    // TODO: add examples for the rest 
-}
+// TODO: add examples for the rest 
 ```
 
 ## Groups
 
 ```golang
-func groupsExample() {
+// create a matcher 
+matcher := zinc.AllOf(yourkit.ZPosition, yourkit.ZVelocity)
 
-    // create a matcher 
-    matcher := zinc.AllOf(yourkit.ZPosition, yourkit.ZVelocity)
+// create a group
+group1 := zinc.Group(matcher)
 
-    // create a group
-    group1 := zinc.Group(matcher)
-
-    // TODO: complete section
-}
+// TODO: complete section
 ```
 
 ## Collector
 
 ```golang
-func collectorExample() {
-}
+
 ```
 
 ## Systems
