@@ -3,10 +3,10 @@
 [![codecov](https://codecov.io/gh/SirMetathyst/zinc/branch/master/graph/badge.svg)](https://codecov.io/gh/SirMetathyst/zinc)
 [![Build Status](https://travis-ci.com/SirMetathyst/zinc.svg?branch=master)](https://travis-ci.com/SirMetathyst/zinc)
 
-`ZincECS` is an entity-component-system package inspired by Simon Schmid's [Entitas-CSharp](https://github.com/sschmid/Entitas-CSharp) and [Atom proof-of-concept](https://github.com/sschmid/Entitas-CSharp/issues/902) but for the go language. ZincECS uses code-generation to achieve a nice API similar to EntitasECS using the built-in ZincCLI. This package puts focus on modularity and ease of use with performance coming in as a close second. 
+`ZincECS` is an entity-component-system package inspired by Simon Schmid's [Entitas-CSharp](https://github.com/sschmid/Entitas-CSharp) and [Atom proof-of-concept](https://github.com/sschmid/Entitas-CSharp/issues/902) but for the go language. `ZincECS` uses code-generation to achieve a nice API similar to EntitasECS using the built-in `ZincCLI`. This package puts focus on modularity and ease of use with performance coming in as a close second. 
 
 # Installation
-This will install the ZincCLI along with the `zinc` package.
+This will install the `ZincCLI` along with the `zinc` package.
 ```golang
 go get github.com/SirMetathyst/zinc/...
 ```
@@ -126,6 +126,15 @@ MustDeletePositionX(e *zinc.ZEntityManager, id zinc.ZEntityID) // optional extra
 DeletePosition(id zinc.ZEntityID) error
 MustDeletePosition(id zinc.ZEntityID) // optional extra
 ```
+
+You can also generate unique components not bound to a specific entity.
+
+```
+zinc <component> -package|-import|-name|-var|-extras|-unique
+---
+zinc component -package components -name active -unique -var 
+```
+
 
 
 ## Entity Manager

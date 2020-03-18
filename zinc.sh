@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ZINC="zinc component -package kit -name"
+ZINC="zinc -package kit -name"
 FLOAT32_2="-var x:float32 -var y:float32"
 
 _rm() {
@@ -31,13 +31,21 @@ component_clean() {
 component_gen() {
     component_clean
     echo "Generating Components ..."
+    # MultiComponentDataTemplate
     ${ZINC} LocalPosition2 ${FLOAT32_2}
 	${ZINC} LocalRotation2 ${FLOAT32_2}
 	${ZINC} LocalScale2    ${FLOAT32_2}
 	${ZINC} Velocity2      ${FLOAT32_2}
-    ${ZINC} isPlaying -var bool
-    ${ZINC} active
-    ${ZINC} running -unique true
+    # SingleComponentDataTemplate
+    ${ZINC} UnixTime -var time:int
+    # FlagComponentDataTemplate
+    ${ZINC} Active
+    # UniqueFlagComponentDataTemplate
+    ${ZINC} Running -unique
+    # UniqueSingleComponentDataTemplate
+    ${ZINC} LogService -unique -var logger:interface{}
+    # UniqueMultiComponentDataTemplate
+    ${ZINC} TimeService -unique -var min:int -var sec:int
 }
 
 bench() {
