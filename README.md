@@ -16,10 +16,10 @@ go get github.com/SirMetathyst/zinc/...
 There isn't much we can do without any components so lets go ahead and generate some before we start.
 
 ```
-zinc <component> -package|-import|-name|-var|-extras|-unique
+ zinc -[package|import|unique|name|extras]... -[var]* ...
 ---
-zinc component -package components -name position -var x:float32 -var y:float32
-zinc component -package components -name velocity -var x:float32 -var y:float32
+zinc -package components -name position -var x:float32 -var y:float32
+zinc -package components -name velocity -var x:float32 -var y:float32
 ```
 We first execute the `ZincCLI` and pass in some arguments. The `-package` argument means we want our generated component to have the package name of `components` and `-name` specifies the name of the component with `-var` being the data. The format must be in `name:type` or `type`.
 
