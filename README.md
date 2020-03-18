@@ -94,7 +94,37 @@ func main() {
 ```golang
 // Full list of possible functions for generated component `position`
 
-xxx
+AddPositionX(e *zinc.ZEntityManager, id zinc.ZEntityID, data ZPositionData) error
+MustAddPositionX(e *zinc.ZEntityManager, id zinc.ZEntityID, data ZPositionData) // optional extra
+AddPosition(id zinc.ZEntityID, data ZPositionData) error
+MustAddPosition(id zinc.ZEntityID, data ZPositionData) // optional extra
+
+UpdatePositionSilentlyX(e *zinc.ZEntityManager, id zinc.ZEntityID, data ZPositionData) error
+MustUpdatePositionSilentlyX(e *zinc.ZEntityManager, id zinc.ZEntityID, data ZPositionData) // optional extra
+UpdatePositionSilently(id zinc.ZEntityID, data ZPositionData) error
+MustUpdatePositionSilently(id zinc.ZEntityID, data ZPositionData) // optional extra
+UpdatePositionX(e *zinc.ZEntityManager, id zinc.ZEntityID, data ZPositionData) error
+MustUpdatePositionX(e *zinc.ZEntityManager, id zinc.ZEntityID, data ZPositionData) // optional extra
+UpdatePosition(id zinc.ZEntityID, data ZPositionData) error
+MustUpdatePosition(id zinc.ZEntityID, data ZPositionData) // optional extra
+
+SetPositionX(e *zinc.ZEntityManager, id zinc.ZEntityID, data ZPositionData) error
+MustSetPositionX(e *zinc.ZEntityManager, id zinc.ZEntityID, data ZPositionData) // optional extra
+SetPosition(id zinc.ZEntityID, data ZPositionData) error
+MustSetPosition(id zinc.ZEntityID, data ZPositionData) // optional extra
+
+HasPositionX(e *zinc.ZEntityManager, id zinc.ZEntityID) bool
+HasPosition(id zinc.ZEntityID) bool 
+
+Position2X(e *zinc.ZEntityManager, id zinc.ZEntityID) (ZPositionData, error)
+MustPositionX(e *zinc.ZEntityManager, id zinc.ZEntityID) ZPositionData // optional extra
+Position(id zinc.ZEntityID) (ZPositionData, error)
+MustPosition(id zinc.ZEntityID) ZPositionData // optional extra
+
+DeletePositionX(e *zinc.ZEntityManager, id zinc.ZEntityID) error
+MustDeletePositionX(e *zinc.ZEntityManager, id zinc.ZEntityID) // optional extra
+DeletePosition(id zinc.ZEntityID) error
+MustDeletePosition(id zinc.ZEntityID) // optional extra
 ```
 
 
@@ -128,6 +158,13 @@ func groupsExample() {
     group1 := zinc.Group(matcher)
 
     // TODO: complete section
+}
+```
+
+## Collector
+
+```golang
+func collectorExample() {
 }
 ```
 
