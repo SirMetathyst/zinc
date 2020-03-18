@@ -130,9 +130,9 @@ MustDeletePosition(id zinc.ZEntityID) // optional extra
 You can also generate unique components not bound to a specific entity.
 
 ```
-zinc <component> -package|-import|-name|-var|-extras|-unique
+zinc -[package|import|unique|name|extras]... -[var]* ...
 ---
-zinc component -package components -name active -unique -var 
+zinc -package components -unique -name running
 ```
 
 
