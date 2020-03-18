@@ -236,9 +236,9 @@ func (s PositionSystem) Update(dt float64) {
 # Contributing
 I dont really have a contribution guideline. Just post an issue or pull request if you'd like to add or change something in `ZincECS`. I generally welcome pull requests but don't be disappointed if it gets rejected. You can always fork it.
 
+<!--
 # Projects/Examples I use ZincECS in
 - [Zinckit](https://github.com/SirMetathyst/zinckit) - Collection of Systems and Components for `ZincECS` projects
-<!--
 - [Zincbird](https://github.com/SirMetathyst/zincbird) - Flappy birds clone written with `ZincECS`
 - [Zincpong](https://github.com/SirMetathyst/zincbird) - Pong clone written with `ZincECS`-->
 
