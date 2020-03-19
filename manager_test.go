@@ -72,6 +72,20 @@ func TestEntityManagerReset(t *testing.T) {
 
 func TestEntityManagerRegisterComponent(t *testing.T) {
 
+	t.Run("register component with nil panics", func(t *testing.T) {
+
+		// Setup
+		e := zinc.NewEntityManager()
+
+		// Arrange, Act
+		f := func() {
+			e.RegisterComponent(0, nil)
+		}
+
+		// Assert
+		assert.Panics(t, f, "should panic because component type given to RegisterComponent is nil")
+	})
+
 	t.Run("register component type once", func(t *testing.T) {
 
 		// Setup

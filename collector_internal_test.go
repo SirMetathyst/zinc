@@ -49,12 +49,3 @@ func TestNewCollectorPanics(t *testing.T) {
 		assert.PanicsWithValue(t, ErrNilCollectorEventSlice, f, "newCollector must panic with ErrNilCollectorEventSlice when collector event slice given is nil")
 	})
 }
-
-func TestNewCollector(t *testing.T) {
-
-	// Arrange, Act
-	c := NewCollector(Added(0))
-
-	// Assert
-	assert.NotNil(t, c, "collector must not be nil")
-}
