@@ -14,9 +14,6 @@ func BenchmarkNewEntityManager(b *testing.B) {
 
 func BenchmarkCreateEntity(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		b.StopTimer()
-		zinc.Reset()
-		b.StartTimer()
 		zinc.CreateEntity()
 	}
 }

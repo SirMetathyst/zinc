@@ -51,7 +51,7 @@ component_gen() {
 bench() {
     cd ./benchmark
     echo "Running Benchmarks ..."
-    go test -bench . -benchmem -benchtime 15s -cpu 1,4 -count 2
+    go test -bench . -benchmem -benchtime 20s -cpu 1 -count 4
 }
 
 clean() {

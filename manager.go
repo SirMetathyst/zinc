@@ -51,9 +51,9 @@ func NewEntityManager() *ZEntityManager {
 	}
 
 	e.context = newContext(
-		e.componentAdded,
-		e.componentDeleted,
-		e.componentUpdated,
+		e.groupHandleEntity,
+		e.groupHandleEntity,
+		e.groupUpdateEntity,
 		e.HasEntity)
 
 	return e
@@ -93,9 +93,7 @@ func (e *ZEntityManager) DeleteEntities() {
 // entity id and use that one without incrementing the current id.
 func (e *ZEntityManager) CreateEntity() ZEntityID {
 	id := e.getID()
-	if !e.entityList.AddEntity(id) {
-		panic("what?!")
-	}
+	e.entityList.AddEntity(id)
 	return id
 }
 
@@ -108,11 +106,22 @@ func (e *ZEntityManager) HasEntity(id ZEntityID) bool {
 // DeleteEntity deletes all components associated with
 // the entity id and then deletes the entity from the current
 // entity manager.
-func (e *ZEntityManager) DeleteEntity(id ZEntityID) {
+func (e *ZEntityManager) DeleteEntity(id ZEntityID) error {
 	if e.HasEntity(id) {
-		e.componentDeleteEntity(id)
-		e.deleteEntity(id)
+
+		// Delete Components on entity
+		for _, c := range e.componentMap {
+			if c.HasEntity(id) {
+				c.DeleteEntity(id)
+			}
+		}
+
+		// Delete Entity
+		e.entityList.DeleteEntity(id)
+		e.putID(id)
+		return nil
 	}
+	return ErrEntityNotFound
 }
 
 // Entities returns a slice of currently active entity ids.
@@ -187,13 +196,22 @@ func (e *ZEntityManager) GroupCount() int {
 func (e *ZEntityManager) Group(m *ZMatcher) *ZGroup {
 
 	// Fetch existing group if it exists
-	if g := e.group(m); g != nil {
-		return g
+	if idx, ok := e.groupsMap[m.Hash()]; ok {
+		return e.groups[idx]
 	}
 
 	// Create new group
-	ng := e.newGroup(m)
-	e.addGroup(ng)
+	g := newGroup(e, m)
 
-	return ng
+	// Add existing entities to new group
+	// if entity satisfies matcher
+	for _, id := range e.Entities() {
+		g.handleEntitySilently(id)
+	}
+
+	// Add group
+	e.groups = append(e.groups, g)
+	e.groupsMap[g.Hash()] = len(e.groups) - 1
+
+	return g
 }

@@ -40,6 +40,18 @@ func TestEntityManagerDeleteEntity(t *testing.T) {
 	test.DoesNotHaveEntities(t, e, []zinc.ZEntityID{1, 2, 3})
 	test.HasEntities(t, e, []zinc.ZEntityID{4, 5})
 	test.CreateEntities(t, e, []zinc.ZEntityID{3, 2, 1})
+
+	t.Run("deleting an entity which does not exist returns an error", func(t *testing.T) {
+
+		// Arrange
+		e := zinc.NewEntityManager()
+
+		// Act
+		err := e.DeleteEntity(1)
+
+		// Assert
+		assert.Equal(t, err, zinc.ErrEntityNotFound, "Deleting an entity that does not exist returns an ErrEntityNotFound")
+	})
 }
 
 func TestEntityManagerDeleteEntities(t *testing.T) {
